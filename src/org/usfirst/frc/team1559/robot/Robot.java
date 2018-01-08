@@ -7,10 +7,13 @@
 
 package org.usfirst.frc.team1559.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 public class Robot extends IterativeRobot {
 
+	private String gameData;
+	
 	@Override
 	public void robotInit() {
 
@@ -18,7 +21,10 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
-
+		
+		// query Game Data
+		gameData = DriverStation.getInstance().getGameSpecificMessage();
+		
 	}
 
 	@Override
