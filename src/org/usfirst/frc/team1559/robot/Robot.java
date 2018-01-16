@@ -7,16 +7,22 @@
 
 package org.usfirst.frc.team1559.robot;
 
+import org.usfirst.frc.team1559.robot.DriveTrain.Gear;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Joystick;
 
 public class Robot extends IterativeRobot {
 
+	private OperatorInterface oi;
+	private DriveTrain driveTrain;
 	private String gameData;
 	
 	@Override
 	public void robotInit() {
-
+		oi = new OperatorInterface();
+		driveTrain = new DriveTrain(Gear.DIFFERENTIAL);
 	}
 
 	@Override
@@ -39,7 +45,10 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopPeriodic() {
-
+		driveTrain.drive(oi.getDriverX(), oi.getDriverY(), oi.getDriverZ());
+		if (oi.getDriverButton(1).isPressed()) {
+			driveTrain.shift();
+		}
 	}
 	
 	@Override
