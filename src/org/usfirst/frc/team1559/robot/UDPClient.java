@@ -39,12 +39,16 @@ public class UDPClient implements Runnable {
 		return data;
 	}
 
-	public String getAngle() {
-		return data.substring(0, data.indexOf('d'));
+	public String getX() {
+		return data.substring(data.indexOf('x'),data.indexOf('y'));
+	}
+	
+	public String getY() {
+		return data.substring(data.indexOf('y'),data.indexOf('r'));
 	}
 
-	public String getDistance() {
-		return data.substring(data.indexOf('d') + 1);
+	public String getR() {
+		return data.substring(data.indexOf('r'));
 	}
 
 	public String receive() {

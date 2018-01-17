@@ -18,11 +18,13 @@ public class Robot extends IterativeRobot {
 	private OperatorInterface oi;
 	private DriveTrain driveTrain;
 	private String gameData;
+	UDPClient udp;
 	
 	@Override
 	public void robotInit() {
 		oi = new OperatorInterface();
 		driveTrain = new DriveTrain(Gear.DIFFERENTIAL);
+		udp = new UDPClient();
 	}
 
 	@Override
@@ -35,7 +37,7 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousPeriodic() {
-
+		driveTrain.drive(0, 0, Double.parseDouble(udp.getR()));
 	}
 	
 	@Override
