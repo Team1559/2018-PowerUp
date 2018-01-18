@@ -1,5 +1,7 @@
 package org.usfirst.frc.team1559.robot;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.wpilibj.PWMTalonSRX;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
@@ -14,12 +16,12 @@ public class DriveTrain {
 	private MecanumDrive mecaDrive;
 
 	public DriveTrain(boolean mecanumized) {
-		PWMTalonSRX frontLeft = new PWMTalonSRX(Wiring.FL_SRX);
-		PWMTalonSRX rearLeft = new PWMTalonSRX(Wiring.RL_SRX);
+		WPI_TalonSRX frontLeft = new WPI_TalonSRX(Wiring.FL_SRX);
+		WPI_TalonSRX rearLeft = new WPI_TalonSRX(Wiring.RL_SRX);
 		SpeedControllerGroup left = new SpeedControllerGroup(frontLeft, rearLeft);
 
-		PWMTalonSRX frontRight = new PWMTalonSRX(Wiring.FR_SRX);
-		PWMTalonSRX rearRight = new PWMTalonSRX(Wiring.RR_SRX);
+		WPI_TalonSRX frontRight = new WPI_TalonSRX(Wiring.FR_SRX);
+		WPI_TalonSRX rearRight = new WPI_TalonSRX(Wiring.RR_SRX);
 		SpeedControllerGroup right = new SpeedControllerGroup(frontRight, rearRight);
 
 		diffDrive = new DifferentialDrive(left, right);

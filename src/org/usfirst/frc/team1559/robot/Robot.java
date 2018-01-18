@@ -7,11 +7,8 @@
 
 package org.usfirst.frc.team1559.robot;
 
-import org.usfirst.frc.team1559.robot.DriveTrain.Gear;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Joystick;
 
 public class Robot extends IterativeRobot {
 
@@ -23,7 +20,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 		oi = new OperatorInterface();
-		driveTrain = new DriveTrain(Gear.DIFFERENTIAL);
+		driveTrain = new DriveTrain(true);
 		udp = new UDPClient();
 	}
 
@@ -37,7 +34,8 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousPeriodic() {
-		driveTrain.drive(0, 0, Double.parseDouble(udp.getR()));
+		System.out.println(udp.get());
+		driveTrain.drive(0, 0, -(Double.parseDouble(udp.getR())));
 	}
 	
 	@Override

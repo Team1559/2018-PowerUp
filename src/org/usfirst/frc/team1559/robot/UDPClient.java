@@ -48,7 +48,7 @@ public class UDPClient implements Runnable {
 	}
 
 	public String getR() {
-		return data.substring(data.indexOf('r'));
+		return data.substring(data.indexOf('r')+1);
 	}
 
 	public String receive() {
