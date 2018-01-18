@@ -12,30 +12,30 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 
 public class Robot extends IterativeRobot {
 
+	@SuppressWarnings("unused")
 	private OperatorInterface oi;
 	private DriveTrain driveTrain;
+	@SuppressWarnings("unused")
 	private String gameData;
 	UDPClient udp;
 	
 	@Override
 	public void robotInit() {
 		oi = new OperatorInterface();
-		driveTrain = new DriveTrain(true);
+		driveTrain = new DriveTrain(false);
 		udp = new UDPClient();
 	}
 
 	@Override
 	public void autonomousInit() {
-		
 		// query Game Data
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
-		
 	}
 
 	@Override
 	public void autonomousPeriodic() {
 		System.out.println(udp.get());
-		driveTrain.drive(0, 0, -(Double.parseDouble(udp.getR())));
+		driveTrain.drive(0.1, 0, -(Double.parseDouble(udp.getR())));
 	}
 	
 	@Override
@@ -45,10 +45,11 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		driveTrain.drive(oi.getDriverX(), oi.getDriverY(), oi.getDriverZ());
-		if (oi.getDriverButton(1).isPressed()) {
-			driveTrain.shift();
-		}
+		driveTrain.drive(0, 0, 0.69); // ( ͡° ͜ʖ ͡°)
+		// driveTrain.drive(oi.getDriverX(), oi.getDriverY(), oi.getDriverZ());
+		// if (oi.getDriverButton(1).isPressed()) {
+		// 		driveTrain.shift();
+		// }
 	}
 	
 	@Override
