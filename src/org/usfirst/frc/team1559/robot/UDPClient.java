@@ -1,7 +1,6 @@
 package org.usfirst.frc.team1559.robot;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
@@ -54,19 +53,12 @@ public class UDPClient implements Runnable {
 	public String receive() {
 		String ret = null;
 		try {
-
-			// String sentence;
-			// BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-
 			Socket clientSocket = new Socket(HOST, PORT);
-			DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
 			BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
-			// sentence = inFromUser.readLine();
 			ret = inFromServer.readLine();
 			clientSocket.close();
 		} catch (Exception e) {
-			// System.err.println("No data from camera");
+
 		}
 
 		return ret;
