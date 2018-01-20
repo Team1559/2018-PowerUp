@@ -12,10 +12,8 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 
 public class Robot extends IterativeRobot {
 
-	@SuppressWarnings("unused")
 	private OperatorInterface oi;
 	private DriveTrain driveTrain;
-	@SuppressWarnings("unused")
 	private String gameData;
 	UDPClient udp;
 	
@@ -24,6 +22,11 @@ public class Robot extends IterativeRobot {
 		oi = new OperatorInterface();
 		driveTrain = new DriveTrain(false);
 		udp = new UDPClient();
+	}
+	
+	@Override
+	public void robotPeriodic() {
+		
 	}
 
 	@Override
@@ -34,22 +37,22 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousPeriodic() {
-		System.out.println(udp.get());
-		driveTrain.drive(0.1, 0, -(Double.parseDouble(udp.getR())));
+		//System.out.println(udp.get());
+		driveTrain.drive(0.64, 0, -(Double.parseDouble(udp.getR())));
 	}
 	
 	@Override
 	public void teleopInit() {
-		
+		//come on and slam
 	}
 
 	@Override
 	public void teleopPeriodic() {
-		driveTrain.drive(0, 0, 0.69); // ( ͡° ͜ʖ ͡°)
-		// driveTrain.drive(oi.getDriverX(), oi.getDriverY(), oi.getDriverZ());
-		// if (oi.getDriverButton(1).isPressed()) {
-		// 		driveTrain.shift();
-		// }
+//		driveTrain.drive(0, 0, 0.69);
+		driveTrain.drive(-oi.getDriverY(), oi.getDriverX(), -oi.getDriverZ());
+//		if (oi.getDriverButton(1).isPressed()) {
+//			driveTrain.shift();
+//		}
 	}
 	
 	@Override

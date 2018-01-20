@@ -23,15 +23,15 @@ public class OperatorInterface {
 	}
 
 	public double getDriverX() {
-		return driverStick.getX();
+		return driverStick.getRawAxis(0);
 	}
 
 	public double getDriverY() {
-		return driverStick.getY();
+		return driverStick.getRawAxis(1);
 	}
 
 	public double getDriverZ() {
-		return driverStick.getZ();
+		return driverStick.getRawAxis(4);
 	}
 
 	public double getCopilotX() {
