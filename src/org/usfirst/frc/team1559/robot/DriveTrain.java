@@ -3,27 +3,20 @@ package org.usfirst.frc.team1559.robot;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class DriveTrain {
 
 	private boolean isMecanumized;
 	private Solenoid solenoid; // TODO: Still needs work (prototypes)
-	private DifferentialDrive diffDrive;
-	// private MecanumDrive mecaDrive;
+	private VersaDrive drive;
 
 	public DriveTrain(boolean mecanumized) {
 		WPI_TalonSRX frontLeft = new WPI_TalonSRX(Wiring.FL_SRX);
 		WPI_TalonSRX rearLeft = new WPI_TalonSRX(Wiring.RL_SRX);
-		SpeedControllerGroup left = new SpeedControllerGroup(frontLeft, rearLeft);
-
 		WPI_TalonSRX frontRight = new WPI_TalonSRX(Wiring.FR_SRX);
 		WPI_TalonSRX rearRight = new WPI_TalonSRX(Wiring.RR_SRX);
-		SpeedControllerGroup right = new SpeedControllerGroup(frontRight, rearRight);
 
-		diffDrive = new DifferentialDrive(left, right);
-		// mecaDrive = new MecanumDrive(frontLeft, rearLeft, frontRight, rearRight);
+		drive = new VersaDrive(frontLeft, rearLeft, frontRight, rearRight);
 	}
 
 	/**
@@ -70,9 +63,9 @@ public class DriveTrain {
 	 */
 	public void drive(double x, double y, double zRot) {
 		if (isMecanumized) {
-			// mecaDrive.driveCartesian(y, x, zRot);
+			drive.driveCartesian(y, x, zRot);
 		} else {
-			diffDrive.arcadeDrive(x, zRot);
+			drive.arcadeDrive(x, zRot);
 		}
 	}
 }
