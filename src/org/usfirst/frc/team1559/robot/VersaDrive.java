@@ -9,7 +9,15 @@ import edu.wpi.first.wpilibj.hal.HAL;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
 public class VersaDrive extends RobotDriveBase {
+	public static final double kDefaultQuickStopThreshold = 0.2;
+	public static final double kDefaultQuickStopAlpha = 0.1;
+
 	private static int instances = 0;
+
+	// Curvature Drive variables
+	private double m_quickStopThreshold = kDefaultQuickStopThreshold;
+	private double m_quickStopAlpha = kDefaultQuickStopAlpha;
+	private double m_quickStopAccumulator = 0.0;
 
 	private SpeedController m_frontLeftMotor;
 	private SpeedController m_rearLeftMotor;
@@ -115,6 +123,70 @@ public class VersaDrive extends RobotDriveBase {
 		m_rearLeftMotor.set(leftSpeed * m_maxOutput);
 		m_frontRightMotor.set(-rightSpeed * m_maxOutput);
 		m_rearRightMotor.set(-rightSpeed * m_maxOutput);
+
+		m_safetyHelper.feed();
+	}
+
+	public void curvatureDrive(double xSpeed, double zRotation, boolean isQuickTurn) {
+		if (!m_reported) {
+			// HAL.report(tResourceType.kResourceType_RobotDrive, 2,
+			// tInstances.kRobotDrive_Curvature);
+			m_reported = true;
+		}
+
+		xSpeed = limit(xSpeed);
+		xSpeed = applyDeadband(xSpeed, m_deadband);
+
+		zRotation = limit(zRotation);
+		zRotation = applyDeadband(zRotation, m_deadband);
+
+		double angularPower;
+		boolean overPower;
+
+		if (isQuickTurn) {
+			if (Math.abs(xSpeed) < m_quickStopThreshold) {
+				m_quickStopAccumulator = (1 - m_quickStopAlpha) * m_quickStopAccumulator
+						+ m_quickStopAlpha * limit(zRotation) * 2;
+			}
+			overPower = true;
+			angularPower = zRotation;
+		} else {
+			overPower = false;
+			angularPower = Math.abs(xSpeed) * zRotation - m_quickStopAccumulator;
+
+			if (m_quickStopAccumulator > 1) {
+				m_quickStopAccumulator -= 1;
+			} else if (m_quickStopAccumulator < -1) {
+				m_quickStopAccumulator += 1;
+			} else {
+				m_quickStopAccumulator = 0.0;
+			}
+		}
+
+		double leftMotorOutput = xSpeed + angularPower;
+		double rightMotorOutput = xSpeed - angularPower;
+
+		// If rotation is overpowered, reduce both outputs to within acceptable range
+		if (overPower) {
+			if (leftMotorOutput > 1.0) {
+				rightMotorOutput -= leftMotorOutput - 1.0;
+				leftMotorOutput = 1.0;
+			} else if (rightMotorOutput > 1.0) {
+				leftMotorOutput -= rightMotorOutput - 1.0;
+				rightMotorOutput = 1.0;
+			} else if (leftMotorOutput < -1.0) {
+				rightMotorOutput -= leftMotorOutput + 1.0;
+				leftMotorOutput = -1.0;
+			} else if (rightMotorOutput < -1.0) {
+				leftMotorOutput -= rightMotorOutput + 1.0;
+				rightMotorOutput = -1.0;
+			}
+		}
+
+		m_frontLeftMotor.set(leftMotorOutput * m_maxOutput);
+		m_rearLeftMotor.set(leftMotorOutput * m_maxOutput);
+		m_frontRightMotor.set(-rightMotorOutput * m_maxOutput);
+		m_rearRightMotor.set(-rightMotorOutput * m_maxOutput);
 
 		m_safetyHelper.feed();
 	}

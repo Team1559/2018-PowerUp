@@ -17,6 +17,7 @@ public class DriveTrain {
 		WPI_TalonSRX rearRight = new WPI_TalonSRX(Wiring.RR_SRX);
 
 		drive = new VersaDrive(frontLeft, rearLeft, frontRight, rearRight);
+		solenoid = new Solenoid(1, 0);
 	}
 
 	/**
@@ -65,7 +66,7 @@ public class DriveTrain {
 		if (isMecanumized) {
 			drive.driveCartesian(y, x, zRot);
 		} else {
-			drive.arcadeDrive(x, zRot);
+			drive.curvatureDrive(x, zRot, true);
 		}
 	}
 }

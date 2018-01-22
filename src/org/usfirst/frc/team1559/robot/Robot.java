@@ -48,11 +48,11 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopPeriodic() {
-//		driveTrain.drive(0, 0, 0.69);
+		oi.update();
 		driveTrain.drive(-oi.getDriverY(), oi.getDriverX(), -oi.getDriverZ());
-//		if (oi.getDriverButton(1).isPressed()) {
-//			driveTrain.shift();
-//		}
+		if (oi.getDriverButton(1).isPressed()) {
+			driveTrain.shift();
+		}
 	}
 	
 	@Override
