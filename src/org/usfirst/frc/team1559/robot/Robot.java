@@ -9,6 +9,7 @@ package org.usfirst.frc.team1559.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 
@@ -16,34 +17,40 @@ public class Robot extends IterativeRobot {
 	private DriveTrain driveTrain;
 	private String gameData;
 	UDPClient udp;
-	
+
 	@Override
 	public void robotInit() {
 		oi = new OperatorInterface();
 		driveTrain = new DriveTrain(false);
 		udp = new UDPClient();
 	}
-	
+
 	@Override
 	public void robotPeriodic() {
-		
 	}
 
+	private int temp;
+	
 	@Override
 	public void autonomousInit() {
 		// query Game Data
+		temp = driveTrain.getAverageEncoderValue();
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 	}
 
 	@Override
 	public void autonomousPeriodic() {
-		//System.out.println(udp.get());
-		driveTrain.drive(0.64, 0, -(Double.parseDouble(udp.getR())));
+		SmartDashboard.putNumber("Avg Enc Pos", driveTrain.getAverageEncoderValue() - temp);
+		if (driveTrain.getAverageEncoderValue() - temp <= 4 * 4096) {
+			driveTrain.drive(0.35, 0, 0);
+		} else {
+			driveTrain.drive(0, 0, 0);
+		}
 	}
-	
+
 	@Override
 	public void teleopInit() {
-		//come on and slam
+		// come on and slam
 	}
 
 	@Override
@@ -54,22 +61,22 @@ public class Robot extends IterativeRobot {
 			driveTrain.shift();
 		}
 	}
-	
+
 	@Override
 	public void disabledInit() {
-		
+
 	}
-	
+
 	@Override
 	public void disabledPeriodic() {
-		
+
 	}
 
 	@Override
 	public void testInit() {
-		
+
 	}
-	
+
 	@Override
 	public void testPeriodic() {
 

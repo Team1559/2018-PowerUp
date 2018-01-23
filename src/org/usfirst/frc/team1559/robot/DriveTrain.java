@@ -9,13 +9,13 @@ public class DriveTrain {
 	private boolean isMecanumized;
 	private Solenoid solenoid; // TODO: Still needs work (prototypes)
 	private VersaDrive drive;
+	public WPI_TalonSRX frontLeft, rearLeft, frontRight, rearRight;
 
 	public DriveTrain(boolean mecanumized) {
-		WPI_TalonSRX frontLeft = new WPI_TalonSRX(Wiring.FL_SRX);
-		WPI_TalonSRX rearLeft = new WPI_TalonSRX(Wiring.RL_SRX);
-		WPI_TalonSRX frontRight = new WPI_TalonSRX(Wiring.FR_SRX);
-		WPI_TalonSRX rearRight = new WPI_TalonSRX(Wiring.RR_SRX);
-
+		frontLeft = new WPI_TalonSRX(Wiring.FL_SRX);
+		rearLeft = new WPI_TalonSRX(Wiring.RL_SRX);
+		frontRight = new WPI_TalonSRX(Wiring.FR_SRX);
+		rearRight = new WPI_TalonSRX(Wiring.RR_SRX);
 		drive = new VersaDrive(frontLeft, rearLeft, frontRight, rearRight);
 		solenoid = new Solenoid(1, 0);
 	}
@@ -68,5 +68,15 @@ public class DriveTrain {
 		} else {
 			drive.curvatureDrive(x, zRot, true);
 		}
+	}
+	
+	public int getAverageEncoderValue() {
+		int sum = 0;
+		sum += -frontRight.getSensorCollection().getQuadraturePosition();
+		sum += frontLeft.getSensorCollection().getQuadraturePosition();
+		sum += -rearRight.getSensorCollection().getQuadraturePosition();
+		sum += rearLeft.getSensorCollection().getQuadraturePosition();
+		sum /= 4;
+		return sum;
 	}
 }

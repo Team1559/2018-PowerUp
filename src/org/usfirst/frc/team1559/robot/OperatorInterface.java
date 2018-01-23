@@ -50,6 +50,7 @@ public class OperatorInterface {
 
 	public double getCopilotZ() {
 		return copilotStick.getZ();
+		
 	}
 
 	/**
