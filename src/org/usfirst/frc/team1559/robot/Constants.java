@@ -11,6 +11,6 @@ public interface Constants {
 	final double LIFT_GEAR_DIAMETER = 0;
 	final double LIFT_TIME = 0;
 	final double GEAR_RATIO = 1 / 3; // This is a one to three ratio
-	final double LIFT_SPEED = ((liftHeight / Math.PI * liftGearDiameter * liftTime) * gearRatio); // This is lifter speed
-
+	final double LIFT_SPEED = ((LIFT_HEIGHT / Math.PI * LIFT_GEAR_DIAMETER * LIFT_TIME) * GEAR_RATIO); // This is lifter speed
+	
 }
