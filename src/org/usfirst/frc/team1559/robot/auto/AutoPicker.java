@@ -30,18 +30,6 @@ public class AutoPicker {
 		case "LLL":
 
 			break;
-		case "RRL":
-
-			break;
-		case "LLR":
-
-			break;
-		case "LRR":
-
-			break;
-		case "RLL":
-
-			break;
 		default:
 			System.out.println("[Auto] Unknown game data was supplied, \"" + gameData
 					+ "\", expected a three-character combination of \"L\" and \"R\"!");
