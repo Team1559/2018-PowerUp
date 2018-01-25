@@ -1,5 +1,8 @@
 package org.usfirst.frc.team1559.robot;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.drive.RobotDriveBase;
 import edu.wpi.first.wpilibj.drive.Vector2d;
@@ -19,15 +22,15 @@ public class VersaDrive extends RobotDriveBase {
 	private double m_quickStopAlpha = kDefaultQuickStopAlpha;
 	private double m_quickStopAccumulator = 0.0;
 
-	private SpeedController m_frontLeftMotor;
-	private SpeedController m_rearLeftMotor;
-	private SpeedController m_frontRightMotor;
-	private SpeedController m_rearRightMotor;
+	private WPI_TalonSRX m_frontLeftMotor;
+	private WPI_TalonSRX m_rearLeftMotor;
+	private WPI_TalonSRX m_frontRightMotor;
+	private WPI_TalonSRX m_rearRightMotor;
 
 	private boolean m_reported = false;
 
-	public VersaDrive(SpeedController frontLeftMotor, SpeedController rearLeftMotor, SpeedController frontRightMotor,
-			SpeedController rearRightMotor) {
+	public VersaDrive(WPI_TalonSRX frontLeftMotor, WPI_TalonSRX rearLeftMotor, WPI_TalonSRX frontRightMotor,
+			WPI_TalonSRX rearRightMotor) {
 		m_frontLeftMotor = frontLeftMotor;
 		m_rearLeftMotor = rearLeftMotor;
 		m_frontRightMotor = frontRightMotor;
@@ -88,10 +91,10 @@ public class VersaDrive extends RobotDriveBase {
 			}
 		}
 
-		m_frontLeftMotor.set(limit(leftMotorOutput) * m_maxOutput);
-		m_rearLeftMotor.set(limit(leftMotorOutput) * m_maxOutput);
-		m_frontRightMotor.set(-limit(rightMotorOutput) * m_maxOutput);
-		m_rearRightMotor.set(-limit(rightMotorOutput) * m_maxOutput);
+		m_frontLeftMotor.set(ControlMode.PercentOutput, limit(leftMotorOutput) * m_maxOutput);
+		m_rearLeftMotor.set(ControlMode.PercentOutput, limit(leftMotorOutput) * m_maxOutput);
+		m_frontRightMotor.set(ControlMode.PercentOutput, -limit(rightMotorOutput) * m_maxOutput);
+		m_rearRightMotor.set(ControlMode.PercentOutput, -limit(rightMotorOutput) * m_maxOutput);
 
 		m_safetyHelper.feed();
 	}
@@ -119,10 +122,10 @@ public class VersaDrive extends RobotDriveBase {
 			rightSpeed = Math.copySign(rightSpeed * rightSpeed, rightSpeed);
 		}
 
-		m_frontLeftMotor.set(leftSpeed * m_maxOutput);
-		m_rearLeftMotor.set(leftSpeed * m_maxOutput);
-		m_frontRightMotor.set(-rightSpeed * m_maxOutput);
-		m_rearRightMotor.set(-rightSpeed * m_maxOutput);
+		m_frontLeftMotor.set(ControlMode.PercentOutput, leftSpeed * m_maxOutput);
+		m_rearLeftMotor.set(ControlMode.PercentOutput, leftSpeed * m_maxOutput);
+		m_frontRightMotor.set(ControlMode.PercentOutput, -rightSpeed * m_maxOutput);
+		m_rearRightMotor.set(ControlMode.PercentOutput, -rightSpeed * m_maxOutput);
 
 		m_safetyHelper.feed();
 	}
@@ -183,10 +186,10 @@ public class VersaDrive extends RobotDriveBase {
 			}
 		}
 
-		m_frontLeftMotor.set(leftMotorOutput * m_maxOutput);
-		m_rearLeftMotor.set(leftMotorOutput * m_maxOutput);
-		m_frontRightMotor.set(-rightMotorOutput * m_maxOutput);
-		m_rearRightMotor.set(-rightMotorOutput * m_maxOutput);
+		m_frontLeftMotor.set(ControlMode.PercentOutput, leftMotorOutput * m_maxOutput);
+		m_rearLeftMotor.set(ControlMode.PercentOutput, leftMotorOutput * m_maxOutput);
+		m_frontRightMotor.set(ControlMode.PercentOutput, -rightMotorOutput * m_maxOutput);
+		m_rearRightMotor.set(ControlMode.PercentOutput, -rightMotorOutput * m_maxOutput);
 
 		m_safetyHelper.feed();
 	}
@@ -219,10 +222,10 @@ public class VersaDrive extends RobotDriveBase {
 
 		normalize(wheelSpeeds);
 
-		m_frontLeftMotor.set(wheelSpeeds[MotorType.kFrontLeft.value] * m_maxOutput);
-		m_frontRightMotor.set(wheelSpeeds[MotorType.kFrontRight.value] * m_maxOutput);
-		m_rearLeftMotor.set(wheelSpeeds[MotorType.kRearLeft.value] * m_maxOutput);
-		m_rearRightMotor.set(wheelSpeeds[MotorType.kRearRight.value] * m_maxOutput);
+		m_frontLeftMotor.set(ControlMode.PercentOutput, wheelSpeeds[MotorType.kFrontLeft.value] * m_maxOutput);
+		m_frontRightMotor.set(ControlMode.PercentOutput, wheelSpeeds[MotorType.kFrontRight.value] * m_maxOutput);
+		m_rearLeftMotor.set(ControlMode.PercentOutput, wheelSpeeds[MotorType.kRearLeft.value] * m_maxOutput);
+		m_rearRightMotor.set(ControlMode.PercentOutput, wheelSpeeds[MotorType.kRearRight.value] * m_maxOutput);
 
 		m_safetyHelper.feed();
 	}

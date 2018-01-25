@@ -30,22 +30,21 @@ public class Robot extends IterativeRobot {
 	}
 
 	private int temp;
-	
+
 	@Override
 	public void autonomousInit() {
 		// query Game Data
+		driveTrain.shift(true);
 		temp = driveTrain.getAverageEncoderValue();
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
+		driveTrain.resetEncoders();
 	}
 
 	@Override
 	public void autonomousPeriodic() {
 		SmartDashboard.putNumber("Avg Enc Pos", driveTrain.getAverageEncoderValue() - temp);
-		if (driveTrain.getAverageEncoderValue() - temp <= 4 * 4096) {
-			driveTrain.drive(0.35, 0, 0);
-		} else {
-			driveTrain.drive(0, 0, 0);
-		}
+		driveTrain.diagonal(16 * 4096);
+		System.out.println(driveTrain.motors[1].getClosedLoopError(0));
 	}
 
 	@Override
