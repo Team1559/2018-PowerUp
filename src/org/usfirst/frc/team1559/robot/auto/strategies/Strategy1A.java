@@ -11,6 +11,10 @@ import org.usfirst.frc.team1559.robot.auto.commands.Rotate;
 
 public class Strategy1A extends AutoStrategy {
 
+	public Strategy1A() {
+		init();
+	}
+	
 	@Override
 	public void init() {
 		sequences = new ArrayList<AutoSequence>();

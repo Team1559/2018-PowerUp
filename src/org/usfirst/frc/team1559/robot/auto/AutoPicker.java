@@ -1,5 +1,6 @@
 package org.usfirst.frc.team1559.robot.auto;
 
+import org.usfirst.frc.team1559.robot.auto.commands.MoveSideways;
 import org.usfirst.frc.team1559.robot.auto.strategies.*;
 
 /**
@@ -11,17 +12,32 @@ public class AutoPicker {
 
 	private static Strategy1A strategy1a;
 	private static Strategy1B strategy1b;
-	private static Strategy2 strategy2;
-	private static Strategy3 strategy3;
+	private static Strategy2 strategy2_left;
+	private static Strategy2 strategy2_right;
 
 	public static void init() {
-		strategy1a.init();
-		strategy1b.init();
-		strategy2.init();
-		strategy3.init();
+		strategy1a = new Strategy1A();
+		strategy1a.startingPosition = AutoStrategy.STARTING_POSITION_1;
+		strategy1b = new Strategy1B();
+		strategy1b.startingPosition = AutoStrategy.STARTING_POSITION_1;
+		strategy2_left = new Strategy2(MoveSideways.LEFT);
+		strategy2_left.startingPosition = AutoStrategy.STARTING_POSITION_2;
+		strategy2_right = new Strategy2(MoveSideways.RIGHT);
+		strategy2_right.startingPosition = AutoStrategy.STARTING_POSITION_3;
 	}
 
+	/**
+	 * Gives the best auto strategy for the provided game data. Will return
+	 * {@link org.usfirst.frc.team1559.robot.auto.strategies.Strategy1A Strategy1A}
+	 * if an unknown game data configuration was given
+	 * 
+	 * @param gameData
+	 *            String representation of the ownership of each switch and the
+	 *            scale
+	 * @return The optimal auto strategy
+	 */
 	public static AutoStrategy pick(String gameData) {
+		// TODO: put init() here?
 		switch (gameData.toUpperCase()) {
 		case "LRL":
 
