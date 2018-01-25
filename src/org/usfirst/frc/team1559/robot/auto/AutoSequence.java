@@ -1,5 +1,7 @@
 package org.usfirst.frc.team1559.robot.auto;
 
+import java.util.ArrayList;
+
 /**
  * A collection of auto commands ({@link AutoCommand})
  * 
@@ -9,7 +11,7 @@ public class AutoSequence {
 
 	// timer?
 
-	public AutoCommand[] commands;
+	public ArrayList<AutoCommand> commands;
 
 	/**
 	 * The index of the current {@link AutoCommand} that is running in
@@ -23,7 +25,9 @@ public class AutoSequence {
 	 * @param commands
 	 */
 	public AutoSequence(AutoCommand[] commands) {
-		this.commands = commands;
+		this.commands = new ArrayList<AutoCommand>();
+		for (AutoCommand command : commands)
+			this.commands.add(command);
 	}
 
 }

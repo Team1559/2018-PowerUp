@@ -5,7 +5,7 @@ public class AutoConfig {
 	// 1A (1)
 	// I) 111 inches forward, 72 inches to the left
 	// II) turn 29.5 degrees, forward 146.4 inches (strafe)
-	// III) 115.5 inches forward, turn 90 degrees, forward 72 inches, turn another
+	// III) 115.5 inches forwards, turn 90 degrees, forward 72 inches, turn another
 	// 90 degrees, forward 12 inches
 	// IIII) turn 29.5 degrees, forward 146.4 inches, turn -29.5 degrees (back),
 	// foward a few inches
