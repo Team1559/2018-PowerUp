@@ -1,7 +1,7 @@
 package org.usfirst.frc.team1559.robot;
 
 public interface Constants {
-	
+
 	public final double P_DRIVER = 0; // These four are the four pit function values
 	public final double I_DRIVER = 0;
 	public final double D_DRIVER = 0;
@@ -11,6 +11,8 @@ public interface Constants {
 	public final double LIFT_GEAR_DIAMETER = 0;
 	public final double LIFT_TIME = 0;
 	public final double GEAR_RATIO = 1 / 3; // This is a one to three gear ratio
-	public final double LIFT_SPEED = ((LIFT_HEIGHT / Math.PI * LIFT_GEAR_DIAMETER * LIFT_TIME) * GEAR_RATIO); // This is lifter speed
-	
+	public final double LIFT_SPEED = ((LIFT_HEIGHT / Math.PI * LIFT_GEAR_DIAMETER * LIFT_TIME) * GEAR_RATIO); // This is
+																												// lifter
+																												// speed
+
 }
