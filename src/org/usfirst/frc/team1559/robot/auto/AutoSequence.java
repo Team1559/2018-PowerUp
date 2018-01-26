@@ -13,6 +13,8 @@ public class AutoSequence {
 
 	public ArrayList<AutoCommand> commands;
 
+	public boolean isDone;
+	
 	/**
 	 * The index of the current {@link AutoCommand} that is running in
 	 * {@link #commands}
@@ -24,10 +26,23 @@ public class AutoSequence {
 	 * 
 	 * @param commands
 	 */
-	public AutoSequence(AutoCommand[] commands) {
+	public AutoSequence(AutoCommand... commands) {
 		this.commands = new ArrayList<AutoCommand>();
-		for (AutoCommand command : commands)
-			this.commands.add(command);
+		for (AutoCommand command : commands) {
+			this.commands.add(command);			
+		}
+		i = 0;
+		isDone = false;
 	}
-
+	
+	public void execute() {
+		if (i < commands.size()) {
+			commands.get(i).going();
+			if (commands.get(i).isDone) {
+				i++;
+			}
+		} else {
+			isDone = true;
+		}
+	}
 }

@@ -16,13 +16,8 @@ public class Rotate extends AutoCommand {
 	}
 
 	@Override
-	public void going() {
-		if (isInitialized == false) {
-			// need to initialize!
-		}
-		if (parent.isInitialized == false) {
-			// need to initialize!
-		}
+	public void iterate() {
+		
 	}
 
 }

@@ -57,6 +57,11 @@ public abstract class AutoCommand {
 	/**
 	 * Called ~50 times per second, should be used as a "tick" or "update" method
 	 */
-	public abstract void going();
+	public void going() {
+		assert isInitialized && parent.isInitialized;
+		iterate();
+	}
+	
+	protected abstract void iterate();
 
 }

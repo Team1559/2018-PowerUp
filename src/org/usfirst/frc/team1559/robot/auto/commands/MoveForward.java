@@ -21,7 +21,7 @@ public class MoveForward extends AutoCommand {
 	}
 
 	@Override
-	public void going() {
+	public void iterate() {
 		if (isInitialized == false) {
 			// need to initialize!
 		}

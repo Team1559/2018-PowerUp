@@ -7,18 +7,20 @@
 
 package org.usfirst.frc.team1559.robot;
 
+import org.usfirst.frc.team1559.robot.auto.AutoPicker;
+import org.usfirst.frc.team1559.robot.auto.AutoStrategy;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 
 	private OperatorInterface oi;
-	private DriveTrain driveTrain;
+	public static DriveTrain driveTrain;
 	private String gameData;
-	UDPClient udp;
-	// AutoStrategy bestStrategy;
-	
+	private UDPClient udp;
+	private AutoStrategy bestStrategy;
+
 	private int temp;
 
 	@Override
@@ -26,6 +28,7 @@ public class Robot extends IterativeRobot {
 		oi = new OperatorInterface();
 		driveTrain = new DriveTrain(false);
 		udp = new UDPClient();
+		AutoPicker.init();
 	}
 
 	@Override
@@ -35,25 +38,13 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 		// query Game Data
-		driveTrain.shift(true);
-		temp = driveTrain.getAverageEncoderValue();
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
-		driveTrain.resetEncoders();
-		// AutoPicker.init();
-		// bestStrategy = AutoPicker.pick();
+		bestStrategy = AutoPicker.pick(gameData);
 	}
 
 	@Override
 	public void autonomousPeriodic() {
-		SmartDashboard.putNumber("Avg Enc Pos", driveTrain.getAverageEncoderValue() - temp);
-		driveTrain.diagonal(65536); // 16 * 4096
-		System.out.println(driveTrain.motors[1].getClosedLoopError(0));
-
-		// AutoCommand current = bestStrategy.commands.get(bestStrategy.i);
-		// while (current.isDone == false) {
-		// current.going();
-		// if (current.isDone == true) {bestStrategy.i++;}
-		// }
+		bestStrategy.sequences.get(0).execute();
 	}
 
 	@Override
