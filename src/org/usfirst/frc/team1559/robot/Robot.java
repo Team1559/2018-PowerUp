@@ -17,6 +17,9 @@ public class Robot extends IterativeRobot {
 	private DriveTrain driveTrain;
 	private String gameData;
 	UDPClient udp;
+	// AutoStrategy bestStrategy;
+	
+	private int temp;
 
 	@Override
 	public void robotInit() {
@@ -29,8 +32,6 @@ public class Robot extends IterativeRobot {
 	public void robotPeriodic() {
 	}
 
-	private int temp;
-
 	@Override
 	public void autonomousInit() {
 		// query Game Data
@@ -38,13 +39,21 @@ public class Robot extends IterativeRobot {
 		temp = driveTrain.getAverageEncoderValue();
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		driveTrain.resetEncoders();
+		// AutoPicker.init();
+		// bestStrategy = AutoPicker.pick();
 	}
 
 	@Override
 	public void autonomousPeriodic() {
 		SmartDashboard.putNumber("Avg Enc Pos", driveTrain.getAverageEncoderValue() - temp);
-		driveTrain.diagonal(16 * 4096);
+		driveTrain.diagonal(65536); // 16 * 4096
 		System.out.println(driveTrain.motors[1].getClosedLoopError(0));
+
+		// AutoCommand current = bestStrategy.commands.get(bestStrategy.i);
+		// while (current.isDone == false) {
+		// current.going();
+		// if (current.isDone == true) {bestStrategy.i++;}
+		// }
 	}
 
 	@Override
