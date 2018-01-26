@@ -60,22 +60,12 @@ public class DriveTrain {
 			motor.getSensorCollection().setQuadraturePosition(0, TIMEOUT);			
 		}		
 	}
-
-	public void diagonal(double value) {
-		motors[FL].set(ControlMode.Position, Math.sqrt(2) * value);
-		motors[RR].set(ControlMode.Position, Math.sqrt(2) * -value);
-		motors[FR].set(ControlMode.Position, 0);
-		motors[RL].set(ControlMode.Position, 0);
-//		motors[FR].set(ControlMode.Position, 0.50 * value);
-//		motors[RL].set(ControlMode.Position, 0.50 * -value);
-		
-	}
 	
-	public void forward(double value) {
-		motors[FL].set(ControlMode.Position, value);
-		motors[FR].set(ControlMode.Position, -value);
-		motors[RL].set(ControlMode.Position, value);
-		motors[RR].set(ControlMode.Position, -value);
+	public void translate(double x, double y) { // slope
+		motors[FL].set(ControlMode.Position, x + y);
+		motors[FR].set(ControlMode.Position, -x + y);
+		motors[RL].set(ControlMode.Position, x - y);
+		motors[RR].set(ControlMode.Position, -x - y);
 	}
 
 	/**
