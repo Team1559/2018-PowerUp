@@ -4,7 +4,7 @@ public interface Constants {
 
 	public final double WHEEL_RADIUS_INCHES = 2;
 	
-	public final double P_DRIVER = 0; // These four are the four pit function values
+	public final double P_DRIVER = 0; // These four are the four pid function values
 	public final double I_DRIVER = 0;
 	public final double D_DRIVER = 0;
 	public final double F_DRIVER = 0;
