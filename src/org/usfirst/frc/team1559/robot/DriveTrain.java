@@ -14,12 +14,12 @@ public class DriveTrain {
 	private static final int RL = 2;
 	private static final int FL = 3;
 
-	private static final double kP = 0.1;
+	private static final double kP = 0.075;
 	private static final double kI = 0.0;
-	private static final double kD = 0.0;
+	private static final double kD = 10;
 	private static final double kF = 0.0;
 	private static final int TIMEOUT = 0;
-
+	
 	private boolean isMecanumized;
 	private Solenoid solenoid; // TODO: Still needs work (prototypes)
 	private VersaDrive drive;
@@ -130,6 +130,10 @@ public class DriveTrain {
 
 	public void set() {
 
+	}
+	
+	public boolean getMecanumized() {
+		return isMecanumized;
 	}
 
 }

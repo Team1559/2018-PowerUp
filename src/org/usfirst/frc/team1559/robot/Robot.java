@@ -8,20 +8,20 @@
 package org.usfirst.frc.team1559.robot;
 
 import org.usfirst.frc.team1559.robot.auto.AutoPicker;
+import org.usfirst.frc.team1559.robot.auto.AutoSequence;
 import org.usfirst.frc.team1559.robot.auto.AutoStrategy;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 
-	private OperatorInterface oi;
+	public static OperatorInterface oi;
 	public static DriveTrain driveTrain;
 	private String gameData;
 	private UDPClient udp;
-	private AutoStrategy bestStrategy;
-
-	private int temp;
+	private AutoSequence autoSequence;
 
 	@Override
 	public void robotInit() {
@@ -39,12 +39,20 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		// query Game Data
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
-		bestStrategy = AutoPicker.pick(gameData);
+		AutoStrategy bestStrategy = AutoPicker.pick(gameData);
+		autoSequence = bestStrategy.sequences.get(0);
+		driveTrain.shift(true);
+		autoSequence.reset();
 	}
 
 	@Override
 	public void autonomousPeriodic() {
-		bestStrategy.sequences.get(0).execute();
+		SmartDashboard.putNumber("Error 0", driveTrain.motors[0].getClosedLoopError(0));
+		SmartDashboard.putNumber("Error 1", driveTrain.motors[1].getClosedLoopError(0));
+		SmartDashboard.putNumber("Error 2", driveTrain.motors[2].getClosedLoopError(0));
+		SmartDashboard.putNumber("Error 3", driveTrain.motors[3].getClosedLoopError(0));
+		autoSequence.execute();
+		SmartDashboard.putNumber("Enc Veloci: ", driveTrain.motors[0].getSensorCollection().getQuadratureVelocity());
 	}
 
 	@Override

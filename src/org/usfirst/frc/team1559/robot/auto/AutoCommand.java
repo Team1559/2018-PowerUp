@@ -46,13 +46,22 @@ public abstract class AutoCommand {
 	 * This should be set to <code>true</code> at the end of {@link #init()}
 	 */
 	public boolean isInitialized;
+	
+	public AutoCommand() {
+		isInitialized = false;
+	}
 
 	/**
 	 * Initialize anything the command may need for {@link #going()} <br>
 	 * <br>
 	 * {@link #type} should also be set here, as well as {@link #isInitialized}
 	 */
-	public abstract void init();
+	public void init() {
+		isInitialized = true;
+		initialize();
+	}
+	
+	protected abstract void initialize();
 
 	/**
 	 * Called ~50 times per second, should be used as a "tick" or "update" method
@@ -63,5 +72,7 @@ public abstract class AutoCommand {
 	}
 	
 	protected abstract void iterate();
+
+	public abstract boolean isFinished();
 
 }

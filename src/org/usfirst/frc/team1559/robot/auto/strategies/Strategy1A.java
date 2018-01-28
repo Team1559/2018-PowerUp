@@ -2,13 +2,10 @@ package org.usfirst.frc.team1559.robot.auto.strategies;
 
 import java.util.ArrayList;
 
-import org.usfirst.frc.team1559.robot.auto.AutoCommand;
 import org.usfirst.frc.team1559.robot.auto.AutoSequence;
 import org.usfirst.frc.team1559.robot.auto.AutoStrategy;
 import org.usfirst.frc.team1559.robot.auto.commands.MecanumTranslate;
-import org.usfirst.frc.team1559.robot.auto.commands.MoveForward;
-import org.usfirst.frc.team1559.robot.auto.commands.MoveSideways;
-import org.usfirst.frc.team1559.robot.auto.commands.Rotate;
+import org.usfirst.frc.team1559.robot.auto.commands.Wait;
 
 public class Strategy1A extends AutoStrategy {
 
@@ -19,24 +16,10 @@ public class Strategy1A extends AutoStrategy {
 	@Override
 	public void init() {
 		sequences = new ArrayList<AutoSequence>();
-		addSequence(new AutoSequence(new MecanumTranslate(111, 72, this)));
-		addSequence(new AutoSequence(new AutoCommand[] {
-				new Rotate(29.5, this),
-				new MoveForward(146.4, this)
-		}));
-		addSequence(new AutoSequence(new AutoCommand[] {
-				new MoveForward(115.5, this),
-				new Rotate(90, this),
-				new MoveForward(72, this),
-				new Rotate(90, this),
-				new MoveForward(12, this)
-		}));
-		addSequence(new AutoSequence(new AutoCommand[] {
-				new Rotate(29.5, this),
-				new MoveForward(146.4, this),
-				new Rotate(-29.5, this),
-				new MoveForward(4, this)
-		}));
+		addSequence(new AutoSequence(new MecanumTranslate(80, 0, this), new Wait(2), new MecanumTranslate(80, 0, this)));
+		// rotate 29.5, forward 146.4 inches
+		// forward 115.5 inches, rotate 90, forward 72 inches, rotate 90, forward 12 inches
+		// rotate 29.5, forward 146.4 inches, rotate -29.5 (back to original), forward ~4 inches
 		isInitialized = true;
 	}
 

@@ -20,8 +20,8 @@ public interface Wiring {
 	// Climber
 	final int CLIMBER_SOLENOID = 0;
 	// Controller
-	final int BTN_CLIMB = 0;
-	final int BTN_CLIMB_REV = 0;
+	final int BTN_CLIMB_EXPAND = 0;
+	final int BTN_CLIMB_RETRACT = 0;
 	final int BTN_LIFT = 0;
 	final int BTN_GRAB = 0;
 }
