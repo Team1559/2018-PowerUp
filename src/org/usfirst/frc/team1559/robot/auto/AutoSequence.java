@@ -43,7 +43,7 @@ public class AutoSequence {
 			}
 			commands.get(i).going();
 			if (commands.get(i).isFinished()) {
-				System.out.println(i + " Finished");
+				System.out.println(i + " FINISHED");
 				i++;
 			}
 		} else {
@@ -56,7 +56,6 @@ public class AutoSequence {
 			command.isInitialized = false;
 		}
 		i = 0;
-		
-		
+
 	}
 }
