@@ -30,13 +30,13 @@ public class TimeBased extends AutoCommand {
 		count++;
 	}
 
-	@Override
+	/*@Override
 	public boolean isFinished() {
 		if (count >= time * 100) {
 			return true;
 		}
 		
 		return false;
-	}
+	}*/
 	
 }

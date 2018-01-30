@@ -42,6 +42,7 @@ public class WPI_MecanumTranslate extends Command {
 
 	@Override
 	protected void end() {
+		
 	}
 
 }

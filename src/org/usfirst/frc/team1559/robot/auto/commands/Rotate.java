@@ -13,10 +13,4 @@ public class Rotate extends AutoCommand {
 		
 	}
 
-	@Override
-	public boolean isFinished() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 }

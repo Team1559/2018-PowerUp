@@ -13,17 +13,16 @@ public class Wait extends AutoCommand {
 	
 	@Override
 	protected void initialize() {
-		counter = 0;
+		
 	}
 
 	@Override
 	protected void iterate() {
 		counter++;
-	}
-
-	@Override
-	public boolean isFinished() {
-		return counter >= limit;
+		// check if done
+		// *****************************
+		isDone = counter >= limit;
+		// *****************************
 	}
 
 }

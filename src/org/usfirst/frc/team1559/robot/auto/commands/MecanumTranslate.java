@@ -11,10 +11,10 @@ import org.usfirst.frc.team1559.robot.auto.AutoStrategy;
  * @author Victor Robotics Team 1559, Software
  */
 public class MecanumTranslate extends AutoCommand {
-	
+
 	private double dxInTicks, dyInTicks;
-	private final double TOLERANCE = 666;
-	
+	private final double CLOSED_LOOP_ERROR_TOLERANCE = 666;
+
 	public MecanumTranslate(double x, double y, AutoStrategy parent) {
 		this.parent = parent;
 		this.dxInTicks = x * Constants.CONVERSION_FUDGE * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
@@ -24,23 +24,21 @@ public class MecanumTranslate extends AutoCommand {
 	@Override
 	public void initialize() {
 		type = AutoCommand.TYPE_MOVE;
-		Robot.driveTrain.resetEncoders();
 		Robot.driveTrain.shift(true);
 	}
 
 	@Override
 	public void iterate() {
 		Robot.driveTrain.translateAbsolute(dxInTicks, dyInTicks);
-	}
-
-	@Override
-	public boolean isFinished() {
+		// check if done after moving (set isDone to true when done)
+		// *****************************
 		double averageError = 0;
 		for (int i = 0; i < 4; i++) {
 			averageError += Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0));
 		}
 		averageError /= 4;
 		System.out.println("average error " + averageError);
-		return averageError < TOLERANCE;
+		isDone = averageError < CLOSED_LOOP_ERROR_TOLERANCE;
+		// *****************************
 	}
 }

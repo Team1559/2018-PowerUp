@@ -11,54 +11,52 @@ import org.usfirst.frc.team1559.robot.Robot;
  */
 public class AutoSequence {
 
-	// timer?
-
 	public ArrayList<AutoCommand> commands;
 
 	public boolean isDone;
-
-	/**
-	 * The index of the current {@link AutoCommand} that is running in
-	 * {@link #commands}
-	 */
 	public int i;
 
-	/**
-	 * Create a new auto sequence
-	 * 
-	 * @param commands
-	 */
 	public AutoSequence(AutoCommand... commands) {
 		this.commands = new ArrayList<AutoCommand>();
 		for (AutoCommand command : commands) {
 			this.commands.add(command);
 		}
-		i = 0;
-		isDone = false;
 	}
 
+	/**
+	 * This should be called in autonomousPeriodic()
+	 */
 	public void execute() {
-		if (i < commands.size()) {
-			boolean initFrame = false;
-			if (!commands.get(i).isInitialized) {
-				commands.get(i).init();
-				System.out.println(i + " INITIALIZED");
-				initFrame = true;
-			}
-			commands.get(i).going();
-			if (!initFrame) {
-				if (commands.get(i).isFinished()) {
-					System.out.println(i + " FINISHED");
-					i++;
+		if (!isDone) {
+			// failsafe check for isDone, but should not be called when isDone is true
+			// anyway
+			AutoCommand command = commands.get(i);
+			if (!command.isInitialized) {
+				System.out.println("Initializing all of the commands...");
+				byte k = 1;
+				for (AutoCommand c : commands) {
+					c.init();
+					System.out.println("Command " + k + " of " + commands.size() + " has been initialized");
+					k++;
+					// this should not be called again, because all of the commands should have
+					// isInitialized set to true
 				}
 			}
-		
-		} else {
-			isDone = true;
+			command.going();
+			if (command.isDone) {
+				System.out.println("Switching to the next command (from " + i + " to " + (i + 1) + ")");
+				i++;
+				if (i == commands.size()) {
+					System.out.println("All the commands have finished! (total of " + commands.size() + ")");
+					isDone = true;
+				}
+			}
 		}
 	}
 
 	public void reset() {
+		System.out.println(
+				"Resetting sequence... (WARNING: all commands will have isInitialized set to false and i will be set to 0!)");
 		for (AutoCommand command : commands) {
 			command.isInitialized = false;
 		}
