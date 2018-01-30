@@ -26,7 +26,7 @@ public class TimeBased extends AutoCommand {
 
 	@Override
 	protected void iterate() {
-		Robot.driveTrain.translate(1 * Constants.CONVERSION_FUDGE * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES), 0);
+		Robot.driveTrain.translateAbsolute(1 * Constants.CONVERSION_FUDGE * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES), 0);
 		count++;
 	}
 

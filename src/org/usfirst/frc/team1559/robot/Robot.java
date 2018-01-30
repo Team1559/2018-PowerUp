@@ -7,12 +7,17 @@
 
 package org.usfirst.frc.team1559.robot;
 
+import javax.sound.midi.Sequencer;
+
 import org.usfirst.frc.team1559.robot.auto.AutoPicker;
 import org.usfirst.frc.team1559.robot.auto.AutoSequence;
 import org.usfirst.frc.team1559.robot.auto.AutoStrategy;
+import org.usfirst.frc.team1559.robot.auto.commands.WPI_MecanumTranslate;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
@@ -20,14 +25,16 @@ public class Robot extends IterativeRobot {
 	public static OperatorInterface oi;
 	public static DriveTrain driveTrain;
 	private String gameData;
-	private UDPClient udp;
+	// private UDPClient udp;
 	private AutoSequence autoSequence;
 
+	private CommandGroup routine;
+	
 	@Override
 	public void robotInit() {
 		oi = new OperatorInterface();
 		driveTrain = new DriveTrain(false);
-		udp = new UDPClient();
+		// udp = new UDPClient();
 		AutoPicker.init();
 	}
 
@@ -43,6 +50,9 @@ public class Robot extends IterativeRobot {
 		autoSequence = bestStrategy.sequences.get(0);
 		driveTrain.shift(true);
 		autoSequence.reset();
+		routine = new CommandGroup();
+		routine.addSequential(new WPI_MecanumTranslate(80, 0));
+		routine.start();
 	}
 
 	@Override
@@ -51,8 +61,20 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Error 1", driveTrain.motors[1].getClosedLoopError(0));
 		SmartDashboard.putNumber("Error 2", driveTrain.motors[2].getClosedLoopError(0));
 		SmartDashboard.putNumber("Error 3", driveTrain.motors[3].getClosedLoopError(0));
-		autoSequence.execute();
-		SmartDashboard.putNumber("Enc Veloci: ", driveTrain.motors[0].getSensorCollection().getQuadratureVelocity());
+		Scheduler.getInstance().run();
+		// autoSequence.execute();
+		// SmartDashboard.putNumber("Enc Veloci: ",
+		// driveTrain.motors[0].getSensorCollection().getQuadratureVelocity());
+		//// if (!foo.isFinished()) {
+		//// System.out.println("foo is running");
+		//// foo.iterate();
+		//// } else if (foo.isFinished() && !foo2.isInitialized) {
+		//// System.out.println("foo is done");
+		//// foo2.initialize();
+		//// } else if (!foo2.isFinished()){
+		//// System.out.println("foo2 is running");
+		//// foo2.iterate();
+		//// }
 	}
 
 	@Override

@@ -12,10 +12,9 @@ import org.usfirst.frc.team1559.robot.auto.AutoStrategy;
  */
 public class MecanumTranslate extends AutoCommand {
 	
-	private double start;
 	private double dxInTicks, dyInTicks;
 	private final double TOLERANCE = 666;
-
+	
 	public MecanumTranslate(double x, double y, AutoStrategy parent) {
 		this.parent = parent;
 		this.dxInTicks = x * Constants.CONVERSION_FUDGE * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
@@ -25,18 +24,13 @@ public class MecanumTranslate extends AutoCommand {
 	@Override
 	public void initialize() {
 		type = AutoCommand.TYPE_MOVE;
+		Robot.driveTrain.resetEncoders();
 		Robot.driveTrain.shift(true);
-		
-		for (int i = 0; i < 4; i++) {
-			start += Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0));
-		}
-		
-		start /= 4;
 	}
 
 	@Override
 	public void iterate() {
-		Robot.driveTrain.translate(dxInTicks, dyInTicks);
+		Robot.driveTrain.translateAbsolute(dxInTicks, dyInTicks);
 	}
 
 	@Override

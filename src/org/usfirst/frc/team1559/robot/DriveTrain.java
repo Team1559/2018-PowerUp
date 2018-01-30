@@ -9,17 +9,17 @@ import edu.wpi.first.wpilibj.Solenoid;
 
 public class DriveTrain {
 
-	private static final int FR = 0;
-	private static final int RR = 1;
-	private static final int RL = 2;
-	private static final int FL = 3;
+	public static final int FR = 0;
+	public static final int RR = 1;
+	public static final int RL = 2;
+	public static final int FL = 3;
 
 	private static final double kP = 0.075;
 	private static final double kI = 0.0;
 	private static final double kD = 10;
 	private static final double kF = 0.0;
 	private static final int TIMEOUT = 0;
-	
+
 	private boolean isMecanumized;
 	private Solenoid solenoid; // TODO: Still needs work (prototypes)
 	private VersaDrive drive;
@@ -51,21 +51,28 @@ public class DriveTrain {
 		talon.config_kI(0, kI, TIMEOUT);
 		talon.config_kD(0, kD, TIMEOUT);
 		talon.config_kF(0, kF, TIMEOUT);
-		
+
 		talon.setNeutralMode(NeutralMode.Brake);
 	}
-	
+
 	public void resetEncoders() {
 		for (WPI_TalonSRX motor : motors) {
-			motor.getSensorCollection().setQuadraturePosition(0, TIMEOUT);			
-		}		
+			motor.getSensorCollection().setQuadraturePosition(0, TIMEOUT);
+		}
 	}
-	
-	public void translate(double x, double y) { // slope
-		motors[FL].set(ControlMode.Position, x + y);
-		motors[FR].set(ControlMode.Position, -x + y);
-		motors[RL].set(ControlMode.Position, x - y);
-		motors[RR].set(ControlMode.Position, -x - y);
+
+	public void translateAbsolute(double x, double y) { // slope
+		motors[FL].set(ControlMode.Position, (x + y));
+		motors[FR].set(ControlMode.Position, (-x + y));
+		motors[RL].set(ControlMode.Position, (x - y));
+		motors[RR].set(ControlMode.Position, (-x - y));
+	}
+
+	public void translateRelative(double x, double y, double[] startPos) { // slope
+		motors[FL].set(ControlMode.Position, (x + y) + startPos[FL]);
+		motors[FR].set(ControlMode.Position, (-x + y) + startPos[FR]);
+		motors[RL].set(ControlMode.Position, (x - y) + startPos[RL]);
+		motors[RR].set(ControlMode.Position, (-x - y) + startPos[RR]);
 	}
 
 	/**
@@ -131,7 +138,7 @@ public class DriveTrain {
 	public void set() {
 
 	}
-	
+
 	public boolean getMecanumized() {
 		return isMecanumized;
 	}
