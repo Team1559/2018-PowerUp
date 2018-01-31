@@ -1,12 +1,12 @@
 package org.usfirst.frc.team1559.robot;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.wpilibj.Spark;
 
 public class Climber {
-	private WPI_TalonSRX climber;
+	private Spark climber;
 
 	public Climber(int port) {
-		climber = new WPI_TalonSRX(port);
+		climber = new Spark(port);
 	}
 
 	public void startClimb() {
@@ -20,15 +20,4 @@ public class Climber {
 	public void stopClimb() {
 		climber.set(0);
 	}
-
-	private static Climber instance;
-
-	public static Climber getInstance() {
-
-		if (instance == null) {
-			instance = new Climber(Wiring.CLIMBER_SOLENOID);
-		}
-		return instance;
-	}
-
 }
