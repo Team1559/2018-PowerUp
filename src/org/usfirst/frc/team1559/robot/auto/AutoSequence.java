@@ -50,7 +50,7 @@ public class AutoSequence {
 
 	public void reset() {
 		Debug.out("Resetting sequence...");
-		byte k = 1;
+		byte k = 0;
 		for (AutoCommand command : commands) {
 			Debug.out("Command " + k + " of " + commands.size() + " has been de-initialized");
 			k++;

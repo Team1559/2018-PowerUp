@@ -10,6 +10,7 @@ public class WPI_MecanumTranslate extends Command {
 
 	private final double TOLERANCE = 666;
 	private double dxInTicks, dyInTicks;
+	private int startTime = 250, currentTime;
 	
 	public WPI_MecanumTranslate(double x, double y) {
 		this.dxInTicks = x * Constants.CONVERSION_FUDGE * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
@@ -37,7 +38,8 @@ public class WPI_MecanumTranslate extends Command {
 		}
 		averageError /= 4;
 		System.out.println("average error " + averageError);
-		return averageError < TOLERANCE;
+		currentTime++;
+		return averageError < TOLERANCE && currentTime > startTime;
 	}
 
 	@Override

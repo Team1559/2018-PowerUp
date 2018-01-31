@@ -20,6 +20,7 @@ public class VersaDrive extends RobotDriveBase {
 	private double m_quickStopThreshold = kDefaultQuickStopThreshold;
 	private double m_quickStopAlpha = kDefaultQuickStopAlpha;
 	private double m_quickStopAccumulator = 0.0;
+	private final double DEADBAND = 0.15;
 
 	private WPI_TalonSRX m_frontLeftMotor;
 	private WPI_TalonSRX m_rearLeftMotor;
@@ -43,7 +44,9 @@ public class VersaDrive extends RobotDriveBase {
 	}
 
 	public void arcadeDrive(double xSpeed, double zRotation) {
-		arcadeDrive(xSpeed, zRotation, true);
+		if (xSpeed < DEADBAND && zRotation < DEADBAND) {
+			arcadeDrive(xSpeed, zRotation, true);
+		}
 	}
 
 	public void arcadeDrive(double xSpeed, double zRotation, boolean squaredInputs) {
@@ -70,9 +73,9 @@ public class VersaDrive extends RobotDriveBase {
 
 		double maxInput = Math.copySign(Math.max(Math.abs(xSpeed), Math.abs(zRotation)), xSpeed);
 
-		if (xSpeed >= 0.0) {
+		if (xSpeed >= DEADBAND) {
 			// First quadrant, else second quadrant
-			if (zRotation >= 0.0) {
+			if (zRotation >= DEADBAND) {
 				leftMotorOutput = maxInput;
 				rightMotorOutput = xSpeed - zRotation;
 			} else {
@@ -81,7 +84,7 @@ public class VersaDrive extends RobotDriveBase {
 			}
 		} else {
 			// Third quadrant, else fourth quadrant
-			if (zRotation >= 0.0) {
+			if (zRotation >= 0.1) {
 				leftMotorOutput = xSpeed + zRotation;
 				rightMotorOutput = maxInput;
 			} else {

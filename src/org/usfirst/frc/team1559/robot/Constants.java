@@ -2,7 +2,7 @@ package org.usfirst.frc.team1559.robot;
 
 public interface Constants {
 
-	public final double WHEEL_RADIUS_INCHES = 2;
+	public final double WHEEL_RADIUS_INCHES = 3;
 	public final double CONVERSION_FUDGE = 0.85;
 	
 	public final double P_DRIVER = 0; // These four are the four pit function values
