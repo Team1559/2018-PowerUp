@@ -2,6 +2,7 @@ package org.usfirst.frc.team1559.robot.auto.strategies;
 
 import java.util.ArrayList;
 
+import org.usfirst.frc.team1559.robot.Debug;
 import org.usfirst.frc.team1559.robot.auto.AutoSequence;
 import org.usfirst.frc.team1559.robot.auto.AutoStrategy;
 import org.usfirst.frc.team1559.robot.auto.commands.MecanumTranslate;
@@ -15,6 +16,7 @@ public class Strategy1A extends AutoStrategy {
 	
 	@Override
 	public void init() {
+		Debug.out("Initializing strategy 1a... (called from its constructor)");
 		sequences = new ArrayList<AutoSequence>();
 		addSequence(new AutoSequence(new MecanumTranslate(-80, 0, this), new Wait(2), new MecanumTranslate(80, 0, this)));
 		// rotate 29.5, forward 146.4 inches

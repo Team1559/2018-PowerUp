@@ -2,6 +2,7 @@ package org.usfirst.frc.team1559.robot.auto;
 
 import java.util.ArrayList;
 
+import org.usfirst.frc.team1559.robot.Debug;
 import org.usfirst.frc.team1559.robot.Robot;
 
 /**
@@ -32,22 +33,15 @@ public class AutoSequence {
 			// anyway
 			AutoCommand command = commands.get(i);
 			if (!command.isInitialized) {
-				System.out.println("Initializing all of the commands...");
-				byte k = 1;
-				for (AutoCommand c : commands) {
-					c.init();
-					System.out.println("Command " + k + " of " + commands.size() + " has been initialized");
-					k++;
-					// this should not be called again, because all of the commands should have
-					// isInitialized set to true
-				}
+				Debug.out("Command " + (i + 1) + " of " + commands.size() + " has been initialized");
+				command.init();
 			}
 			command.going();
 			if (command.isDone) {
-				System.out.println("Switching to the next command (from " + i + " to " + (i + 1) + ")");
+				Debug.out("Switching to the next command (from " + i + " to " + (i + 1) + ")");
 				i++;
 				if (i == commands.size()) {
-					System.out.println("All the commands have finished! (total of " + commands.size() + ")");
+					Debug.out("All the commands have finished! (total of " + commands.size() + ")");
 					isDone = true;
 				}
 			}
@@ -55,12 +49,16 @@ public class AutoSequence {
 	}
 
 	public void reset() {
-		System.out.println(
-				"Resetting sequence... (WARNING: all commands will have isInitialized set to false and i will be set to 0!)");
+		Debug.out("Resetting sequence...");
+		byte k = 1;
 		for (AutoCommand command : commands) {
+			Debug.out("Command " + k + " of " + commands.size() + " has been de-initialized");
+			k++;
 			command.isInitialized = false;
 		}
+		Debug.out("i has been set to zero");
 		i = 0;
+		Debug.out("Encoders have been reset");
 		Robot.driveTrain.resetEncoders();
 	}
 }

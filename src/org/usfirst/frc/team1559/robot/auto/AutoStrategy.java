@@ -9,6 +9,20 @@ import java.util.ArrayList;
  */
 public abstract class AutoStrategy {
 
+	public static final int STARTING_POSITION_1 = 0;
+	public static final int STARTING_POSITION_2 = 0;
+	public static final int STARTING_POSITION_3 = 0;
+
+	/**
+	 * The starting position, which will be wither a 1, 2 or 3 (use the constants
+	 * below)
+	 * 
+	 * @see #STARTING_POSITION_1
+	 * @see #STARTING_POSITION_2
+	 * @see #STARTING_POSITION_3
+	 */
+	public int startingPosition;
+	
 	/**
 	 * Whether or not the strategy has been initialized <br>
 	 * <br>
