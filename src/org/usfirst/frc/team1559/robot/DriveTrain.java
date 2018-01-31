@@ -36,7 +36,7 @@ public class DriveTrain {
 			configTalon(motors[i]);
 		}
 
-		solenoid = new Solenoid(1, 0);
+		solenoid = new Solenoid(0, 0);
 	}
 
 	private void configTalon(WPI_TalonSRX talon) {
@@ -51,6 +51,8 @@ public class DriveTrain {
 		talon.config_kI(0, kI, TIMEOUT);
 		talon.config_kD(0, kD, TIMEOUT);
 		talon.config_kF(0, kF, TIMEOUT);
+		
+		talon.setInverted(true);
 
 		talon.setNeutralMode(NeutralMode.Brake);
 	}
