@@ -59,6 +59,6 @@ public class AutoSequence {
 		Debug.out("i has been set to zero");
 		i = 0;
 		Debug.out("Encoders have been reset");
-		Robot.driveTrain.resetEncoders();
+		Robot.driveTrain.resetQuadEncoders();
 	}
 }

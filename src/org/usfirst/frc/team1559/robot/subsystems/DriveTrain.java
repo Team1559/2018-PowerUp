@@ -1,4 +1,7 @@
-package org.usfirst.frc.team1559.robot;
+package org.usfirst.frc.team1559.robot.subsystems;
+
+import org.usfirst.frc.team1559.robot.VersaDrive;
+import org.usfirst.frc.team1559.robot.Wiring;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -57,7 +60,7 @@ public class DriveTrain {
 		talon.setNeutralMode(NeutralMode.Brake);
 	}
 
-	public void resetEncoders() {
+	public void resetQuadEncoders() {
 		for (WPI_TalonSRX motor : motors) {
 			motor.getSensorCollection().setQuadraturePosition(0, TIMEOUT);
 		}
@@ -68,13 +71,6 @@ public class DriveTrain {
 		motors[FR].set(ControlMode.Position, (-x + y));
 		motors[RL].set(ControlMode.Position, (x - y));
 		motors[RR].set(ControlMode.Position, (-x - y));
-	}
-
-	public void translateRelative(double x, double y, double[] startPos) { // slope
-		motors[FL].set(ControlMode.Position, (x + y) + startPos[FL]);
-		motors[FR].set(ControlMode.Position, (-x + y) + startPos[FR]);
-		motors[RL].set(ControlMode.Position, (x - y) + startPos[RL]);
-		motors[RR].set(ControlMode.Position, (-x - y) + startPos[RR]);
 	}
 
 	/**
@@ -135,10 +131,6 @@ public class DriveTrain {
 		sum += motors[RL].getSensorCollection().getQuadraturePosition();
 		sum /= 4;
 		return sum;
-	}
-
-	public void set() {
-
 	}
 
 	public boolean getMecanumized() {

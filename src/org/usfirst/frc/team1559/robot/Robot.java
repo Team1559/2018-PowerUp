@@ -11,6 +11,7 @@ import org.usfirst.frc.team1559.robot.auto.AutoPicker;
 import org.usfirst.frc.team1559.robot.auto.AutoSequence;
 import org.usfirst.frc.team1559.robot.auto.AutoStrategy;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_MecanumTranslate;
+import org.usfirst.frc.team1559.robot.subsystems.DriveTrain;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -48,7 +49,7 @@ public class Robot extends IterativeRobot {
 		autoSequence = bestStrategy.sequences.get(0);
 		
 		driveTrain.shift(true);
-		driveTrain.resetEncoders();
+		driveTrain.resetQuadEncoders();
 		// autoSequence.reset();
 		// routine = new CommandGroup();
 		// routine.addSequential(new WPI_MecanumTranslate(80, 0));
