@@ -1,6 +1,5 @@
 package org.usfirst.frc.team1559.robot.auto.commands;
 
-import org.usfirst.frc.team1559.robot.Debug;
 import org.usfirst.frc.team1559.robot.auto.AutoCommand;
 
 public class Wait extends AutoCommand {
@@ -33,8 +32,10 @@ public class Wait extends AutoCommand {
 		isDone = counter >= limit;
 		// *****************************
 		if (isDone) {
-//			Debug.out("The Wait command, of " + time + " seconds (" + parent.sequences.get(0).i + " of "
-//					+ parent.sequences.get(0).commands.size() + " commands within the current sequence) has finished");
+			// Debug.out("The Wait command, of " + time + " seconds (" +
+			// parent.sequences.get(0).i + " of "
+			// + parent.sequences.get(0).commands.size() + " commands within the current
+			// sequence) has finished");
 		}
 	}
 

@@ -10,12 +10,10 @@ package org.usfirst.frc.team1559.robot;
 import org.usfirst.frc.team1559.robot.auto.AutoPicker;
 import org.usfirst.frc.team1559.robot.auto.AutoSequence;
 import org.usfirst.frc.team1559.robot.auto.AutoStrategy;
-import org.usfirst.frc.team1559.robot.auto.commands.WPI_MecanumTranslate;
 import org.usfirst.frc.team1559.robot.subsystems.DriveTrain;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
@@ -26,7 +24,7 @@ public class Robot extends IterativeRobot {
 	// private UDPClient udp;
 	private AutoSequence autoSequence;
 
-	private CommandGroup routine;
+	// private CommandGroup routine;
 	
 	@Override
 	public void robotInit() {
@@ -65,7 +63,7 @@ public class Robot extends IterativeRobot {
 		// Scheduler.getInstance().run();
 		autoSequence.execute();
 		if (autoSequence.isDone) {
-			Debug.out("The optimal auto sequence is now done!");
+			System.out.println("The optimal auto sequence is now done!");
 		}
 		// SmartDashboard.putNumber("Enc Veloci: ",
 		// driveTrain.motors[0].getSensorCollection().getQuadratureVelocity());
