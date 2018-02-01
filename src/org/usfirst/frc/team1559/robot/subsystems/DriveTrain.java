@@ -19,7 +19,7 @@ public class DriveTrain {
 
 	private static final double kP = 0.075;
 	private static final double kI = 0.0;
-	private static final double kD = 10;
+	private static final double kD = 1;
 	private static final double kF = 0.0;
 	private static final int TIMEOUT = 0;
 
@@ -38,8 +38,8 @@ public class DriveTrain {
 		for (int i = 0; i < 4; i++) {
 			configTalon(motors[i]);
 		}
-
-		solenoid = new Solenoid(0,0); // change to just 0 for actual robit
+		drive.setDeadband(0.1);
+		solenoid = new Solenoid(0, 0); // change to just 0 for actual robit
 	}
 
 	private void configTalon(WPI_TalonSRX talon) {
@@ -54,9 +54,9 @@ public class DriveTrain {
 		talon.config_kI(0, kI, TIMEOUT);
 		talon.config_kD(0, kD, TIMEOUT);
 		talon.config_kF(0, kF, TIMEOUT);
-		
-		//talon.setInverted(true);
 
+		talon.setInverted(true);
+		talon.setSensorPhase(true);
 		talon.setNeutralMode(NeutralMode.Brake);
 	}
 
@@ -71,6 +71,13 @@ public class DriveTrain {
 		motors[FR].set(ControlMode.Position, (-x + y));
 		motors[RL].set(ControlMode.Position, (x - y));
 		motors[RR].set(ControlMode.Position, (-x - y));
+	}
+
+	public void rotate(double speed) { // slope
+		motors[FL].set(ControlMode.PercentOutput, (speed));
+		motors[FR].set(ControlMode.PercentOutput, (speed));
+		motors[RL].set(ControlMode.PercentOutput, (speed));
+		motors[RR].set(ControlMode.PercentOutput, (speed));
 	}
 
 	/**
