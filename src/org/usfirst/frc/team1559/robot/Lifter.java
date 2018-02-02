@@ -11,13 +11,17 @@ public class Lifter {
 	AnalogInput ai;
 	DigitalInput limit;
 	Joystick joy;
+	int button;
 
 	public Lifter(int a, int button) {
 		ai = new AnalogInput(a);
+		this.button = button;
+	}
+
+	public void liftUp() {
 		if (joy.getRawButton(button))
 			lift = new AnalogPotentiometer(ai, 360, 30);
 		else
 			lift = new AnalogPotentiometer(ai, 0, 30);
-
 	}
 }
