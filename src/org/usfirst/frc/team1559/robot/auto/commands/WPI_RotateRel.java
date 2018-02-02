@@ -1,20 +1,33 @@
 package org.usfirst.frc.team1559.robot.auto.commands;
 
+import java.nio.channels.ShutdownChannelGroupException;
+
 import org.usfirst.frc.team1559.robot.Robot;
+import org.usfirst.frc.team1559.util.PID;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WPI_RotateRel extends Command {
 
-	private final double kP = .02;
+	//TODO: Weird oscillating error with jerky motions
+	//TODO: PID loop tuning (consider PI)
+	
+	private final double kP = 0.01;
+	private final double kI = 0;
+	private final double kD = 0;
 
 	private final double TOLERANCE = 1;
 	private double angle, startAngle;
+	private double error;
 	private final boolean mecanum;
+	private PID pid;
 
 	public WPI_RotateRel(double angle, boolean mecanum) {
 		this.angle = angle;
 		this.mecanum = mecanum;
+		pid = new PID(kP, kI, kD);
+		pid.setContinuous(true);
 	}
 
 	@Override
@@ -25,13 +38,15 @@ public class WPI_RotateRel extends Command {
 
 	@Override
 	protected void execute() {
-		Robot.driveTrain.rotate(kP * (Robot.imu.getHeading() - (startAngle + angle)));
+		pid.setSetpoint(startAngle + angle);
+		double out = pid.calculate(Robot.imu.getHeading());
+		Robot.driveTrain.rotate(-out);
 	}
 
 	@Override
 	protected boolean isFinished() {
-		System.out.println("error" + (Robot.imu.getHeading() - (startAngle + angle)));
-		return Math.abs(Robot.imu.getHeading() - (startAngle + angle)) < TOLERANCE;
+		SmartDashboard.putNumber("Error", pid.getError());
+		return pid.onTarget(TOLERANCE);
 	}
 
 	@Override

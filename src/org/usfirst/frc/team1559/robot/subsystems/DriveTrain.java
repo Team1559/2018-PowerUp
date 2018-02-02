@@ -20,7 +20,7 @@ public class DriveTrain {
 	private static final double kP = 0.075;
 	private static final double kI = 0.0;
 	private static final double kD = 1;
-	private static final double kF = 0.0;
+	private static final double kF = 0;
 	private static final int TIMEOUT = 0;
 
 	private boolean isMecanumized;
@@ -74,10 +74,10 @@ public class DriveTrain {
 	}
 
 	public void rotate(double speed) { // slope
-		motors[FL].set(ControlMode.PercentOutput, (speed));
-		motors[FR].set(ControlMode.PercentOutput, (speed));
-		motors[RL].set(ControlMode.PercentOutput, (speed));
-		motors[RR].set(ControlMode.PercentOutput, (speed));
+		motors[FL].set(ControlMode.PercentOutput, speed);
+		motors[FR].set(ControlMode.PercentOutput, speed);
+		motors[RL].set(ControlMode.PercentOutput, speed);
+		motors[RR].set(ControlMode.PercentOutput, speed);
 	}
 
 	/**

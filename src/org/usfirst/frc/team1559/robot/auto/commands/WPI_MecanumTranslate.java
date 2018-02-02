@@ -55,7 +55,7 @@ public class WPI_MecanumTranslate extends Command {
 
 	@Override
 	public String toString() {
-		return String.format("MecanumTranslate(%f, %f)", x, y);
+		return String.format("MecanumTranslate(x=%f, y=%f)", x, y);
 	}
 
 }

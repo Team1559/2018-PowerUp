@@ -9,6 +9,7 @@ package org.usfirst.frc.team1559.robot;
 
 import org.usfirst.frc.team1559.robot.auto.AutoPicker;
 import org.usfirst.frc.team1559.robot.auto.AutoSequence;
+import org.usfirst.frc.team1559.robot.auto.commands.WPI_MecanumTranslate;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_RotateRel;
 import org.usfirst.frc.team1559.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team1559.util.BNO055;
@@ -27,8 +28,8 @@ public class Robot extends IterativeRobot {
 	private String gameData;
 	// private UDPClient udp;
 	private AutoSequence autoSequence;
-
 	private CommandGroup routine;
+
 
 	@Override
 	public void robotInit() {
@@ -37,15 +38,6 @@ public class Robot extends IterativeRobot {
 		imu = BNO055.getInstance(BNO055.opmode_t.OPERATION_MODE_IMUPLUS, BNO055.vector_type_t.VECTOR_EULER);
 		// udp = new UDPClient();
 		AutoPicker.init();
-		routine = new CommandGroup();
-		routine.addSequential(new WPI_RotateRel(45, true));
-		routine.addSequential(new WPI_RotateRel(45, true));
-		routine.addSequential(new WPI_RotateRel(45, true));
-		routine.addSequential(new WPI_RotateRel(45, true));
-		routine.addSequential(new WPI_RotateRel(45, true));
-		routine.addSequential(new WPI_RotateRel(45, true));
-		routine.addSequential(new WPI_RotateRel(45, true));
-		routine.addSequential(new WPI_RotateRel(45, true));
 	}
 
 	@Override
@@ -57,6 +49,12 @@ public class Robot extends IterativeRobot {
 		// query Game Data
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 
+		routine = new CommandGroup();
+		routine.addSequential(new WPI_MecanumTranslate(45, 0));
+		routine.addSequential(new WPI_RotateRel(45, true));
+		routine.addSequential(new WPI_RotateRel(-45, true));
+		
+		
 		// AutoStrategy bestStrategy = AutoPicker.pick(gameData);
 		// autoSequence = bestStrategy.sequences.get(0);
 

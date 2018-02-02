@@ -10,8 +10,8 @@ public class OperatorInterface {
 	public OperatorInterface() {
 		driverStick = new Joystick(Wiring.JOY_DRIVER);
 		copilotStick = new Joystick(Wiring.JOY_COPILOT);
-		driverButtons = new DTButton[driverStick.getButtonCount()];
-		copilotButtons = new DTButton[copilotStick.getButtonCount()];
+		driverButtons = new DTButton[10];
+		copilotButtons = new DTButton[10];
 		for (int i = 0; i < driverButtons.length; i++) {
 			driverButtons[i] = new DTButton(driverStick, i + 1);
 		}
