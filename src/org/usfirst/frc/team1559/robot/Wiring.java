@@ -18,7 +18,9 @@ public interface Wiring {
 	// Lifter
 	final int LIFTER_TALON = 0;
 	// Climber
-	final int CLIMBER_SOLENOID = 0;
+	final int CLIMBER_SPARK = 0;
+	final int CLIMBER_TALON = 0;
+	final int CLIMBER_LIMIT_ID = 0;
 	// Controller
 	final int BTN_CLIMB_EXPAND = 0;
 	final int BTN_CLIMB_RETRACT = 0;
