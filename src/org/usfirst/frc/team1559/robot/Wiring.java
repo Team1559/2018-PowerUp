@@ -3,15 +3,16 @@ package org.usfirst.frc.team1559.robot;
 public interface Wiring {
 	// Drive Train
 	final int FR_SRX = 11;
-	final int RR_SRX = 10; //actual robot = 10, last year = 13
+	final int RR_SRX = 10; // actual robot = 10, last year = 13
 	final int RL_SRX = 12;
-	final int FL_SRX = 13; //actual robot = 13, last year = 10
-	
+	final int FL_SRX = 13; // actual robot = 13, last year = 10
+	// LIFTER
+	final int LIFTER_POT = 0;
 	final int JOY_DRIVER = 0;
 	final int JOY_COPILOT = 1;
-	
+
 	// TODO: Find values. (Zeroes below are placeholders).
-	
+
 	// Gatherer
 	final int GATHERER_TALON = 0;
 	final int GATHERER_SOLENOID = 0;

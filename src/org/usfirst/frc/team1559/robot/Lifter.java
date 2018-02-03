@@ -1,27 +1,49 @@
 package org.usfirst.frc.team1559.robot;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.interfaces.Potentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PIDSourceType;
 
-public class Lifter {
-	Potentiometer lift;
-	AnalogInput ai;
-	DigitalInput limit;
-	Joystick joy;
-	int button;
-
-	public Lifter(int a, int button) {
-		ai = new AnalogInput(a);
-		this.button = button;
+public class Lifter
+{
+	private Potentiometer lift;
+	private final int TOP_LIMIT = 1000;
+	private final int BOTTOM_LIMIT = 0;
+	private WPI_TalonSRX lifterino;
+	
+	public Lifter()
+	{
+		lift = new AnalogPotentiometer(Wiring.LIFTER_POT);
+				
 	}
 
-	public void liftUp() {
-		if (joy.getRawButton(button))
-			lift = new AnalogPotentiometer(ai, 360, 30);
+	public void liftUp()
+	{
+		if(lift.get() < TOP_LIMIT)
+		{
+			lifterino.set(50.0);
+		}
 		else
-			lift = new AnalogPotentiometer(ai, 0, 30);
+		{
+			lifterino.set(0.0);
+		}
+		
+	}
+	public void goDown()
+	{
+		if(lift.get() > BOTTOM_LIMIT)
+		{
+			lifterino.set(-50.0);
+		}
+		else
+		{
+			lifterino.set(0.0);
+		}
+		
 	}
 }
