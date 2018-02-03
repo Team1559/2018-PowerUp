@@ -8,37 +8,35 @@ import edu.wpi.first.wpilibj.interfaces.Potentiometer;
 public class Lifter
 {
 	private Potentiometer lift;
-	private final int TOP_LIMIT = 1000;
-	private final int BOTTOM_LIMIT = 0;
 	private WPI_TalonSRX lifterino;
 	
 	public Lifter()
 	{
 		lift = new AnalogPotentiometer(Wiring.LIFTER_POT);
-				
+		lifterino = new WPI_TalonSRX(Wiring.LIFTER_TALON);
 	}
 
 	public void liftUp()
 	{
-		if(lift.get() < TOP_LIMIT)
+		if(lift.get() < Constants.LIFT_TOP_LIMIT)
 		{
-			lifterino.set(50.0);
+			lifterino.set(Constants.LIFT_SPEED);
 		}
 		else
 		{
-			lifterino.set(0.0);
+			lifterino.set(0);
 		}
 		
 	}
 	public void goDown()
 	{
-		if(lift.get() > BOTTOM_LIMIT)
+		if(lift.get() > Constants.LIFT_BOTTOM_LIMIT)
 		{
-			lifterino.set(-50.0);
+			lifterino.set(-Constants.LIFT_SPEED);
 		}
 		else
 		{
-			lifterino.set(0.0);
+			lifterino.set(0);
 		}
 		
 	}

@@ -15,6 +15,8 @@ public interface Constants {
 	
 	public final double LIFT_HEIGHT = 0;
 	public final double LIFT_GEAR_DIAMETER = 0;
+	public final int LIFT_TOP_LIMIT = 1000;
+	public final int LIFT_BOTTOM_LIMIT = 0;
 	public final double LIFT_TIME = 0;
 	public final double GEAR_RATIO = 1 / 3; // This is a one to three gear ratio
 	public final double LIFT_SPEED = ((LIFT_HEIGHT / Math.PI * LIFT_GEAR_DIAMETER * LIFT_TIME) * GEAR_RATIO); // This is
