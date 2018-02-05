@@ -15,9 +15,7 @@ public class AutoPicker {
 
 	public static void init() {
 		strategy1a = new Strategy1A();
-		// strategy1a.startingPosition = AutoStrategy.STARTING_POSITION_1;
 		strategy1b = new Strategy1B();
-		// strategy1b.startingPosition = AutoStrategy.STARTING_POSITION_1;
 	}
 
 	/**
@@ -30,7 +28,7 @@ public class AutoPicker {
 	 *            scale
 	 * @return The optimal auto strategy
 	 */
-	public static AutoStrategy pick(String gameData) {
+	public static AutoStrategy pick(String gameData, double position) {
 		switch (gameData.toUpperCase()) {
 		case "LRL":
 

@@ -5,32 +5,34 @@ import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Talon;
 
 public class Climber {
-	private Spark climberSpark;
-	private Talon climberTalon;
-	private DigitalInput climberSparkLimit;
+
+	private Spark telescope;
+	private Talon winch;
+	private DigitalInput limitSwitch;
 
 	public Climber() {
-		climberSpark = new Spark(Wiring.CLIMBER_SPARK); // Up and down telescope
-		climberTalon = new Talon(Wiring.CLIMBER_TALON); // Winch function - the wheel that flips around
-		climberSparkLimit = new DigitalInput(Wiring.CLIMBER_LIMIT_ID);
+		telescope = new Spark(Wiring.CLM_SPARK); // Up and down telescope
+		winch = new Talon(Wiring.CLM_TALON); // Winch function - the wheel that flips around
+		limitSwitch = new DigitalInput(Wiring.CLM_LIMIT_ID);
 	}
 
 	public void extendTelescope() {
-		if(!climberSparkLimit.get()) {
-			climberSpark.set(Constants.CLIMB_TELESCOPE_SPEED);
+		if (!limitSwitch.get()) {
+			telescope.set(Constants.CLIMB_TELESCOPE_SPEED);
 		} else {
-			climberSpark.set(0);
+			telescope.set(0);
 		}
 	}
 
 	public void retractTelescope() {
-		climberSpark.set(-Constants.CLIMB_TELESCOPE_SPEED);
+		telescope.set(-Constants.CLIMB_TELESCOPE_SPEED);
 	}
-	
+
 	public void rotateWinch() {
-		climberTalon.set(Constants.CLIMB_TALON_SPEED);
+		winch.set(Constants.CLIMB_WINCH_SPEED);
 	}
+
 	public void stopWinch() {
-		climberTalon.set(0);
+		winch.set(0);
 	}
 }

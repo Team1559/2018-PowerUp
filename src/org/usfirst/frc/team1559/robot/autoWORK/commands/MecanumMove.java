@@ -38,7 +38,7 @@ public class MecanumMove extends AutoCommand {
 		// check if done after moving (set isDone to true when done)
 		// *****************************
 		for (int i = 0; i < 4; i++) {
-			averageClosedLoopError += Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0));
+			averageClosedLoopError += Math.abs(Robot.driveTrain.getMotors()[i].getClosedLoopError(0));
 		}
 
 		averageClosedLoopError /= 4;

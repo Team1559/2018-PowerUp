@@ -34,7 +34,7 @@ public class MecanumTranslate extends AutoCommand {
 		// *****************************
 		double averageError = 0;
 		for (int i = 0; i < 4; i++) {
-			averageError += Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0));
+			averageError += Math.abs(Robot.driveTrain.getMotors()[i].getClosedLoopError(0));
 		}
 		averageError /= 4;
 		System.out.println("Average error: " + averageError);

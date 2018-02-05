@@ -24,22 +24,22 @@ public class DriveTrain {
 	private static final int TIMEOUT = 0;
 
 	private boolean isMecanumized;
-	private Solenoid solenoid; // TODO: Still needs work (prototypes)
+	private Solenoid solenoid;
 	private VersaDrive drive;
-	public WPI_TalonSRX[] motors;
+	private WPI_TalonSRX[] motors;
 
 	public DriveTrain(boolean mecanumized) {
 		motors = new WPI_TalonSRX[4];
-		motors[FL] = new WPI_TalonSRX(Wiring.FL_SRX);
-		motors[RL] = new WPI_TalonSRX(Wiring.RL_SRX);
-		motors[FR] = new WPI_TalonSRX(Wiring.FR_SRX);
-		motors[RR] = new WPI_TalonSRX(Wiring.RR_SRX);
+		motors[FL] = new WPI_TalonSRX(Wiring.DRV_FL_SRX);
+		motors[RL] = new WPI_TalonSRX(Wiring.DRV_RL_SRX);
+		motors[FR] = new WPI_TalonSRX(Wiring.DRV_FR_SRX);
+		motors[RR] = new WPI_TalonSRX(Wiring.DRV_RR_SRX);
 		drive = new VersaDrive(motors[FL], motors[RL], motors[FR], motors[RR]);
 		for (int i = 0; i < 4; i++) {
 			configTalon(motors[i]);
 		}
 		drive.setDeadband(0.1);
-		solenoid = new Solenoid(0, 0); // change to just 0 for actual robit
+		solenoid = new Solenoid(0, 0);
 	}
 
 	private void configTalon(WPI_TalonSRX talon) {
@@ -130,18 +130,11 @@ public class DriveTrain {
 		}
 	}
 
-	public int getAverageEncoderValue() {
-		int sum = 0;
-		sum += -motors[FR].getSensorCollection().getQuadraturePosition();
-		sum += motors[FL].getSensorCollection().getQuadraturePosition();
-		sum += -motors[RR].getSensorCollection().getQuadraturePosition();
-		sum += motors[RL].getSensorCollection().getQuadraturePosition();
-		sum /= 4;
-		return sum;
-	}
-
 	public boolean getMecanumized() {
 		return isMecanumized;
 	}
-
+	
+	public WPI_TalonSRX[] getMotors() {
+		return motors;
+	}
 }

@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.Joystick;
 
 public class OperatorInterface {
 
-	public Joystick driverStick, copilotStick;
+	private Joystick driverStick, copilotStick;
 	private DTButton[] driverButtons, copilotButtons;
 
 	public OperatorInterface() {
@@ -41,16 +41,15 @@ public class OperatorInterface {
 	}
 
 	public double getCopilotX() {
-		return copilotStick.getX();
+		return copilotStick.getRawAxis(0);
 	}
 
 	public double getCopilotY() {
-		return copilotStick.getY();
+		return copilotStick.getRawAxis(1);
 	}
 
 	public double getCopilotZ() {
-		return copilotStick.getZ();
-		
+		return copilotStick.getRawAxis(4);
 	}
 
 	/**

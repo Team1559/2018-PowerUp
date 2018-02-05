@@ -3,7 +3,7 @@ package org.usfirst.frc.team1559.robot.subsystems;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Spark;
 
-public class Grabber {
+public class Intake {
 
 	private Solenoid sally;
 	private Spark sparky1;
@@ -11,7 +11,7 @@ public class Grabber {
 	private Spark sparkus1;
 	private Spark sparkus2;
 
-	public Grabber(int port1, int port2, int port3, int port4, int port5) {
+	public Intake(int port1, int port2, int port3, int port4, int port5) {
 		sally = new Solenoid(port1);
 		sparky1 = new Spark(port2);
 		sparky2 = new Spark(port3);

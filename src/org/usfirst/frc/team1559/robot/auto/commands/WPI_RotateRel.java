@@ -1,7 +1,5 @@
 package org.usfirst.frc.team1559.robot.auto.commands;
 
-import java.nio.channels.ShutdownChannelGroupException;
-
 import org.usfirst.frc.team1559.robot.Robot;
 import org.usfirst.frc.team1559.util.PID;
 
@@ -19,7 +17,6 @@ public class WPI_RotateRel extends Command {
 
 	private final double TOLERANCE = 1;
 	private double angle, startAngle;
-	private double error;
 	private final boolean mecanum;
 	private PID pid;
 
@@ -34,11 +31,11 @@ public class WPI_RotateRel extends Command {
 	protected void initialize() {
 		Robot.driveTrain.shift(mecanum);
 		startAngle = Robot.imu.getHeading();
+		pid.setSetpoint(startAngle + angle);
 	}
 
 	@Override
 	protected void execute() {
-		pid.setSetpoint(startAngle + angle);
 		double out = pid.calculate(Robot.imu.getHeading());
 		Robot.driveTrain.rotate(-out);
 	}
@@ -58,5 +55,4 @@ public class WPI_RotateRel extends Command {
 	public String toString() {
 		return String.format("Rotate(angle=%f, mecanum=%b)", angle, mecanum);
 	}
-
 }
