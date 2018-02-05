@@ -17,16 +17,19 @@ public class DriveTrain {
 	public static final int RL = 2;
 	public static final int FL = 3;
 
-	private static final double kP = 0.075;
+	// 0.08/0.15 for long distances (80-144)
+	// 0.073 for short (45-12)
+	public static double kP = 0.06;
 	private static final double kI = 0.0;
-	private static final double kD = 1;
+	// 4 for short and long
+	private static final double kD = 4;
 	private static final double kF = 0;
 	private static final int TIMEOUT = 0;
 
 	private boolean isMecanumized;
 	private Solenoid solenoid;
 	private VersaDrive drive;
-	private WPI_TalonSRX[] motors;
+	public WPI_TalonSRX[] motors;
 
 	public DriveTrain(boolean mecanumized) {
 		motors = new WPI_TalonSRX[4];

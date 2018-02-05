@@ -47,9 +47,9 @@ public class Robot extends IterativeRobot {
 		AutoPicker.pick(gameData, pos);
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 
-		routine.addSequential(new WPI_MecanumTranslate(45, 0));
-		routine.addSequential(new WPI_RotateRel(45, true));
-		routine.addSequential(new WPI_RotateRel(-45, true));
+		routine = new CommandGroup();
+		int distance = 45;
+		routine.addSequential(new WPI_MecanumTranslate(distance, 0));
 
 		routine.start();
 	}
