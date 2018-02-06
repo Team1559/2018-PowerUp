@@ -19,7 +19,7 @@ public class DriveTrain {
 
 	// 0.08/0.15 for long distances (80-144)
 	// 0.073 for short (45-12)
-	public static double kP = 0.06;
+	public static double kP = 0.35;
 	private static final double kI = 0.0;
 	// 4 for short and long
 	private static final double kD = 4;
@@ -53,7 +53,7 @@ public class DriveTrain {
 		talon.configPeakOutputForward(+1, TIMEOUT);
 		talon.configPeakOutputReverse(-1, TIMEOUT);
 
-		talon.config_kP(0, kP, TIMEOUT);
+		talon.config_kP(0, DriveTrain.kP, TIMEOUT);
 		talon.config_kI(0, kI, TIMEOUT);
 		talon.config_kD(0, kD, TIMEOUT);
 		talon.config_kF(0, kF, TIMEOUT);
@@ -106,6 +106,7 @@ public class DriveTrain {
 	 *            {@link #solenoid} has its output enabled
 	 */
 	public void shift(boolean b) {
+		System.out.println("shifting!");
 		isMecanumized = b;
 		solenoid.set(b);
 	}

@@ -20,17 +20,25 @@ public class WPI_MecanumTranslate extends Command {
 	public WPI_MecanumTranslate(double x, double y) {
 		this.x = x;
 		this.y = y;
+		// radius 3 , fudge 0.85, 3481.6
 		this.dxInTicks = x * Constants.CONVERSION_FUDGE * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
 		this.dyInTicks = y * Constants.CONVERSION_FUDGE * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
-		if (x <= 45) {
+		if (x <= 45 || y <= 45) {
 			TOLERANCE = 300;
 		} else {
 			TOLERANCE = 992;
 		}
 		// 0.000817x + 0.0278
-		
-		DriveTrain.kP = (0.000817 * x) + 0.0278;
+		System.out.println("TOLERANCE: " + TOLERANCE + ", P before calc: " + DriveTrain.kP);
+		if (x != 0)
+			DriveTrain.kP = (0.000817 * Math.abs(x)) + 0.0278;
+		else
+			DriveTrain.kP = (0.000817 * Math.abs(y)) + 0.0278;
+		System.out.println("P after calc: " + DriveTrain.kP);
+		byte k = 0;
 		for (WPI_TalonSRX motor : Robot.driveTrain.motors) {
+			System.out.println("Config P for motor " + k + " with \"" + DriveTrain.kP + "\"");
+			k++;
 			motor.config_kP(0, DriveTrain.kP, 0);
 		}
 	}
@@ -55,12 +63,11 @@ public class WPI_MecanumTranslate extends Command {
 		}
 		double averageError = 0;
 		for (int i = 0; i < 4; i++) {
+			System.out.println("Error for motor " + i + ": " + Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0)));
 			averageError += Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0));
 		}
 		averageError /= 4;
-		System.out.println("equation: " + (0.000817 * x + 0.0278));
-		System.out
-				.println("Average error: " + TOLERANCE + ", P: " + DriveTrain.kP + " , TOLERANCE: " + TOLERANCE);
+		System.out.println("Average error: " + averageError + ", P: " + DriveTrain.kP + " , Tolerance: " + TOLERANCE + "\n");
 		return averageError < TOLERANCE;
 	}
 

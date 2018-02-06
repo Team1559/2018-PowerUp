@@ -10,6 +10,7 @@ package org.usfirst.frc.team1559.robot;
 import org.usfirst.frc.team1559.robot.auto.AutoPicker;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_MecanumTranslate;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_RotateRel;
+import org.usfirst.frc.team1559.robot.auto.commands.WPI_Wait;
 import org.usfirst.frc.team1559.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team1559.util.BNO055;
 
@@ -44,12 +45,26 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 		double pos = SmartDashboard.getNumber("Starting Position", 1);
-		AutoPicker.pick(gameData, pos);
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
+		AutoPicker.pick(gameData, pos);
 
 		routine = new CommandGroup();
 		int distance = 45;
 		routine.addSequential(new WPI_MecanumTranslate(distance, 0));
+		routine.addSequential(new WPI_Wait(1));
+		routine.addSequential(new WPI_RotateRel(90, true));
+		routine.addSequential(new WPI_Wait(1));
+		routine.addSequential(new WPI_MecanumTranslate(distance / 2, 0));
+		routine.addSequential(new WPI_Wait(1));
+		routine.addSequential(new WPI_RotateRel(90, true));
+		routine.addSequential(new WPI_Wait(1));
+		routine.addSequential(new WPI_MecanumTranslate(distance, 0));
+		routine.addSequential(new WPI_Wait(1));
+		routine.addSequential(new WPI_RotateRel(90, true));
+		routine.addSequential(new WPI_Wait(1));
+		routine.addSequential(new WPI_MecanumTranslate(distance / 2, 0));
+		routine.addSequential(new WPI_Wait(1));
+		routine.addSequential(new WPI_RotateRel(90, true));
 
 		routine.start();
 	}

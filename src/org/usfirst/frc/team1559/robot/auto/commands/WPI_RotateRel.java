@@ -36,8 +36,7 @@ public class WPI_RotateRel extends Command {
 
 	@Override
 	protected void execute() {
-		double out = pid.calculate(Robot.imu.getHeading());
-		Robot.driveTrain.rotate(-out);
+		Robot.driveTrain.rotate(-1 * pid.calculate(Robot.imu.getHeading()));
 	}
 
 	@Override
