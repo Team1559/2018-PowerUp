@@ -4,14 +4,14 @@ import edu.wpi.first.wpilibj.Joystick;
 
 public class OperatorInterface {
 
-	public Joystick driverStick, copilotStick;
+	private Joystick driverStick, copilotStick;
 	private DTButton[] driverButtons, copilotButtons;
 
 	public OperatorInterface() {
 		driverStick = new Joystick(Wiring.JOY_DRIVER);
 		copilotStick = new Joystick(Wiring.JOY_COPILOT);
-		driverButtons = new DTButton[driverStick.getButtonCount()];
-		copilotButtons = new DTButton[copilotStick.getButtonCount()];
+		driverButtons = new DTButton[10];
+		copilotButtons = new DTButton[10];
 		for (int i = 0; i < driverButtons.length; i++) {
 			driverButtons[i] = new DTButton(driverStick, i + 1);
 		}
@@ -41,16 +41,15 @@ public class OperatorInterface {
 	}
 
 	public double getCopilotX() {
-		return copilotStick.getX();
+		return copilotStick.getRawAxis(0);
 	}
 
 	public double getCopilotY() {
-		return copilotStick.getY();
+		return copilotStick.getRawAxis(1);
 	}
 
 	public double getCopilotZ() {
-		return copilotStick.getZ();
-		
+		return copilotStick.getRawAxis(4);
 	}
 
 	/**

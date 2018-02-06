@@ -1,7 +1,6 @@
 package org.usfirst.frc.team1559.robot.auto.commands;
 
 import org.usfirst.frc.team1559.robot.Constants;
-import org.usfirst.frc.team1559.robot.Debug;
 import org.usfirst.frc.team1559.robot.Robot;
 import org.usfirst.frc.team1559.robot.auto.AutoCommand;
 import org.usfirst.frc.team1559.robot.auto.AutoStrategy;
@@ -35,13 +34,13 @@ public class MecanumTranslate extends AutoCommand {
 		// *****************************
 		double averageError = 0;
 		for (int i = 0; i < 4; i++) {
-			averageError += Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0));
+			averageError += Math.abs(Robot.driveTrain.getMotors()[i].getClosedLoopError(0));
 		}
 		averageError /= 4;
-		Debug.out("average error " + averageError);
+		System.out.println("Average error: " + averageError);
 		isDone = averageError < CLOSED_LOOP_ERROR_TOLERANCE;
 		if (isDone) {
-			Debug.out("The MecanumTranslate command (" + parent.sequences.get(0).i + " of "
+			System.out.println("The MecanumTranslate command (" + parent.sequences.get(0).i + " of "
 					+ parent.sequences.get(0).commands.size() + " commands within the current sequence) has finished");
 		}
 		// *****************************

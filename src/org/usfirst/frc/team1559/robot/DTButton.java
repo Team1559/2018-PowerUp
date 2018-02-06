@@ -4,15 +4,15 @@ import edu.wpi.first.wpilibj.Joystick;
 
 public class DTButton {
 
-	boolean old, current;
-	Joystick stick;
-	int button;
+	private boolean old, current;
+	private Joystick stick;
+	private int button;
 
 	public DTButton(Joystick stick, int button) {
 		this.stick = stick;
 		this.button = button;
 	}
-	
+
 	public void update() {
 		update(stick.getRawButton(button));
 	}
@@ -30,16 +30,22 @@ public class DTButton {
 	}
 
 	/**
-	 * @return Whether or not this button is currently pressed
+	 * @return Rising edge of a button press.
 	 */
 	public boolean isPressed() {
 		return current && !old;
 	}
 
+	/**
+	 * @return If button is being held down.
+	 */
 	public boolean isDown() {
 		return current;
 	}
 
+	/**
+	 * @return Falling edge of button press.
+	 */
 	public boolean isReleased() {
 		return old && !current;
 	}
