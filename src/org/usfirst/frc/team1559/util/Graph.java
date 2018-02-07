@@ -13,7 +13,7 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.jfree.ui.ApplicationFrame;
+import org.jfree.chart.ui.ApplicationFrame;
 
 /**
  * Based on https://github.com/jfree/jfreechart
@@ -31,11 +31,11 @@ public class Graph extends ApplicationFrame {
 	public Graph(String title) {
 		super(title);
 	}
-	
+
 	public static void init(String... titles) {
 		graph = new Graph("Multi-Value Graph");
 		graph.pack();
-		graph.setVisible(true); 
+		graph.setVisible(true);
 		for (String title : titles)
 			series.add(new XYSeries(title));
 		updateValue(0, 0);
@@ -65,7 +65,7 @@ public class Graph extends ApplicationFrame {
 		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 		return chart;
 	}
-	
+
 	public static void updateValue(int i, int value) {
 		time++;
 		graph.setContentPane(new ChartPanel(createChart(createDataset(i, value, time))));
