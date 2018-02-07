@@ -13,7 +13,7 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.jfree.chart.ui.ApplicationFrame;
+import org.jfree.ui.ApplicationFrame;
 
 /**
  * Based on https://github.com/jfree/jfreechart
