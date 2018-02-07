@@ -1,7 +1,6 @@
 package org.usfirst.frc.team1559.util;
 
 import java.awt.Color;
-import java.util.ArrayList;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -23,34 +22,34 @@ import org.jfree.ui.ApplicationFrame;
  */
 public class Graph extends ApplicationFrame {
 
-	private static ArrayList<XYSeries> series = new ArrayList<XYSeries>();
+	private static XYSeries series1 = new XYSeries("Value");
 	private static final long serialVersionUID = 1L;
 	private static Graph graph;
-	private static long time = 0L;
 
 	public Graph(String title) {
 		super(title);
+		final XYDataset dataset = createDataset(0);
+		final JFreeChart chart = createChart(dataset);
+		final ChartPanel chartPanel = new ChartPanel(chart);
+		chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
+		setContentPane(chartPanel);
 	}
 	
-	public static void init(String... titles) {
-		graph = new Graph("Multi-Value Graph");
+	public static void init() {
+		graph = new Graph("Dynamic Graph");
 		graph.pack();
 		graph.setVisible(true);
-		for (String title : titles)
-			series.add(new XYSeries(title));
-		updateValue(0, 0);
 	}
 
-	private static XYDataset createDataset(int i, int x, long y) {
-		series.get(i).add(x, y);
+	private static XYDataset createDataset(int i) {
+		series1.add(i, i);
 		final XYSeriesCollection dataset = new XYSeriesCollection();
-		for (XYSeries s : series)
-			dataset.addSeries(s);
+		dataset.addSeries(series1);
 		return dataset;
 	}
 
 	private static JFreeChart createChart(final XYDataset dataset) {
-		JFreeChart chart = ChartFactory.createXYLineChart("Multi-Value Graph", "Time", "Value", dataset,
+		JFreeChart chart = ChartFactory.createXYLineChart("Super-Duper Awesome Chart", "Time", "Value", dataset,
 				PlotOrientation.VERTICAL, true, true, false);
 		chart.setBackgroundPaint(Color.white);
 		XYPlot plot = chart.getXYPlot();
@@ -66,9 +65,8 @@ public class Graph extends ApplicationFrame {
 		return chart;
 	}
 	
-	public static void updateValue(int i, int value) {
-		time++;
-		graph.setContentPane(new ChartPanel(createChart(createDataset(i, value, time))));
+	public static void updateValue(int value) {
+		graph.setContentPane(new ChartPanel(createChart(createDataset(value))));
 		graph.validate();
 		graph.repaint();
 	}
