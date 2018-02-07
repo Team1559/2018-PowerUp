@@ -35,7 +35,7 @@ public class Graph extends ApplicationFrame {
 	public static void init(String... titles) {
 		graph = new Graph("Multi-Value Graph");
 		graph.pack();
-		graph.setVisible(true);
+		graph.setVisible(true); 
 		for (String title : titles)
 			series.add(new XYSeries(title));
 		updateValue(0, 0);
