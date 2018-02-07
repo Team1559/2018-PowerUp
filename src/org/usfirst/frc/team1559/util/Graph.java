@@ -33,9 +33,6 @@ public class Graph extends ApplicationFrame {
 		final ChartPanel chartPanel = new ChartPanel(chart);
 		chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
 		setContentPane(chartPanel);
-	}
-	
-	public static void init() {
 		graph = new Graph("Dynamic Graph");
 		graph.pack();
 		graph.setVisible(true);
