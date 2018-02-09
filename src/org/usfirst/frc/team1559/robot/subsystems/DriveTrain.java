@@ -106,7 +106,7 @@ public class DriveTrain {
 	 *            {@link #solenoid} has its output enabled
 	 */
 	public void shift(boolean b) {
-		System.out.println("Shifting! (solenoid being enabled: " + b + ")");
+		System.out.println("shifting!");
 		isMecanumized = b;
 		solenoid.set(b);
 	}
