@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WPI_MecanumTranslate extends Command {
 
@@ -56,7 +57,7 @@ public class WPI_MecanumTranslate extends Command {
 
 	@Override
 	protected boolean isFinished() {
-		SmartDashboard.putString("Command (" + index + ") time: ", String.valueOf(time));
+		SmartDashboard.putString("Command time: ", String.valueOf(time));
 		if (Timer.getFPGATimestamp() < startTime + minTime) {
 			return false;
 		}
@@ -69,10 +70,8 @@ public class WPI_MecanumTranslate extends Command {
 		SmartDashboard.putNumber("Current avg error: ", averageError);
 		SmartDashboard.putNumber("P val: ", DriveTrain.kP);
 		SmartDashboard.putNumber("Tolerance: ", TOLERANCE);
-		SmartDashboard.putNumber("Current command index: ", index);
 		if (averageError < TOLERANCE == true) {
-			index++;
-			SmartDashboard.putString("Command (" + index + ") status: ", "All good!");
+			SmartDashboard.putString("Command status: ", "All good!");
 		}
 		return averageError < TOLERANCE;
 	}
@@ -84,7 +83,7 @@ public class WPI_MecanumTranslate extends Command {
 
 	@Override
 	public String toString() {
-		return String.format("MecanumTranslate (" + index + ") (%f, %f)", x, y);
+		return String.format("MecanumTranslate (%f, %f)", x, y);
 	}
 
 }
