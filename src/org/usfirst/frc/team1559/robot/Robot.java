@@ -86,6 +86,7 @@ public class Robot extends IterativeRobot {
 		if (oi.getDriverButton(1).isPressed()) {
 			driveTrain.shift();
 		}
+		if (oi.getCopilotButton(Wiring.BTN_LIFT_SWITCH));
 	}
 
 	@Override

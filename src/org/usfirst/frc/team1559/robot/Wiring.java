@@ -24,10 +24,6 @@ public interface Wiring {
 	
 	final int BTN_CLIMB_EXPAND = 0;
 	final int BTN_CLIMB_RETRACT = 0;
-	final int BTN_LIFT_SWITCH = 0;
-	final int BTN_LIFT_GROUND = 0;
-	final int BTN_LIFT_SCALE_POS_ONE = 0;
-	final int BTN_LIFT_SCALE_POS_TWO = 0;
-	final int BTN_LIFT_SCALE_POS_THREE = 0;
+	final int BTN_LIFT = 0;
 	final int BTN_GRAB = 0;
 }
