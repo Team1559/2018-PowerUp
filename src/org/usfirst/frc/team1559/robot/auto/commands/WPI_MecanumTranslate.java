@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class WPI_MecanumTranslate extends Command {
 
 	private final double minTime = 0.25;
+	private double time = 0;
 	private double TOLERANCE;
 	private double dxInTicks, dyInTicks;
 	private double x, y;
@@ -29,15 +30,12 @@ public class WPI_MecanumTranslate extends Command {
 			TOLERANCE = 992;
 		}
 		// 0.000817x + 0.0278
-		System.out.println("TOLERANCE: " + TOLERANCE + ", P before calc: " + DriveTrain.kP);
 		if (x != 0)
 			DriveTrain.kP = (0.000817 * Math.abs(x)) + 0.0278;
 		else
 			DriveTrain.kP = (0.000817 * Math.abs(y)) + 0.0278;
-		System.out.println("P after calc: " + DriveTrain.kP);
 		byte k = 0;
 		for (WPI_TalonSRX motor : Robot.driveTrain.motors) {
-			System.out.println("Config P for motor " + k + " with \"" + DriveTrain.kP + "\"");
 			k++;
 			motor.config_kP(0, DriveTrain.kP, 0);
 		}
@@ -47,7 +45,7 @@ public class WPI_MecanumTranslate extends Command {
 	protected void initialize() {
 		Robot.driveTrain.resetQuadEncoders();
 		Robot.driveTrain.shift(true);
-		System.out.println("INIT " + this);
+		System.out.println("Initializing " + this);
 		startTime = Timer.getFPGATimestamp();
 	}
 
@@ -58,6 +56,7 @@ public class WPI_MecanumTranslate extends Command {
 
 	@Override
 	protected boolean isFinished() {
+		SmartDashboard.putString("Command (" + index + ") time: ", String.valueOf(time));
 		if (Timer.getFPGATimestamp() < startTime + minTime) {
 			return false;
 		}
@@ -67,18 +66,25 @@ public class WPI_MecanumTranslate extends Command {
 			averageError += Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0));
 		}
 		averageError /= 4;
-		System.out.println("Average error: " + averageError + ", P: " + DriveTrain.kP + " , Tolerance: " + TOLERANCE + "\n");
+		SmartDashboard.putNumber("Current avg error: ", averageError);
+		SmartDashboard.putNumber("P val: ", DriveTrain.kP);
+		SmartDashboard.putNumber("Tolerance: ", TOLERANCE);
+		SmartDashboard.putNumber("Current command index: ", index);
+		if (averageError < TOLERANCE == true) {
+			index++;
+			SmartDashboard.putString("Command (" + index + ") status: ", "All good!");
+		}
 		return averageError < TOLERANCE;
 	}
 
 	@Override
 	protected void end() {
-		System.out.println(this + " IS FINISHED");
+		System.out.println(this + " has finished");
 	}
 
 	@Override
 	public String toString() {
-		return String.format("MecanumTranslate(x=%f, y=%f)", x, y);
+		return String.format("MecanumTranslate (" + index + ") (%f, %f)", x, y);
 	}
 
 }

@@ -51,19 +51,12 @@ public class Robot extends IterativeRobot {
 		routine = new CommandGroup();
 		int distance = 45;
 		routine.addSequential(new WPI_MecanumTranslate(distance, 0));
-		routine.addSequential(new WPI_Wait(1));
 		routine.addSequential(new WPI_RotateRel(90, true));
-		routine.addSequential(new WPI_Wait(1));
 		routine.addSequential(new WPI_MecanumTranslate(distance / 2, 0));
-		routine.addSequential(new WPI_Wait(1));
 		routine.addSequential(new WPI_RotateRel(90, true));
-		routine.addSequential(new WPI_Wait(1));
 		routine.addSequential(new WPI_MecanumTranslate(distance, 0));
-		routine.addSequential(new WPI_Wait(1));
 		routine.addSequential(new WPI_RotateRel(90, true));
-		routine.addSequential(new WPI_Wait(1));
 		routine.addSequential(new WPI_MecanumTranslate(distance / 2, 0));
-		routine.addSequential(new WPI_Wait(1));
 		routine.addSequential(new WPI_RotateRel(90, true));
 
 		routine.start();
