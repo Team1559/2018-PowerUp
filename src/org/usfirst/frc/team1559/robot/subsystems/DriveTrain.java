@@ -1,4 +1,7 @@
-package org.usfirst.frc.team1559.robot;
+package org.usfirst.frc.team1559.robot.subsystems;
+
+import org.usfirst.frc.team1559.robot.VersaDrive;
+import org.usfirst.frc.team1559.robot.Wiring;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -14,28 +17,31 @@ public class DriveTrain {
 	public static final int RL = 2;
 	public static final int FL = 3;
 
-	private static final double kP = 0.075;
+	// 0.08/0.15 for long distances (80-144)
+	// 0.073 for short (45-12)
+	public static double kP = 0.35;
 	private static final double kI = 0.0;
-	private static final double kD = 10;
-	private static final double kF = 0.0;
+	// 4 for short and long
+	private static final double kD = 4;
+	private static final double kF = 0;
 	private static final int TIMEOUT = 0;
 
 	private boolean isMecanumized;
-	private Solenoid solenoid; // TODO: Still needs work (prototypes)
+	private Solenoid solenoid;
 	private VersaDrive drive;
 	public WPI_TalonSRX[] motors;
 
 	public DriveTrain(boolean mecanumized) {
 		motors = new WPI_TalonSRX[4];
-		motors[FL] = new WPI_TalonSRX(Wiring.FL_SRX);
-		motors[RL] = new WPI_TalonSRX(Wiring.RL_SRX);
-		motors[FR] = new WPI_TalonSRX(Wiring.FR_SRX);
-		motors[RR] = new WPI_TalonSRX(Wiring.RR_SRX);
+		motors[FL] = new WPI_TalonSRX(Wiring.DRV_FL_SRX);
+		motors[RL] = new WPI_TalonSRX(Wiring.DRV_RL_SRX);
+		motors[FR] = new WPI_TalonSRX(Wiring.DRV_FR_SRX);
+		motors[RR] = new WPI_TalonSRX(Wiring.DRV_RR_SRX);
 		drive = new VersaDrive(motors[FL], motors[RL], motors[FR], motors[RR]);
 		for (int i = 0; i < 4; i++) {
 			configTalon(motors[i]);
 		}
-
+		drive.setDeadband(0.1);
 		solenoid = new Solenoid(0, 0);
 	}
 
@@ -47,17 +53,17 @@ public class DriveTrain {
 		talon.configPeakOutputForward(+1, TIMEOUT);
 		talon.configPeakOutputReverse(-1, TIMEOUT);
 
-		talon.config_kP(0, kP, TIMEOUT);
+		talon.config_kP(0, DriveTrain.kP, TIMEOUT);
 		talon.config_kI(0, kI, TIMEOUT);
 		talon.config_kD(0, kD, TIMEOUT);
 		talon.config_kF(0, kF, TIMEOUT);
-		
-		talon.setInverted(true);
 
+		talon.setInverted(true);
+		talon.setSensorPhase(true);
 		talon.setNeutralMode(NeutralMode.Brake);
 	}
 
-	public void resetEncoders() {
+	public void resetQuadEncoders() {
 		for (WPI_TalonSRX motor : motors) {
 			motor.getSensorCollection().setQuadraturePosition(0, TIMEOUT);
 		}
@@ -70,11 +76,11 @@ public class DriveTrain {
 		motors[RR].set(ControlMode.Position, (-x - y));
 	}
 
-	public void translateRelative(double x, double y, double[] startPos) { // slope
-		motors[FL].set(ControlMode.Position, (x + y) + startPos[FL]);
-		motors[FR].set(ControlMode.Position, (-x + y) + startPos[FR]);
-		motors[RL].set(ControlMode.Position, (x - y) + startPos[RL]);
-		motors[RR].set(ControlMode.Position, (-x - y) + startPos[RR]);
+	public void rotate(double speed) { // slope
+		motors[FL].set(ControlMode.PercentOutput, speed);
+		motors[FR].set(ControlMode.PercentOutput, speed);
+		motors[RL].set(ControlMode.PercentOutput, speed);
+		motors[RR].set(ControlMode.PercentOutput, speed);
 	}
 
 	/**
@@ -100,6 +106,7 @@ public class DriveTrain {
 	 *            {@link #solenoid} has its output enabled
 	 */
 	public void shift(boolean b) {
+		System.out.println("Shifting! (solenoid being enabled: " + b + ")");
 		isMecanumized = b;
 		solenoid.set(b);
 	}
@@ -127,22 +134,11 @@ public class DriveTrain {
 		}
 	}
 
-	public int getAverageEncoderValue() {
-		int sum = 0;
-		sum += -motors[FR].getSensorCollection().getQuadraturePosition();
-		sum += motors[FL].getSensorCollection().getQuadraturePosition();
-		sum += -motors[RR].getSensorCollection().getQuadraturePosition();
-		sum += motors[RL].getSensorCollection().getQuadraturePosition();
-		sum /= 4;
-		return sum;
-	}
-
-	public void set() {
-
-	}
-
 	public boolean getMecanumized() {
 		return isMecanumized;
 	}
-
+	
+	public WPI_TalonSRX[] getMotors() {
+		return motors;
+	}
 }

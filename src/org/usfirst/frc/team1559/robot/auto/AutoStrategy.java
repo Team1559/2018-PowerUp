@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * One or more auto sequences ({@link AutoSequence})
  * 
- * @author Evan Gartley (Victor Robotics Team 1559, Software)
+ * @author Victor Robotics Team 1559, Software
  */
 public abstract class AutoStrategy {
 

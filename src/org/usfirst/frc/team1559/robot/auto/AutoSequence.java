@@ -2,13 +2,12 @@ package org.usfirst.frc.team1559.robot.auto;
 
 import java.util.ArrayList;
 
-import org.usfirst.frc.team1559.robot.Debug;
 import org.usfirst.frc.team1559.robot.Robot;
 
 /**
  * A collection of auto commands ({@link AutoCommand})
  * 
- * @author Evan Gartley (Victor Robotics Team 1559, Software)
+ * @author Victor Robotics Team 1559, Software
  */
 public class AutoSequence {
 
@@ -33,15 +32,15 @@ public class AutoSequence {
 			// anyway
 			AutoCommand command = commands.get(i);
 			if (!command.isInitialized) {
-				Debug.out("Command " + (i + 1) + " of " + commands.size() + " has been initialized");
+				System.out.println("Command " + (i + 1) + " of " + commands.size() + " has been initialized");
 				command.init();
 			}
 			command.going();
 			if (command.isDone) {
-				Debug.out("Switching to the next command (from " + i + " to " + (i + 1) + ")");
+				System.out.println("Switching to the next command (from " + i + " to " + (i + 1) + ")");
 				i++;
 				if (i == commands.size()) {
-					Debug.out("All the commands have finished! (total of " + commands.size() + ")");
+					System.out.println("All the commands have finished! (total of " + commands.size() + ")");
 					isDone = true;
 				}
 			}
@@ -49,16 +48,16 @@ public class AutoSequence {
 	}
 
 	public void reset() {
-		Debug.out("Resetting sequence...");
-		byte k = 1;
+		System.out.println("Resetting auto sequence...");
+		byte k = 0;
 		for (AutoCommand command : commands) {
-			Debug.out("Command " + k + " of " + commands.size() + " has been de-initialized");
+			System.out.println("Command " + k + " of " + commands.size() + " has been de-initialized");
 			k++;
 			command.isInitialized = false;
 		}
-		Debug.out("i has been set to zero");
+		System.out.println("i has been set to zero");
 		i = 0;
-		Debug.out("Encoders have been reset");
-		Robot.driveTrain.resetEncoders();
+		System.out.println("Encoders have been reset");
+		Robot.driveTrain.resetQuadEncoders();
 	}
 }

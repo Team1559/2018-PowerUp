@@ -1,34 +1,38 @@
 package org.usfirst.frc.team1559.robot;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.Talon;
 
 public class Climber {
-	private WPI_TalonSRX climber;
 
-	public Climber(int port) {
-		climber = new WPI_TalonSRX(port);
+	private Spark telescope;
+	private Talon winch;
+	private DigitalInput limitSwitch;
+
+	public Climber() {
+		telescope = new Spark(Wiring.CLM_SPARK); // Up and down telescope
+		winch = new Talon(Wiring.CLM_TALON); // Winch function - the wheel that flips around
+		limitSwitch = new DigitalInput(Wiring.CLM_LIMIT_ID);
 	}
 
-	public void startClimb() {
-		climber.set(Constants.CLIMB_SPEED);
-	}
-
-	public void reverseClimb() {
-		climber.set(-Constants.CLIMB_SPEED);
-	}
-	
-	public void stopClimb() {
-		climber.set(0);
-	}
-
-	private static Climber instance;
-
-	public static Climber getInstance() {
-
-		if (instance == null) {
-			instance = new Climber(Wiring.CLIMBER_SOLENOID);
+	public void extendTelescope() {
+		if (!limitSwitch.get()) {
+			telescope.set(Constants.CLIMB_TELESCOPE_SPEED);
+		} else {
+			telescope.set(0);
 		}
-		return instance;
 	}
 
+	public void retractTelescope() {
+		telescope.set(-Constants.CLIMB_TELESCOPE_SPEED);
+	}
+
+	public void rotateWinch() {
+		winch.set(Constants.CLIMB_WINCH_SPEED);
+	}
+
+	public void stopWinch() {
+		winch.set(0);
+	}
 }

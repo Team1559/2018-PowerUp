@@ -3,7 +3,7 @@ package org.usfirst.frc.team1559.robot.auto;
 /**
  * A single command, or action, that the robot performs
  * 
- * @author Evan Gartley (Victor Robotics Team 1559, Software)
+ * @author Victor Robotics Team 1559, Software
  */
 public abstract class AutoCommand {
 
