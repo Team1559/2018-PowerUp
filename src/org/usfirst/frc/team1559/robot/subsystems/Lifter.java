@@ -18,8 +18,33 @@ public class Lifter {
 		motor = new WPI_TalonSRX(Wiring.LFT_TALON);
 	}
 
-	public void liftUp() {
-		if (potentiometer.get() < Constants.LIFT_TOP_LIMIT) {
+	}
+	public void liftUpSwitch() {
+		if (potentiometer.get() < Constants.LIFT_TOP_LIMIT && potentiometer.get() <= Wiring.BTN_LIFT_SWITCH) {
+			motor.set(Constants.LIFT_SPEED);
+		} else {
+			motor.set(0);
+		}
+
+	}
+	public void liftUpScaleOne() {
+		if (potentiometer.get() < Constants.LIFT_TOP_LIMIT && potentiometer.get() <= Wiring.BTN_LIFT_SCALE_POS_ONE) {
+			motor.set(Constants.LIFT_SPEED);
+		} else {
+			motor.set(0);
+		}
+
+	}
+	public void liftUpScaleTwo() {
+		if (potentiometer.get() < Constants.LIFT_TOP_LIMIT && potentiometer.get() <= BTN_LIFT_SCALE_POS_TWO) {
+			motor.set(Constants.LIFT_SPEED);
+		} else {
+			motor.set(0);
+		}
+
+	}
+	public void liftUpScaleThree() {
+		if (potentiometer.get() < Constants.LIFT_TOP_LIMIT && potentiometer.get() <= BTN_LIFT_SCALE_POS_THREE) {
 			motor.set(Constants.LIFT_SPEED);
 		} else {
 			motor.set(0);
@@ -28,7 +53,7 @@ public class Lifter {
 	}
 
 	public void goDown() {
-		if (potentiometer.get() > Constants.LIFT_BOTTOM_LIMIT) {
+		if (potentiometer.get() > Constants.LIFT_BOTTOM_LIMIT && potentiometer.get() >= Wiring.BTN_LIFT_GROUND) {
 			motor.set(-Constants.LIFT_SPEED);
 		} else {
 			motor.set(0);
