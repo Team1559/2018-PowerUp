@@ -48,15 +48,28 @@ public class Robot extends IterativeRobot {
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		AutoPicker.pick(gameData, pos);
 
+		Robot.driveTrain.resetQuadEncoders();
+		
 		routine = new CommandGroup();
-		int distance = 45;
+		double distance = 12;
 		routine.addSequential(new WPI_MecanumTranslate(distance, 0));
-		/*routine.addSequential(new WPI_RotateRel(90, true));
-		routine.addSequential(new WPI_MecanumTranslate(distance / 2, 0));
+//		routine.addSequential(new WPI_MecanumTranslate(-distance, 0));
+//		routine.addSequential(new WPI_MecanumTranslate(2*distance, 0));
+		// System.out.println("Done with translate!");
+		// routine.addSequential(new WPI_RotateRel(90, true));
+		/*routine.addSequential(new WPI_Wait(1.5));
 		routine.addSequential(new WPI_RotateRel(90, true));
+		routine.addSequential(new WPI_Wait(1.5));
+		routine.addSequential(new WPI_MecanumTranslate(distance / 2, 0));
+		routine.addSequential(new WPI_Wait(1.5));
+		routine.addSequential(new WPI_RotateRel(90, true));
+		routine.addSequential(new WPI_Wait(1.5));
 		routine.addSequential(new WPI_MecanumTranslate(distance, 0));
+		routine.addSequential(new WPI_Wait(1.5));
 		routine.addSequential(new WPI_RotateRel(90, true));
+		routine.addSequential(new WPI_Wait(1.5));
 		routine.addSequential(new WPI_MecanumTranslate(distance / 2, 0));
+		routine.addSequential(new WPI_Wait(1.5));
 		routine.addSequential(new WPI_RotateRel(90, true));*/
 
 		routine.start();
@@ -65,6 +78,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
+		SmartDashboard.putNumber("Motor 0 error: ", driveTrain.motors[0].getClosedLoopError(0));
 	}
 
 	@Override

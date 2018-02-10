@@ -41,7 +41,6 @@ public class WPI_RotateRel extends Command {
 
 	@Override
 	protected boolean isFinished() {
-		SmartDashboard.putNumber("Error", pid.getError());
 		return pid.onTarget(TOLERANCE);
 	}
 

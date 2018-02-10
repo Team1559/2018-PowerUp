@@ -23,28 +23,26 @@ public class WPI_MecanumTranslate extends Command {
 		this.x = x;
 		this.y = y;
 		// radius 3 , fudge 0.85, 3481.6
-		this.dxInTicks = x * Constants.CONVERSION_FUDGE * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
-		this.dyInTicks = y * Constants.CONVERSION_FUDGE * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
+		this.dxInTicks = x * Constants.WHEEL_FUDGE * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
+		this.dyInTicks = y * Constants.WHEEL_FUDGE * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
 		if (x <= 45 || y <= 45) {
 			TOLERANCE = 300;
 		} else {
 			TOLERANCE = 992;
 		}
 		// 0.000817x + 0.0278
-		if (x != 0)
+		/*if (x != 0)
 			DriveTrain.kP = (0.000817 * Math.abs(x)) + 0.0278;
 		else
 			DriveTrain.kP = (0.000817 * Math.abs(y)) + 0.0278;
-		byte k = 0;
 		for (WPI_TalonSRX motor : Robot.driveTrain.motors) {
-			k++;
 			motor.config_kP(0, DriveTrain.kP, 0);
-		}
+		}*/
 	}
 
 	@Override
 	protected void initialize() {
-		Robot.driveTrain.resetQuadEncoders();
+		// Robot.driveTrain.resetQuadEncoders();
 		Robot.driveTrain.shift(true);
 		System.out.println("Initializing " + this);
 		startTime = Timer.getFPGATimestamp();
@@ -63,7 +61,7 @@ public class WPI_MecanumTranslate extends Command {
 		}
 		double averageError = 0;
 		for (int i = 0; i < 4; i++) {
-			System.out.println("Error for motor " + i + ": " + Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0)));
+			SmartDashboard.putNumber("Error for motor " + i + ": ", Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0)));
 			averageError += Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0));
 		}
 		averageError /= 4;
