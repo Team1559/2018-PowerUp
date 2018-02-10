@@ -46,18 +46,19 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
+<<<<<<< HEAD
 		imu.zeroHeading();
 		double pos = SmartDashboard.getNumber("Starting Position", 1);
+=======
+>>>>>>> b6215cb121b32d6ab51596f1896b4eaecbcd2259
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
-		AutoPicker.pick(gameData, pos);
+		AutoPicker.pick(gameData, SmartDashboard.getNumber("Starting Position", 1));
 
 		Robot.driveTrain.resetQuadEncoders();
 		
 		routine = new CommandGroup();
 		double distance = 12;
 		routine.addSequential(new WPI_MecanumTranslate(distance, 0));
-//		routine.addSequential(new WPI_MecanumTranslate(-distance, 0));
-//		routine.addSequential(new WPI_MecanumTranslate(2*distance, 0));
 		// System.out.println("Done with translate!");
 		// routine.addSequential(new WPI_RotateRel(90, true));
 		/*routine.addSequential(new WPI_Wait(1.5));

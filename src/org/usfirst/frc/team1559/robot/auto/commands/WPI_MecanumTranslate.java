@@ -20,8 +20,6 @@ public class WPI_MecanumTranslate extends Command {
 	public WPI_MecanumTranslate(double x, double y) {
 		this.x = x;
 		this.y = y;
-		// radius 3 , fudge 0.85, 3481.6
-
 		this.dyInTicks = y * Constants.WHEEL_FUDGE * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
 		this.dxInTicks = x * Constants.WHEEL_FUDGE * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
 		
