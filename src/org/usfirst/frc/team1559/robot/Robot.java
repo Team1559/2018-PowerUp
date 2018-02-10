@@ -46,11 +46,7 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
-<<<<<<< HEAD
 		imu.zeroHeading();
-		double pos = SmartDashboard.getNumber("Starting Position", 1);
-=======
->>>>>>> b6215cb121b32d6ab51596f1896b4eaecbcd2259
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		AutoPicker.pick(gameData, SmartDashboard.getNumber("Starting Position", 1));
 
