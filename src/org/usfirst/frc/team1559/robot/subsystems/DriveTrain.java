@@ -19,10 +19,10 @@ public class DriveTrain {
 
 	// 0.08/0.15 for long distances (80-144)
 	// 0.073 for short (45-12)
-	public static double kP = 0.4;//.15
-	private static final double kI = 0.0;
+	public static double kP = 0.15;//.15
+	private static final double kI = 0.0003;
 	// 4 for short and long
-	private static final double kD = 0;
+	private static final double kD = 0.01;
 	private static final double kF = 0;
 	private static final int TIMEOUT = 0;
 
@@ -81,6 +81,21 @@ public class DriveTrain {
 		motors[FR].set(ControlMode.PercentOutput, speed);
 		motors[RL].set(ControlMode.PercentOutput, speed);
 		motors[RR].set(ControlMode.PercentOutput, speed);
+	}
+	
+	public void translateRotate(double x, double y, double angle) {
+		motors[FL].set(ControlMode.Position, (x + y - angle));
+		motors[FR].set(ControlMode.Position, (-x + y - angle));
+		motors[RL].set(ControlMode.Position, (x - y - angle));
+		motors[RR].set(ControlMode.Position, (-x - y - angle));
+	}
+	
+	public void setSetpoint(double[] setpoints) {
+		assert setpoints.length == 4;
+		motors[FL].set(ControlMode.Position, setpoints[FL]);
+		motors[FR].set(ControlMode.Position, setpoints[FR]);
+		motors[RL].set(ControlMode.Position, setpoints[RL]);
+		motors[RR].set(ControlMode.Position, setpoints[RR]);
 	}
 
 	/**

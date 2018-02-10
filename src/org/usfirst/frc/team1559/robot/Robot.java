@@ -9,6 +9,8 @@ package org.usfirst.frc.team1559.robot;
 
 import org.usfirst.frc.team1559.robot.auto.AutoPicker;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_MecanumTranslate;
+import org.usfirst.frc.team1559.robot.auto.commands.WPI_RotateAbs;
+import org.usfirst.frc.team1559.robot.auto.commands.WPI_Wait;
 import org.usfirst.frc.team1559.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team1559.util.BNO055;
 
@@ -27,7 +29,7 @@ public class Robot extends IterativeRobot {
 	private CommandGroup routine;
 	public static UDPClient udp;
 	public static VisionData visionData;
-	
+
 	@Override
 	public void robotInit() {
 		oi = new OperatorInterface();
@@ -51,26 +53,56 @@ public class Robot extends IterativeRobot {
 		AutoPicker.pick(gameData, SmartDashboard.getNumber("Starting Position", 1));
 
 		Robot.driveTrain.resetQuadEncoders();
-		
+
 		routine = new CommandGroup();
-		double distance = 12;
-		routine.addSequential(new WPI_MecanumTranslate(distance, 0));
+		// double distance = 43;
+
+		byte r = 4;
+
+		// Demo Sequences
+		switch (r) {
+		case 0:
+			// routine.addSequential(new WPI_MecanumTranslate(127.5, 0));
+			// routine.addSequential(new WPI_MecanumTranslate(127.5, 16));
+			break;
+		case 1:
+//			routine.addSequential(new WPI_MecanumTranslate(127.5, 0));
+//			routine.addSequential(new WPI_MecanumTranslate(127.5, -16));
+			break;
+		case 2:
+//			routine.addSequential(new WPI_MecanumTranslate(146.4, 0));
+//			routine.addSequential(new WPI_RotateAbs(29.5, true));
+			break;
+		case 3:
+//			routine.addSequential(new WPI_MecanumTranslate(134.9, 0));
+//			routine.addSequential(new WPI_RotateAbs(19, true));
+		case 4:
+			routine.addSequential(new WPI_MecanumTranslate(80, 0, 0));
+			routine.addSequential(new WPI_RotateAbs(90, true));
+			routine.addSequential(new WPI_MecanumTranslate(20, 0, 0));
+			routine.addSequential(new WPI_RotateAbs(0, true));
+			routine.addSequential(new WPI_MecanumTranslate(80, 0, -90));
+			break;
+		default:
+			break;
+		}
+
+		// routine.addSequential(new WPI_MecanumTranslate(distance, 0));
 		// System.out.println("Done with translate!");
 		// routine.addSequential(new WPI_RotateRel(90, true));
-		/*routine.addSequential(new WPI_Wait(1.5));
-		routine.addSequential(new WPI_RotateRel(90, true));
-		routine.addSequential(new WPI_Wait(1.5));
-		routine.addSequential(new WPI_MecanumTranslate(distance / 2, 0));
-		routine.addSequential(new WPI_Wait(1.5));
-		routine.addSequential(new WPI_RotateRel(90, true));
-		routine.addSequential(new WPI_Wait(1.5));
-		routine.addSequential(new WPI_MecanumTranslate(distance, 0));
-		routine.addSequential(new WPI_Wait(1.5));
-		routine.addSequential(new WPI_RotateRel(90, true));
-		routine.addSequential(new WPI_Wait(1.5));
-		routine.addSequential(new WPI_MecanumTranslate(distance / 2, 0));
-		routine.addSequential(new WPI_Wait(1.5));
-		routine.addSequential(new WPI_RotateRel(90, true));*/
+		/*
+		 * routine.addSequential(new WPI_Wait(1.5)); routine.addSequential(new
+		 * WPI_RotateRel(90, true)); routine.addSequential(new WPI_Wait(1.5));
+		 * routine.addSequential(new WPI_MecanumTranslate(distance / 2, 0));
+		 * routine.addSequential(new WPI_Wait(1.5)); routine.addSequential(new
+		 * WPI_RotateRel(90, true)); routine.addSequential(new WPI_Wait(1.5));
+		 * routine.addSequential(new WPI_MecanumTranslate(distance, 0));
+		 * routine.addSequential(new WPI_Wait(1.5)); routine.addSequential(new
+		 * WPI_RotateRel(90, true)); routine.addSequential(new WPI_Wait(1.5));
+		 * routine.addSequential(new WPI_MecanumTranslate(distance / 2, 0));
+		 * routine.addSequential(new WPI_Wait(1.5)); routine.addSequential(new
+		 * WPI_RotateRel(90, true));
+		 */
 		routine.start();
 	}
 

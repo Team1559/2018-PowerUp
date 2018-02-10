@@ -10,20 +10,26 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WPI_MecanumTranslate extends Command {
 
+	public static int cumError[] = new int[4];
+	
 	private final double minTime = 0.25;
-	private double time = 0;
-	private double TOLERANCE;
+	// private double time = 0;
+	private double TOLERANCE = 300;
 	private double dxInTicks, dyInTicks;
 	private double x, y;
 	private double startTime;
 
-	public WPI_MecanumTranslate(double x, double y) {
+	private double angle, angleInTicks;
+	private double setpoints[];
+	
+	public WPI_MecanumTranslate(double x, double y, double angle) {
 		this.x = x;
 		this.y = y;
+		this.angle = angle;
 		this.dyInTicks = y * Constants.WHEEL_FUDGE * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
 		this.dxInTicks = x * Constants.WHEEL_FUDGE * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
-		
-		TOLERANCE = 300;
+		this.angleInTicks = angle * 4096 * 0.019;
+		this.setpoints = new double[4];
 		
 		/*
 		if (x <= 45 || y <= 45) {
@@ -48,16 +54,20 @@ public class WPI_MecanumTranslate extends Command {
 		Robot.driveTrain.shift(true);
 		System.out.println("Initializing " + this);
 		startTime = Timer.getFPGATimestamp();
+		Robot.driveTrain.resetQuadEncoders();
+		setpoints[DriveTrain.FL] = dxInTicks + dyInTicks - angleInTicks - cumError[DriveTrain.FL];
+		setpoints[DriveTrain.FR] = -dxInTicks + dyInTicks - angleInTicks - cumError[DriveTrain.FR];
+		setpoints[DriveTrain.RL] = dxInTicks - dyInTicks - angleInTicks - cumError[DriveTrain.RL];
+		setpoints[DriveTrain.RR] = -dxInTicks - dyInTicks - angleInTicks - cumError[DriveTrain.RR];
 	}
 
 	@Override
 	protected void execute() {
-		Robot.driveTrain.translateAbsolute(dxInTicks, dyInTicks);
+		Robot.driveTrain.setSetpoint(setpoints);
 	}
 
 	@Override
 	protected boolean isFinished() {
-		SmartDashboard.putString("Command time: ", String.valueOf(time));
 		if (Timer.getFPGATimestamp() < startTime + minTime) {
 			return false;
 		}
@@ -79,11 +89,14 @@ public class WPI_MecanumTranslate extends Command {
 	@Override
 	protected void end() {
 		System.out.println(this + " has finished");
+		for (int i = 0; i < 4; i++) {
+			cumError[i] = Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0));
+		}
 	}
 
 	@Override
 	public String toString() {
-		return String.format("MecanumTranslate (%f, %f)", x, y);
+		return String.format("MecanumTranslate (%f, %f, %f degrees)", x, y, angle);
 	}
 
 }
