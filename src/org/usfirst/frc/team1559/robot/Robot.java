@@ -8,7 +8,7 @@
 package org.usfirst.frc.team1559.robot;
 
 import org.usfirst.frc.team1559.robot.auto.AutoPicker;
-import org.usfirst.frc.team1559.robot.auto.commands.WPI_RotateAbs;
+import org.usfirst.frc.team1559.robot.auto.commands.WPI_MecanumTranslate;
 import org.usfirst.frc.team1559.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team1559.util.BNO055;
 
@@ -51,17 +51,36 @@ public class Robot extends IterativeRobot {
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		AutoPicker.pick(gameData, pos);
 
+		Robot.driveTrain.resetQuadEncoders();
+		
 		routine = new CommandGroup();
-		routine.addSequential(new WPI_RotateAbs(-10, false));
-		routine.addSequential(new WPI_RotateAbs(20, false));
-		routine.addSequential(new WPI_RotateAbs(-90, false));
-		routine.addSequential(new WPI_RotateAbs(90, false));
+		double distance = 12;
+		routine.addSequential(new WPI_MecanumTranslate(distance, 0));
+//		routine.addSequential(new WPI_MecanumTranslate(-distance, 0));
+//		routine.addSequential(new WPI_MecanumTranslate(2*distance, 0));
+		// System.out.println("Done with translate!");
+		// routine.addSequential(new WPI_RotateRel(90, true));
+		/*routine.addSequential(new WPI_Wait(1.5));
+		routine.addSequential(new WPI_RotateRel(90, true));
+		routine.addSequential(new WPI_Wait(1.5));
+		routine.addSequential(new WPI_MecanumTranslate(distance / 2, 0));
+		routine.addSequential(new WPI_Wait(1.5));
+		routine.addSequential(new WPI_RotateRel(90, true));
+		routine.addSequential(new WPI_Wait(1.5));
+		routine.addSequential(new WPI_MecanumTranslate(distance, 0));
+		routine.addSequential(new WPI_Wait(1.5));
+		routine.addSequential(new WPI_RotateRel(90, true));
+		routine.addSequential(new WPI_Wait(1.5));
+		routine.addSequential(new WPI_MecanumTranslate(distance / 2, 0));
+		routine.addSequential(new WPI_Wait(1.5));
+		routine.addSequential(new WPI_RotateRel(90, true));*/
 		routine.start();
 	}
 
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
+		SmartDashboard.putNumber("Motor 0 error: ", driveTrain.motors[0].getClosedLoopError(0));
 	}
 
 	@Override

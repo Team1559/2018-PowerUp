@@ -19,10 +19,10 @@ public class DriveTrain {
 
 	// 0.08/0.15 for long distances (80-144)
 	// 0.073 for short (45-12)
-	public static double kP = 0.4;
+	public static double kP = 0.4;//.15
 	private static final double kI = 0.0;
 	// 4 for short and long
-	private static final double kD = 4;
+	private static final double kD = 0;
 	private static final double kF = 0;
 	private static final int TIMEOUT = 0;
 
@@ -106,7 +106,7 @@ public class DriveTrain {
 	 *            {@link #solenoid} has its output enabled
 	 */
 	public void shift(boolean b) {
-		System.out.println("shifting!");
+		System.out.println("Shifting! (solenoid being enabled: " + b + ")");
 		isMecanumized = b;
 		solenoid.set(b);
 	}
