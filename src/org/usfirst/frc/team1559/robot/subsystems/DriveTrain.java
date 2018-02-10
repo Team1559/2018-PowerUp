@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Counter.Mode;
 
 public class DriveTrain {
 
@@ -19,10 +20,10 @@ public class DriveTrain {
 
 	// 0.08/0.15 for long distances (80-144)
 	// 0.073 for short (45-12)
-	public static double kP = 0.15;//.15
-	private static final double kI = 0.0003;
+	public static double kP = .01;//0.13 works for mecanum;
+	private static final double kI = 0.0005;
 	// 4 for short and long
-	private static final double kD = 0.01;
+	private static final double kD = 0.03;
 	private static final double kF = 0;
 	private static final int TIMEOUT = 0;
 
@@ -53,7 +54,7 @@ public class DriveTrain {
 		talon.configPeakOutputForward(+1, TIMEOUT);
 		talon.configPeakOutputReverse(-1, TIMEOUT);
 
-		talon.config_kP(0, DriveTrain.kP, TIMEOUT);
+		talon.config_kP(0, kP, TIMEOUT);
 		talon.config_kI(0, kI, TIMEOUT);
 		talon.config_kD(0, kD, TIMEOUT);
 		talon.config_kF(0, kF, TIMEOUT);
@@ -70,26 +71,19 @@ public class DriveTrain {
 	}
 
 	public void translateAbsolute(double x, double y) { // slope
-		motors[FL].set(ControlMode.Position, (x + y));
-		motors[FR].set(ControlMode.Position, (-x + y));
-		motors[RL].set(ControlMode.Position, (x - y));
-		motors[RR].set(ControlMode.Position, (-x - y));
+		translateRotate(x, y, 0);
 	}
 
+	// TODO: replace the code please
 	public void rotate(double speed) { // slope
-		motors[FL].set(ControlMode.PercentOutput, speed);
-		motors[FR].set(ControlMode.PercentOutput, speed);
-		motors[RL].set(ControlMode.PercentOutput, speed);
-		motors[RR].set(ControlMode.PercentOutput, speed);
+//		setMotors(ControlMode.PercentOutput, speed);
 	}
-	
+
 	public void translateRotate(double x, double y, double angle) {
-		motors[FL].set(ControlMode.Position, (x + y - angle));
-		motors[FR].set(ControlMode.Position, (-x + y - angle));
-		motors[RL].set(ControlMode.Position, (x - y - angle));
-		motors[RR].set(ControlMode.Position, (-x - y - angle));
+//		setMotors(ControlMode.Position,
+//				new double[] { (x + y - angle), (-x + y - angle), (x - y - angle), (-x - y - angle) });
 	}
-	
+
 	public void setSetpoint(double[] setpoints) {
 		assert setpoints.length == 4;
 		motors[FL].set(ControlMode.Position, setpoints[FL]);
@@ -152,7 +146,7 @@ public class DriveTrain {
 	public boolean getMecanumized() {
 		return isMecanumized;
 	}
-	
+
 	public WPI_TalonSRX[] getMotors() {
 		return motors;
 	}

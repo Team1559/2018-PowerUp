@@ -69,20 +69,21 @@ public class WPI_MecanumTranslate extends Command {
 	@Override
 	protected boolean isFinished() {
 		if (Timer.getFPGATimestamp() < startTime + minTime) {
+			// timeout
 			return false;
 		}
+		
 		double averageError = 0;
 		for (int i = 0; i < 4; i++) {
 			SmartDashboard.putNumber("Error for motor " + i + ": ", Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0)));
 			averageError += Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0));
 		}
 		averageError /= 4;
+		
 		SmartDashboard.putNumber("Current avg error: ", averageError);
 		SmartDashboard.putNumber("P val: ", DriveTrain.kP);
 		SmartDashboard.putNumber("Tolerance: ", TOLERANCE);
-		if (averageError < TOLERANCE == true) {
-			SmartDashboard.putString("Command status: ", "All good!");
-		}
+		
 		return averageError < TOLERANCE;
 	}
 
