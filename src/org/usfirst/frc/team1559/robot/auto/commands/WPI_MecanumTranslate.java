@@ -4,8 +4,6 @@ import org.usfirst.frc.team1559.robot.Constants;
 import org.usfirst.frc.team1559.robot.Robot;
 import org.usfirst.frc.team1559.robot.subsystems.DriveTrain;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,7 +20,6 @@ public class WPI_MecanumTranslate extends Command {
 	public WPI_MecanumTranslate(double x, double y) {
 		this.x = x;
 		this.y = y;
-		// radius 3 , fudge 0.85, 3481.6
 		this.dxInTicks = x * Constants.WHEEL_FUDGE * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
 		this.dyInTicks = y * Constants.WHEEL_FUDGE * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
 		if (x <= 45 || y <= 45) {

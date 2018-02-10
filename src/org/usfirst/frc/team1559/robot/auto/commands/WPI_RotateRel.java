@@ -4,7 +4,6 @@ import org.usfirst.frc.team1559.robot.Robot;
 import org.usfirst.frc.team1559.util.PID;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WPI_RotateRel extends Command {
 

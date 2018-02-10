@@ -12,11 +12,12 @@ public class WPI_Wait extends Command {
 
 	@Override
 	protected boolean isFinished() {
+		System.out.println(this + " has finished");
 		return timeSinceInitialized() > time;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("Wait(seconds=%f)", time);
+		return String.format("Wait(%f seconds)", time);
 	}
 }
