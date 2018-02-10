@@ -27,30 +27,26 @@ public class UDPClient implements Runnable {
 		running = true;
 		while (running) {
 			String rec = receive();
-			 System.out.println("from jetson: " + rec);
 			if (rec != null) {
 				data = rec;
+			}
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 	}
 
+	/**
+	 * This is the method you should use.
+	 * @return Raw data.
+	 */
 	public String get() {
 		return data;
 	}
 
-	public String getX() {
-		return data.substring(data.indexOf('x'),data.indexOf('y'));
-	}
-	
-	public String getY() {
-		return data.substring(data.indexOf('y'),data.indexOf('r'));
-	}
-
-	public String getR() {
-		return data.substring(data.indexOf('r')+1);
-	}
-
-	public String receive() {
+	private String receive() {
 		String ret = null;
 		try {
 			Socket clientSocket = new Socket(HOST, PORT);

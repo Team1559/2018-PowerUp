@@ -19,7 +19,7 @@ public class DriveTrain {
 
 	// 0.08/0.15 for long distances (80-144)
 	// 0.073 for short (45-12)
-	public static double kP = 0.35;
+	public static double kP = 0.4;
 	private static final double kI = 0.0;
 	// 4 for short and long
 	private static final double kD = 4;

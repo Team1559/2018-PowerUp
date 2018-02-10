@@ -65,6 +65,9 @@ import edu.wpi.first.wpilibj.Timer;
  *
  */
 public class BNO055 {
+	
+	private double zeroHeading = 0;
+	
 	//Tread variables
 	private java.util.Timer executor;
 	private static final long THREAD_PERIOD = 20; //ms - max poll rate on sensor.
@@ -830,5 +833,19 @@ public class BNO055 {
 		public void run() {
 			imu.update();
 		}
+	}
+	
+	/**
+	 * Sets zero heading to current heading.
+	 */
+	public void zeroHeading() {
+		zeroHeading = getHeading();
+	}
+	
+	/**
+	 * Returns heading relative to zero heading. See {@link #zeroHeading()}.
+	 */
+	public double getHeadingRelative() {
+		return getHeading() - zeroHeading;
 	}
 }

@@ -8,9 +8,7 @@
 package org.usfirst.frc.team1559.robot;
 
 import org.usfirst.frc.team1559.robot.auto.AutoPicker;
-import org.usfirst.frc.team1559.robot.auto.commands.WPI_MecanumTranslate;
-import org.usfirst.frc.team1559.robot.auto.commands.WPI_RotateRel;
-import org.usfirst.frc.team1559.robot.auto.commands.WPI_Wait;
+import org.usfirst.frc.team1559.robot.auto.commands.WPI_RotateAbs;
 import org.usfirst.frc.team1559.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team1559.util.BNO055;
 
@@ -27,7 +25,9 @@ public class Robot extends IterativeRobot {
 	public static BNO055 imu;
 	private String gameData;
 	private CommandGroup routine;
-
+	public static UDPClient udp;
+	public static VisionData visionData;
+	
 	@Override
 	public void robotInit() {
 		oi = new OperatorInterface();
@@ -35,6 +35,8 @@ public class Robot extends IterativeRobot {
 		imu = BNO055.getInstance(BNO055.opmode_t.OPERATION_MODE_IMUPLUS, BNO055.vector_type_t.VECTOR_EULER);
 		AutoPicker.init();
 		routine = new CommandGroup();
+		udp = new UDPClient();
+		visionData = new VisionData();
 	}
 
 	@Override
@@ -44,28 +46,16 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
+		imu.zeroHeading();
 		double pos = SmartDashboard.getNumber("Starting Position", 1);
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		AutoPicker.pick(gameData, pos);
 
 		routine = new CommandGroup();
-		int distance = 45;
-		routine.addSequential(new WPI_MecanumTranslate(distance, 0));
-		routine.addSequential(new WPI_Wait(1));
-		routine.addSequential(new WPI_RotateRel(90, true));
-		routine.addSequential(new WPI_Wait(1));
-		routine.addSequential(new WPI_MecanumTranslate(distance / 2, 0));
-		routine.addSequential(new WPI_Wait(1));
-		routine.addSequential(new WPI_RotateRel(90, true));
-		routine.addSequential(new WPI_Wait(1));
-		routine.addSequential(new WPI_MecanumTranslate(distance, 0));
-		routine.addSequential(new WPI_Wait(1));
-		routine.addSequential(new WPI_RotateRel(90, true));
-		routine.addSequential(new WPI_Wait(1));
-		routine.addSequential(new WPI_MecanumTranslate(distance / 2, 0));
-		routine.addSequential(new WPI_Wait(1));
-		routine.addSequential(new WPI_RotateRel(90, true));
-
+		routine.addSequential(new WPI_RotateAbs(-10, false));
+		routine.addSequential(new WPI_RotateAbs(20, false));
+		routine.addSequential(new WPI_RotateAbs(-90, false));
+		routine.addSequential(new WPI_RotateAbs(90, false));
 		routine.start();
 	}
 

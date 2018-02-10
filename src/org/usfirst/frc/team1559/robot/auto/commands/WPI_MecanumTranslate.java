@@ -21,8 +21,12 @@ public class WPI_MecanumTranslate extends Command {
 		this.x = x;
 		this.y = y;
 		// radius 3 , fudge 0.85, 3481.6
-		this.dxInTicks = x * Constants.CONVERSION_FUDGE * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
 		this.dyInTicks = y * Constants.CONVERSION_FUDGE * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
+		this.dxInTicks = x * Constants.CONVERSION_FUDGE * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
+		
+		TOLERANCE = 300;
+		
+		/*
 		if (x <= 45 || y <= 45) {
 			TOLERANCE = 300;
 		} else {
@@ -41,10 +45,13 @@ public class WPI_MecanumTranslate extends Command {
 			k++;
 			motor.config_kP(0, DriveTrain.kP, 0);
 		}
+		*/
+		
 	}
 
 	@Override
 	protected void initialize() {
+
 		Robot.driveTrain.resetQuadEncoders();
 		Robot.driveTrain.shift(true);
 		System.out.println("INIT " + this);

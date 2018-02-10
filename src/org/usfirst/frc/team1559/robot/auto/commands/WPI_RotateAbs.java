@@ -6,42 +6,45 @@ import org.usfirst.frc.team1559.util.PID;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class WPI_RotateRel extends Command {
+public class WPI_RotateAbs extends Command {
 
-	//TODO: Weird oscillating error with jerky motions
-	//TODO: PID loop tuning (consider PI)
-	
-	private final double kP = 0.01;
-	private final double kI = 0;
-	private final double kD = 0;
+	// TODO: Weird oscillating error with jerky motions on second run
+	// TODO: PID loop tuning (consider PI)
+
+	private final double kP = .04;
+	private final double kI = 0.0009;
+	private final double kD = 0.1;
 
 	private final double TOLERANCE = 1;
-	private double angle, startAngle;
+	private double angle;
 	private final boolean mecanum;
-	private PID pid;
+	private static PID pid;
 
-	public WPI_RotateRel(double angle, boolean mecanum) {
+	public WPI_RotateAbs(double angle, boolean mecanum) {
 		this.angle = angle;
 		this.mecanum = mecanum;
-		pid = new PID(kP, kI, kD);
-		pid.setContinuous(true);
+		if (pid == null) {
+			pid = new PID(kP, kI, kD);
+		}
 	}
 
 	@Override
 	protected void initialize() {
+		pid.reset();
 		Robot.driveTrain.shift(mecanum);
-		startAngle = Robot.imu.getHeading();
-		pid.setSetpoint(startAngle + angle);
+		pid.setSetpoint(angle);
 	}
 
 	@Override
 	protected void execute() {
-		Robot.driveTrain.rotate(-1 * pid.calculate(Robot.imu.getHeading()));
+		// getHeadingRelative() is relative to a zero heading set in autonomousInit(),
+		// so it's not super relative.
+		Robot.driveTrain.rotate(-1 * pid.calculate(Robot.imu.getHeadingRelative()));
+		SmartDashboard.putNumber("Heading", Robot.imu.getHeadingRelative());
 	}
 
 	@Override
 	protected boolean isFinished() {
-		SmartDashboard.putNumber("Error", pid.getError());
 		return pid.onTarget(TOLERANCE);
 	}
 
