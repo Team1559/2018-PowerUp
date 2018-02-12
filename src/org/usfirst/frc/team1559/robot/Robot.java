@@ -44,6 +44,7 @@ public class Robot extends IterativeRobot {
 		routine.addSequential(new WPI_MecanumTranslate(80, 0, 90));
 		udp = new UDPClient();
 		visionData = new VisionData();
+		lift = new Lifter();
 	}
 
 	@Override
@@ -100,6 +101,12 @@ public class Robot extends IterativeRobot {
 		if (oi.getDriverButton(1).isPressed()) {
 			driveTrain.shift();
 		}
+		lift.liftUpSwitch();
+		lift.liftUpScaleOne();
+		lift.liftUpScaleTwo();
+		lift.liftUpScaleThree();//for lifter, needs button inputs though.
+		lift.goDown();
+		
 	}
 
 	@Override

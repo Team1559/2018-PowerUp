@@ -2,7 +2,7 @@ package org.usfirst.frc.team1559.robot.subsystems;
 
 import org.usfirst.frc.team1559.robot.Constants;
 import org.usfirst.frc.team1559.robot.Wiring;
-
+ 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
