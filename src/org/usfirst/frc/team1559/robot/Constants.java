@@ -10,8 +10,8 @@ public interface Constants {
 	public final double D_DRIVER = 0;
 	public final double F_DRIVER = 0;
 	
-	public final double CLIMB_TELESCOPE_SPEED = 0.0; //TODO: Find actual value.
-	public final double CLIMB_WINCH_SPEED = 0.0; //TODO: Find actual value.
+	public final double CLIMB_TELESCOPE_SPEED = 0.2; //TODO: Find actual value.
+	public final double CLIMB_WINCH_SPEED = 0.02; //TODO: Find actual value.
 	
 	public final double LIFT_HEIGHT = 0;
 	public final double LIFT_GEAR_DIAMETER = 0;

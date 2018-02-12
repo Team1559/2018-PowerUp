@@ -26,8 +26,7 @@ public interface Wiring {
 	public static final int JOY_COPILOT = 1;
 	
 	// Buttons
-	public static final int BTN_CLIMB_EXPAND = 0;
-	public static final int BTN_CLIMB_RETRACT = 0;
+	public static final int BTN_CLIMB = 0;
 	public static final int BTN_LIFT_SWITCH = 0;
 	public static final int BTN_LIFT_GROUND = 0;
 	public static final int BTN_LIFT_SCALE_POS_ONE = 0;
