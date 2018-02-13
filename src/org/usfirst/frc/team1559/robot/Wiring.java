@@ -9,8 +9,8 @@ public interface Wiring {
 	public static final int DRV_FL_SRX = 13; // actual robot = 13, last year = 10
 	
 	// Lifter
-	public static final int LFT_POT = 0;
-	public static final int LFT_TALON = 0;
+	public static final int LIFT_POT = 0;
+	public static final int LIFT_TALON = 1;
 
 	// Intake
 	public static final int NTK_TALON = 0;
