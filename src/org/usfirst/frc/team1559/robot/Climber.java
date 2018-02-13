@@ -29,7 +29,11 @@ public class Climber {
 	}
 
 	public void rotateWinch() {
-		winch.set(Constants.CLIMB_WINCH_SPEED);
+		if(!limitSwitch.get()) {
+			winch.set(0);
+		} else {
+			winch.set(Constants.CLIMB_WINCH_SPEED);
+		}
 	}
 
 	public void stopWinch() {

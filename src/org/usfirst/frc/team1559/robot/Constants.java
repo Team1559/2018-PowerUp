@@ -10,8 +10,8 @@ public interface Constants {
 	public final double D_DRIVER = 0;
 	public final double F_DRIVER = 0;
 	
-	public final double CLIMB_TELESCOPE_SPEED = 0.0; //TODO: Find actual value.
-	public final double CLIMB_WINCH_SPEED = 0.0; //TODO: Find actual value.
+	public final double CLIMB_TELESCOPE_SPEED = 0.2; //TODO: Find actual value.
+	public final double CLIMB_WINCH_SPEED = 0.02; //TODO: Find actual value.
 	
 	public final int LIFT_TOP_LIMIT = 1023; //MAX VALUE OF POT= 1023
 	public final int LIFT_BOTTOM_LIMIT = 6; //MIN VALUE OF POT = 6
