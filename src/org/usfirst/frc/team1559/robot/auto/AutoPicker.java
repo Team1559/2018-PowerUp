@@ -1,6 +1,10 @@
 package org.usfirst.frc.team1559.robot.auto;
 
 import org.usfirst.frc.team1559.robot.auto.strategies.Strategy1A;
+import org.usfirst.frc.team1559.robot.auto.strategies.Strategy1B;
+
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 
 /**
  * Picks the optimal {@link AutoStrategy} for the provided game data
@@ -10,11 +14,11 @@ import org.usfirst.frc.team1559.robot.auto.strategies.Strategy1A;
 public class AutoPicker {
 
 	private static Strategy1A strategy1a;
-	// private static Strategy1B strategy1b;
+	private static Strategy1B strategy1b;
 
 	public static void init() {
 		strategy1a = new Strategy1A();
-		// strategy1b = new Strategy1B();
+		strategy1b = new Strategy1B();
 	}
 
 	/**
@@ -49,5 +53,9 @@ public class AutoPicker {
 
 		return strategy1a;
 	}
+	
+	/*public static CommandGroup getInvertedCommands(CommandGroup routine) {
+		// ??
+	}*/
 
 }

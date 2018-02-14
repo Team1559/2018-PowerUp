@@ -9,8 +9,8 @@ public interface Wiring {
 	public static final int DRV_FL_SRX = 13; // actual robot = 13, last year = 10
 	
 	// Lifter
-	public static final int LIFT_POT = 0;
-	public static final int LIFT_TALON = 1;
+	public static final int LFT_POT = 0;
+	public static final int LFT_TALON = 0;
 
 	// Intake
 	public static final int NTK_TALON = 0;
@@ -26,7 +26,8 @@ public interface Wiring {
 	public static final int JOY_COPILOT = 1;
 	
 	// Buttons
-	public static final int BTN_CLIMB = 0;
+	public static final int BTN_CLIMB_EXPAND = 0;
+	public static final int BTN_CLIMB_RETRACT = 0;
 	public static final int BTN_LIFT_SWITCH = 0;
 	public static final int BTN_LIFT_GROUND = 0;
 	public static final int BTN_LIFT_SCALE_POS_ONE = 0;
