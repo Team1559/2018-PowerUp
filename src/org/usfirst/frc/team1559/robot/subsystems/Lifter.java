@@ -44,18 +44,18 @@ public class Lifter {
 	}
 	
 	public void toSwitch() {
-		
+		lifterMotor.set(ControlMode.Position, Constants.SWITCH_TOP_LIMIT);
 	}
 	public void toBottomScale() {
-		
+		lifterMotor.set(ControlMode.Position, Constants.SCALE_BOTTOM_LIMIT);
 
 	}
 	public void toNeutralScale() {
-		
+		lifterMotor.set(ControlMode.Position, Constants.SCALE_NEUTRAL_LIMIT);
 
 	}
 	public void toTopScale() {
-		
+		lifterMotor.set(ControlMode.Position, Constants.SCALE_TOP_LIMIT);
 
 	}
 

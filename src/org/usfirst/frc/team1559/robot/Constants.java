@@ -18,5 +18,5 @@ public interface Constants {
 	public final int SCALE_TOP_LIMIT = 0;
 	public final int SCALE_NEUTRAL_LIMIT = 0;
 	public final int SCALE_BOTTOM_LIMIT = 0;
-	
+	public final int SWITCH_TOP_LIMIT = 0;
 }
