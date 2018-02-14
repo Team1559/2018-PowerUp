@@ -13,7 +13,6 @@ public class WPI_MecanumTranslate extends Command {
 	public static int cumError[] = new int[4];
 	
 	private final double minTime = 0.25;
-	// private double time = 0;
 	private double TOLERANCE = 300;
 	private double dxInTicks, dyInTicks;
 	private double x, y;
@@ -30,23 +29,6 @@ public class WPI_MecanumTranslate extends Command {
 		this.dxInTicks = x * Constants.WHEEL_FUDGE * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
 		this.angleInTicks = angle * 4096 * 0.019;
 		this.setpoints = new double[4];
-		
-		/*
-		if (x <= 45 || y <= 45) {
-			TOLERANCE = 300;
-		} else {
-			TOLERANCE = 992;
-		}
-		// 0.000817x + 0.0278
-		/*if (x != 0)
-			DriveTrain.kP = (0.000817 * Math.abs(x)) + 0.0278;
-		else
-			DriveTrain.kP = (0.000817 * Math.abs(y)) + 0.0278;
-		for (WPI_TalonSRX motor : Robot.driveTrain.motors) {
-			motor.config_kP(0, DriveTrain.kP, 0);
-		}
-		*/
-
 	}
 
 	@Override
@@ -63,11 +45,6 @@ public class WPI_MecanumTranslate extends Command {
 
 	@Override
 	protected void execute() {
-		//double[] s = Robot.driveTrain.rotateVector(dxInTicks, dyInTicks, Robot.imu.getVector()[0]);
-		//setpoints[DriveTrain.FL] = s[0] + s[1];
-		//setpoints[DriveTrain.FR] = -s[0] + s[1];
-		//setpoints[DriveTrain.RL] = s[0] - s[1];
-		//setpoints[DriveTrain.RR] = -s[0] - s[1];
 		Robot.driveTrain.setSetpoint(setpoints);
 	}
 
@@ -76,18 +53,18 @@ public class WPI_MecanumTranslate extends Command {
 		if (Timer.getFPGATimestamp() < startTime + minTime) {
 			return false;
 		}
+		
 		double averageError = 0;
 		for (int i = 0; i < 4; i++) {
 			SmartDashboard.putNumber("Error for motor " + i + ": ", Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0)));
 			averageError += Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0));
 		}
 		averageError /= 4;
+		
 		SmartDashboard.putNumber("Current avg error: ", averageError);
 		SmartDashboard.putNumber("P val: ", DriveTrain.kP);
 		SmartDashboard.putNumber("Tolerance: ", TOLERANCE);
-		if (averageError < TOLERANCE == true) {
-			SmartDashboard.putString("Command status: ", "All good!");
-		}
+		
 		return averageError < TOLERANCE;
 	}
 

@@ -17,12 +17,11 @@ public class DriveTrain {
 	public static final int RL = 2;
 	public static final int FL = 3;
 
-	// 0.08/0.15 for long distances (80-144)
-	// 0.073 for short (45-12)
-	public static double kP = 1.35;//.15
-	private static final double kI = 0;
+	// 0.13 for mecanum
+	public static double kP = .01;
+	private static final double kI = 0.0005;
 	// 4 for short and long
-	private static final double kD = 0;
+	private static final double kD = 0.03;
 	private static final double kF = 0;
 	private static final int TIMEOUT = 0;
 
@@ -53,7 +52,7 @@ public class DriveTrain {
 		talon.configPeakOutputForward(+1, TIMEOUT);
 		talon.configPeakOutputReverse(-1, TIMEOUT);
 
-		talon.config_kP(0, DriveTrain.kP, TIMEOUT);
+		talon.config_kP(0, kP, TIMEOUT);
 		talon.config_kI(0, kI, TIMEOUT);
 		talon.config_kD(0, kD, TIMEOUT);
 		talon.config_kF(0, kF, TIMEOUT);
@@ -70,42 +69,25 @@ public class DriveTrain {
 	}
 
 	public void translateAbsolute(double x, double y) { // slope
-		motors[FL].set(ControlMode.Position, (x + y));
-		motors[FR].set(ControlMode.Position, (-x + y));
-		motors[RL].set(ControlMode.Position, (x - y));
-		motors[RR].set(ControlMode.Position, (-x - y));
+		translateRotate(x, y, 0);
 	}
 
+	// TODO: replace the code please
 	public void rotate(double speed) { // slope
-		motors[FL].set(ControlMode.PercentOutput, speed);
-		motors[FR].set(ControlMode.PercentOutput, speed);
-		motors[RL].set(ControlMode.PercentOutput, speed);
-		motors[RR].set(ControlMode.PercentOutput, speed);
+//		setMotors(ControlMode.PercentOutput, speed);
 	}
-	
+
 	public void translateRotate(double x, double y, double angle) {
-		motors[FL].set(ControlMode.Position, (x + y - angle));
-		motors[FR].set(ControlMode.Position, (-x + y - angle));
-		motors[RL].set(ControlMode.Position, (x - y - angle));
-		motors[RR].set(ControlMode.Position, (-x - y - angle));
+//		setMotors(ControlMode.Position,
+//				new double[] { (x + y - angle), (-x + y - angle), (x - y - angle), (-x - y - angle) });
 	}
-	
+
 	public void setSetpoint(double[] setpoints) {
 		assert setpoints.length == 4;
 		motors[FL].set(ControlMode.Position, setpoints[FL]);
 		motors[FR].set(ControlMode.Position, setpoints[FR]);
 		motors[RL].set(ControlMode.Position, setpoints[RL]);
 		motors[RR].set(ControlMode.Position, setpoints[RR]);
-	}
-	
-	public double[] rotateVector(double x, double y, double angle){
-		double cosA = Math.cos(angle * (3.14159/180));
-		double sinA = Math.sin(angle * (3.14159/180));
-		double out[] = new double[2];
-		out[0] = x * cosA - y * sinA;
-		out[1] = x + sinA + y *cosA;
-		return out;
-		
 	}
 
 	/**
@@ -162,7 +144,7 @@ public class DriveTrain {
 	public boolean getMecanumized() {
 		return isMecanumized;
 	}
-	
+
 	public WPI_TalonSRX[] getMotors() {
 		return motors;
 	}
