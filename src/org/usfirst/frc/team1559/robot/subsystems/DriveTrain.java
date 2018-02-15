@@ -30,6 +30,12 @@ public class DriveTrain {
 	private VersaDrive drive;
 	public WPI_TalonSRX[] motors;
 
+	/**
+	 * Creates a new drive train, and initializes all of the talons
+	 * 
+	 * @param mecanumized
+	 *            Whether or not the chassis should be set to mecanum
+	 */
 	public DriveTrain(boolean mecanumized) {
 		motors = new WPI_TalonSRX[4];
 		motors[FL] = new WPI_TalonSRX(Wiring.DRV_FL_SRX);
@@ -37,9 +43,8 @@ public class DriveTrain {
 		motors[FR] = new WPI_TalonSRX(Wiring.DRV_FR_SRX);
 		motors[RR] = new WPI_TalonSRX(Wiring.DRV_RR_SRX);
 		drive = new VersaDrive(motors[FL], motors[RL], motors[FR], motors[RR]);
-		for (int i = 0; i < 4; i++) {
-			configTalon(motors[i]);
-		}
+		for (WPI_TalonSRX motor : motors)
+			configTalon(motor);
 		drive.setDeadband(0.1);
 		solenoid = new Solenoid(0, 0);
 	}
@@ -68,26 +73,81 @@ public class DriveTrain {
 		}
 	}
 
-	public void translateAbsolute(double x, double y) { // slope
+	/**
+	 * Calls {@link #translateRotate(double, double, double)} with the angle set to
+	 * zero
+	 * 
+	 * @param x
+	 *            Change in the x-axis (forward or backward)
+	 * @param y
+	 *            Change in the y-axis (left or right)
+	 */
+	public void translateAbsolute(double x, double y) {
 		translateRotate(x, y, 0);
 	}
 
-	// TODO: replace the code please
-	public void rotate(double speed) { // slope
-//		setMotors(ControlMode.PercentOutput, speed);
+	/**
+	 * Calls {@link #setMotors(ControlMode, double)} with
+	 * {@link com.ctre.phoenix.motorcontrol.ControlMode.PercentOutput
+	 * ControlMode.PercentOuput} and the given speed value
+	 * 
+	 * @param speed
+	 *            How fast to rotate
+	 */
+	public void rotate(double speed) {
+		setMotors(ControlMode.PercentOutput, speed);
 	}
 
+	/**
+	 * Calls {@link #setMotors(ControlMode, double[])} with
+	 * {@link com.ctre.phoenix.motorcontrol.ControlMode.Position
+	 * ControlMode.Position}, the given x and y, and the given angle (all calculated
+	 * with variations of x + y - angle)
+	 * 
+	 * @param x
+	 *            Change in the x-axis (forward or backward)
+	 * @param y
+	 *            Change in the y-axis (left or right)
+	 * @param angle
+	 *            Rotational change in degrees
+	 */
 	public void translateRotate(double x, double y, double angle) {
-//		setMotors(ControlMode.Position,
-//				new double[] { (x + y - angle), (-x + y - angle), (x - y - angle), (-x - y - angle) });
+		setMotors(ControlMode.Position,
+				new double[] { (x + y - angle), (-x + y - angle), (x - y - angle), (-x - y - angle) });
 	}
 
-	public void setSetpoint(double[] setpoints) {
+	public void setpoint(double[] setpoints) {
 		assert setpoints.length == 4;
-		motors[FL].set(ControlMode.Position, setpoints[FL]);
-		motors[FR].set(ControlMode.Position, setpoints[FR]);
-		motors[RL].set(ControlMode.Position, setpoints[RL]);
-		motors[RR].set(ControlMode.Position, setpoints[RR]);
+		setMotors(ControlMode.Position, new double[] { setpoints[FL], setpoints[FR], setpoints[RL], setpoints[RR] });
+	}
+
+	/**
+	 * Calls {@link #setMotors(ControlMode, double[])} with the given value
+	 * 
+	 * @param mode
+	 *            The {@link com.ctre.phoenix.motorcontrol.ControlMode ControlMode}
+	 *            to use
+	 * @param value
+	 *            The numerical value to use for all four of the motors
+	 */
+	private void setMotors(ControlMode mode, double value) {
+		setMotors(mode, new double[] { value, value, value, value });
+	}
+
+	/**
+	 * Sets all four of the motors to the given values in the respective order
+	 * 
+	 * @param mode
+	 *            The {@link com.ctre.phoenix.motorcontrol.ControlMode ControlMode}
+	 *            to use
+	 * @param value
+	 *            The numerical value to use for all four of the motors
+	 */
+	private void setMotors(ControlMode mode, double[] values) {
+		motors[FL].set(mode, values[0]);
+		motors[FR].set(mode, values[1]);
+		motors[RL].set(mode, values[2]);
+		motors[RR].set(mode, values[3]);
 	}
 
 	/**
@@ -127,11 +187,11 @@ public class DriveTrain {
 	 * </p>
 	 * 
 	 * @param x
-	 *            Speed along the x-axis
+	 *            Change in the x-axis (forward or backward)
 	 * @param y
-	 *            Speed along the y-axis
+	 *            Change in the y-axis (left or right)
 	 * @param zRot
-	 *            Rotation along the z-axis
+	 *            Rotation along the z-axis (turning)
 	 */
 	public void drive(double x, double y, double zRot) {
 		if (isMecanumized) {

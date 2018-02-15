@@ -11,7 +11,7 @@ public class WPI_PollVisionData extends Command {
 
 	@Override
 	protected void initialize() {
-		Robot.visionData.parseString(Robot.udp.get());
+		Robot.visionData.parseString(Robot.udp.getData());
 	}
 
 	@Override

@@ -2,7 +2,6 @@ package org.usfirst.frc.team1559.robot.auto.commands;
 
 import org.usfirst.frc.team1559.robot.Constants;
 import org.usfirst.frc.team1559.robot.Robot;
-import org.usfirst.frc.team1559.robot.auto.MotorError;
 import org.usfirst.frc.team1559.robot.subsystems.DriveTrain;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -20,14 +19,15 @@ public class WPI_TractionTranslate extends Command {
 	private double x;
 	private double startTime;
 
+	public static int[] incremental;
 	private double setpoints[];
 
 	public WPI_TractionTranslate(double x) {
 		this.x = x;
 		this.dxInTicks = x * Constants.WHEEL_FUDGE * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
 		this.setpoints = new double[4];
-		if (MotorError.cumError == null) {
-			MotorError.cumError = new int[4];
+		if (incremental == null) {
+			incremental = new int[4];
 		}
 	}
 
@@ -37,15 +37,15 @@ public class WPI_TractionTranslate extends Command {
 		System.out.println("Initializing " + this);
 		startTime = Timer.getFPGATimestamp();
 		Robot.driveTrain.resetQuadEncoders();
-		setpoints[DriveTrain.FL] = dxInTicks - MotorError.cumError[DriveTrain.FL];
-		setpoints[DriveTrain.FR] = -dxInTicks - MotorError.cumError[DriveTrain.FR];
-		setpoints[DriveTrain.RL] = dxInTicks - MotorError.cumError[DriveTrain.RL];
-		setpoints[DriveTrain.RR] = -dxInTicks - MotorError.cumError[DriveTrain.RR];
+		setpoints[DriveTrain.FL] = dxInTicks - incremental[DriveTrain.FL];
+		setpoints[DriveTrain.FR] = -dxInTicks - incremental[DriveTrain.FR];
+		setpoints[DriveTrain.RL] = dxInTicks - incremental[DriveTrain.RL];
+		setpoints[DriveTrain.RR] = -dxInTicks - incremental[DriveTrain.RR];
 	}
 
 	@Override
 	protected void execute() {
-		Robot.driveTrain.setSetpoint(setpoints);
+		Robot.driveTrain.setpoint(setpoints);
 	}
 
 	@Override
@@ -72,15 +72,15 @@ public class WPI_TractionTranslate extends Command {
 
 	@Override
 	protected void end() {
-		System.out.println(this + " has finished");
+		System.out.println(this + " has finished, adding error");
 		for (int i = 0; i < 4; i++) {
-			MotorError.cumError[i] = Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0));
+			incremental[i] = Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0));
 		}
 	}
 
 	@Override
 	public String toString() {
-		return String.format("TractionTranslate(%f)", x);
+		return String.format("TractionTranslate(%f inches)", x);
 	}
 
 }

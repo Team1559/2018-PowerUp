@@ -25,11 +25,12 @@ public class Robot extends IterativeRobot {
 	public static OperatorInterface oi;
 	public static DriveTrain driveTrain;
 	public static BNO055 imu;
-	private String gameData;
-	private CommandGroup routine;
 	public static UDPClient udp;
 	public static VisionData visionData;
-
+	
+	private String gameData;
+	private CommandGroup routine;
+	
 	@Override
 	public void robotInit() {
 		oi = new OperatorInterface();
@@ -47,36 +48,17 @@ public class Robot extends IterativeRobot {
 	}
 
 	@Override
-	public void robotPeriodic() {
-
-	}
+	public void robotPeriodic() {}
 
 	@Override
 	public void autonomousInit() {
 		imu.zeroHeading();
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
-		AutoPicker.pick(gameData, SmartDashboard.getNumber("Starting Position", 1));
-
+		
+		AutoPicker.best(gameData, SmartDashboard.getNumber("Starting Position", 1));
+		
 		Robot.driveTrain.resetQuadEncoders();
-
-		// double distance = 43;
-
-		// routine.addSequential(new WPI_MecanumTranslate(distance, 0));
-		// System.out.println("Done with translate!");
-		// routine.addSequential(new WPI_RotateRel(90, true));
-		/*
-		 * routine.addSequential(new WPI_Wait(1.5)); routine.addSequential(new
-		 * WPI_RotateRel(90, true)); routine.addSequential(new WPI_Wait(1.5));
-		 * routine.addSequential(new WPI_MecanumTranslate(distance / 2, 0));
-		 * routine.addSequential(new WPI_Wait(1.5)); routine.addSequential(new
-		 * WPI_RotateRel(90, true)); routine.addSequential(new WPI_Wait(1.5));
-		 * routine.addSequential(new WPI_MecanumTranslate(distance, 0));
-		 * routine.addSequential(new WPI_Wait(1.5)); routine.addSequential(new
-		 * WPI_RotateRel(90, true)); routine.addSequential(new WPI_Wait(1.5));
-		 * routine.addSequential(new WPI_MecanumTranslate(distance / 2, 0));
-		 * routine.addSequential(new WPI_Wait(1.5)); routine.addSequential(new
-		 * WPI_RotateRel(90, true));
-		 */
+		
 		routine.start();
 	}
 
@@ -84,7 +66,7 @@ public class Robot extends IterativeRobot {
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
 		SmartDashboard.putNumber("Motor 0 error: ", driveTrain.motors[0].getClosedLoopError(0));
-		SmartDashboard.putNumber("Motor 0 percent: ", driveTrain.motors[0].get());
+		SmartDashboard.putNumber("Motor 0 speed: ", driveTrain.motors[0].get());
 	}
 
 	@Override
@@ -102,22 +84,15 @@ public class Robot extends IterativeRobot {
 	}
 
 	@Override
-	public void disabledInit() {
-
-	}
+	public void disabledInit() {}
 
 	@Override
-	public void disabledPeriodic() {
-
-	}
+	public void disabledPeriodic() {}
 
 	@Override
-	public void testInit() {
-
-	}
+	public void testInit() {}
 
 	@Override
-	public void testPeriodic() {
-
-	}
+	public void testPeriodic() {}
+	
 }
