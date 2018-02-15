@@ -60,7 +60,6 @@ public class DriveTrain {
 		talon.configPeakOutputForward(+1, TIMEOUT);
 		talon.configPeakOutputReverse(-1, TIMEOUT);
 
-
 		talon.setInverted(true);
 		talon.setSensorPhase(true);
 		talon.setNeutralMode(NeutralMode.Brake);
@@ -73,42 +72,25 @@ public class DriveTrain {
 	}
 
 	public void translateAbsolute(double x, double y) { // slope
-		motors[FL].set(ControlMode.Position, (x + y));
-		motors[FR].set(ControlMode.Position, (-x + y));
-		motors[RL].set(ControlMode.Position, (x - y));
-		motors[RR].set(ControlMode.Position, (-x - y));
+		translateRotate(x, y, 0);
 	}
 
+	// TODO: replace the code please
 	public void rotate(double speed) { // slope
-		motors[FL].set(ControlMode.PercentOutput, speed);
-		motors[FR].set(ControlMode.PercentOutput, speed);
-		motors[RL].set(ControlMode.PercentOutput, speed);
-		motors[RR].set(ControlMode.PercentOutput, speed);
+//		setMotors(ControlMode.PercentOutput, speed);
 	}
-	
+
 	public void translateRotate(double x, double y, double angle) {
-		motors[FL].set(ControlMode.Position, (x + y - angle));
-		motors[FR].set(ControlMode.Position, (-x + y - angle));
-		motors[RL].set(ControlMode.Position, (x - y - angle));
-		motors[RR].set(ControlMode.Position, (-x - y - angle));
+//		setMotors(ControlMode.Position,
+//				new double[] { (x + y - angle), (-x + y - angle), (x - y - angle), (-x - y - angle) });
 	}
-	
+
 	public void setSetpoint(double[] setpoints) {
 		assert setpoints.length == 4;
 		motors[FL].set(ControlMode.Position, setpoints[FL]);
 		motors[FR].set(ControlMode.Position, setpoints[FR]);
 		motors[RL].set(ControlMode.Position, setpoints[RL]);
 		motors[RR].set(ControlMode.Position, setpoints[RR]);
-	}
-	
-	public double[] rotateVector(double x, double y, double angle){
-		double cosA = Math.cos(angle * (3.14159/180));
-		double sinA = Math.sin(angle * (3.14159/180));
-		double out[] = new double[2];
-		out[0] = x * cosA - y * sinA;
-		out[1] = x + sinA + y *cosA;
-		return out;
-		
 	}
 
 	/**
@@ -165,7 +147,7 @@ public class DriveTrain {
 	public boolean getMecanumized() {
 		return isMecanumized;
 	}
-	
+
 	public WPI_TalonSRX[] getMotors() {
 		return motors;
 	}
