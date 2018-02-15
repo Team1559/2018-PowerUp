@@ -17,13 +17,6 @@ public class DriveTrain {
 	public static final int RL = 2;
 	public static final int FL = 3;
 
-	// 0.08/0.15 for long distances (80-144)
-	// 0.073 for short (45-12)
-	public static double kP = 1.35;//.15
-	private static final double kI = 0;
-	// 4 for short and long
-	private static final double kD = 0;
-	private static final double kF = 0;
 	private static final int TIMEOUT = 0;
 
 	private boolean isMecanumized;
@@ -43,8 +36,22 @@ public class DriveTrain {
 		}
 		drive.setDeadband(0.1);
 		solenoid = new Solenoid(0, 0);
+		shift(mecanumized);
 	}
 
+	public void setPID(double p, double i, double d) {
+		setPIDF(p, i, d, 0);
+	}
+	
+	public void setPIDF(double p, double i, double d, double f) {
+		for (int j = 0; j < 4; j++) {
+			motors[j].config_kP(0, p, TIMEOUT);
+			motors[j].config_kI(0, i, TIMEOUT);
+			motors[j].config_kD(0, d, TIMEOUT);
+			motors[j].config_kF(0, f, TIMEOUT);		
+		}
+	}
+	
 	private void configTalon(WPI_TalonSRX talon) {
 		talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, TIMEOUT);
 
@@ -53,10 +60,6 @@ public class DriveTrain {
 		talon.configPeakOutputForward(+1, TIMEOUT);
 		talon.configPeakOutputReverse(-1, TIMEOUT);
 
-		talon.config_kP(0, DriveTrain.kP, TIMEOUT);
-		talon.config_kI(0, kI, TIMEOUT);
-		talon.config_kD(0, kD, TIMEOUT);
-		talon.config_kF(0, kF, TIMEOUT);
 
 		talon.setInverted(true);
 		talon.setSensorPhase(true);

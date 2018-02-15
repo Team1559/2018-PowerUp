@@ -8,9 +8,7 @@
 package org.usfirst.frc.team1559.robot;
 
 import org.usfirst.frc.team1559.robot.auto.AutoPicker;
-import org.usfirst.frc.team1559.robot.auto.commands.WPI_MecanumTranslate;
-import org.usfirst.frc.team1559.robot.auto.commands.WPI_RotateAbs;
-import org.usfirst.frc.team1559.robot.auto.commands.WPI_Wait;
+import org.usfirst.frc.team1559.robot.auto.commands.WPI_TractionTranslate;
 import org.usfirst.frc.team1559.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team1559.util.BNO055;
 
@@ -77,11 +75,9 @@ public class Robot extends IterativeRobot {
 //			routine.addSequential(new WPI_MecanumTranslate(134.9, 0));
 //			routine.addSequential(new WPI_RotateAbs(19, true));
 		case 4:
-			routine.addSequential(new WPI_MecanumTranslate(120, 0, 0));
-			routine.addSequential(new WPI_RotateAbs(26, true));
-			routine.addSequential(new WPI_MecanumTranslate(20, 0, 0));
-			routine.addSequential(new WPI_RotateAbs(0, true));
-			routine.addSequential(new WPI_MecanumTranslate(-120, 0, 90));
+			routine.addSequential(new WPI_TractionTranslate(30));
+			routine.addSequential(new WPI_TractionTranslate(-70));
+			
 			break;
 		default:
 			break;
@@ -111,6 +107,7 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().run();
 		System.out.println(imu.getHeading());
 		SmartDashboard.putNumber("Motor 0 error: ", driveTrain.motors[0].getClosedLoopError(0));
+		SmartDashboard.putNumber("Motor 0 value: ", driveTrain.motors[0].getMotorOutputVoltage());
 	}
 
 	@Override
@@ -122,6 +119,7 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		oi.update();
 		driveTrain.drive(-oi.getDriverY(), oi.getDriverX(), -oi.getDriverZ());
+		System.out.println(imu.getHeading());
 		if (oi.getDriverButton(1).isPressed()) {
 			driveTrain.shift();
 		}
