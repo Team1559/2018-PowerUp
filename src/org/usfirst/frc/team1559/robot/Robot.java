@@ -25,12 +25,11 @@ public class Robot extends IterativeRobot {
 	public static OperatorInterface oi;
 	public static DriveTrain driveTrain;
 	public static BNO055 imu;
-	public static UDPClient udp;
-	public static VisionData visionData;
-	
 	private String gameData;
 	private CommandGroup routine;
-	
+	public static UDPClient udp;
+	public static VisionData visionData;
+
 	@Override
 	public void robotInit() {
 		oi = new OperatorInterface();
@@ -48,17 +47,17 @@ public class Robot extends IterativeRobot {
 	}
 
 	@Override
-	public void robotPeriodic() {}
+	public void robotPeriodic() {
+
+	}
 
 	@Override
 	public void autonomousInit() {
 		imu.zeroHeading();
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
-		
-		AutoPicker.best(gameData, SmartDashboard.getNumber("Starting Position", 1));
-		
-		Robot.driveTrain.resetQuadEncoders();
+		AutoPicker.pick(gameData, SmartDashboard.getNumber("Starting Position", 1));
 
+		Robot.driveTrain.resetQuadEncoders();
 
 		// double distance = 43;
 
@@ -114,7 +113,6 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().run();
 		SmartDashboard.putNumber("Motor 0 error: ", driveTrain.motors[0].getClosedLoopError(0));
 		SmartDashboard.putNumber("Motor 0 value: ", driveTrain.motors[0].getMotorOutputVoltage());
-		SmartDashboard.putNumber("Motor 0 speed: ", driveTrain.motors[0].get());
 	}
 
 	@Override
@@ -133,15 +131,22 @@ public class Robot extends IterativeRobot {
 	}
 
 	@Override
-	public void disabledInit() {}
+	public void disabledInit() {
+
+	}
 
 	@Override
-	public void disabledPeriodic() {}
+	public void disabledPeriodic() {
+
+	}
 
 	@Override
-	public void testInit() {}
+	public void testInit() {
+
+	}
 
 	@Override
-	public void testPeriodic() {}
-	
+	public void testPeriodic() {
+
+	}
 }

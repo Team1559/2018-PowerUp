@@ -3,7 +3,7 @@ package org.usfirst.frc.team1559.robot.auto;
 import org.usfirst.frc.team1559.robot.auto.strategies.Strategy1A;
 
 /**
- * Picks the optimal strategy for the provided game data
+ * Picks the optimal {@link AutoStrategy} for the provided game data
  * 
  * @author Victor Robotics Team 1559, Software
  */
@@ -23,11 +23,11 @@ public class AutoPicker {
 	 * if an unknown game data configuration was given
 	 * 
 	 * @param gameData
-	 *            String representation of the ownership of the switches and scale
-	 * @return The optimal strategy
+	 *            String representation of the ownership of each switch and the
+	 *            scale
+	 * @return The optimal auto strategy
 	 */
-	public static AutoStrategy best(String gameData, double position) {
-		// TODO: Pick actual strategies
+	public static AutoStrategy pick(String gameData, double position) {
 		switch (gameData.toUpperCase()) {
 		case "LRL":
 
