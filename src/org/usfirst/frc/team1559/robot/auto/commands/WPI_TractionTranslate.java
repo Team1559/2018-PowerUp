@@ -14,12 +14,12 @@ public class WPI_TractionTranslate extends Command {
 	private static final double kD = 0;
 
 	private final double minTime = 0.25;
-	// private double time = 0;
 	private double TOLERANCE = 300;
 	private double dxInTicks;
 	private double x;
 	private double startTime;
 
+	public static int[] incremental;
 	private double setpoints[];
 
 	public WPI_TractionTranslate(double x) {
@@ -27,15 +27,9 @@ public class WPI_TractionTranslate extends Command {
 		this.dxInTicks = x * Constants.DT_SPROCKET_RATIO * Constants.WHEEL_FUDGE_TRACTION * 4096
 				/ (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
 		this.setpoints = new double[4];
-
-		/*
-		 * if (x <= 45 || y <= 45) { TOLERANCE = 300; } else { TOLERANCE = 992; } //
-		 * 0.000817x + 0.0278 /*if (x != 0) DriveTrain.kP = (0.000817 * Math.abs(x)) +
-		 * 0.0278; else DriveTrain.kP = (0.000817 * Math.abs(y)) + 0.0278; for
-		 * (WPI_TalonSRX motor : Robot.driveTrain.motors) { motor.config_kP(0,
-		 * DriveTrain.kP, 0); }
-		 */
-
+    if (incremental == null) {
+			incremental = new int[4];
+		}
 	}
 
 	@Override
@@ -45,7 +39,7 @@ public class WPI_TractionTranslate extends Command {
 		System.out.println("Initializing " + this);
 		startTime = Timer.getFPGATimestamp();
 		Robot.driveTrain.resetQuadEncoders();
-		setpoints[DriveTrain.FL] = dxInTicks;
+		setpoints[DriveTrain.FL] = drxInTicks;
 		setpoints[DriveTrain.FR] = -dxInTicks;
 		setpoints[DriveTrain.RL] = dxInTicks;
 		setpoints[DriveTrain.RR] = -dxInTicks;
@@ -53,13 +47,7 @@ public class WPI_TractionTranslate extends Command {
 
 	@Override
 	protected void execute() {
-		// double[] s = Robot.driveTrain.rotateVector(dxInTicks, dyInTicks,
-		// Robot.imu.getVector()[0]);
-		// setpoints[DriveTrain.FL] = s[0] + s[1];
-		// setpoints[DriveTrain.FR] = -s[0] + s[1];
-		// setpoints[DriveTrain.RL] = s[0] - s[1];
-		// setpoints[DriveTrain.RR] = -s[0] - s[1];
-		Robot.driveTrain.setSetpoint(setpoints);
+		Robot.driveTrain.setpoint(setpoints);
 	}
 
 	@Override
@@ -78,11 +66,14 @@ public class WPI_TractionTranslate extends Command {
 	@Override
 	protected void end() {
 		System.out.println(this + " has finished");
+		for (int i = 0; i < 4; i++) {
+			incremental[i] = Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0));
+		}
 	}
 
 	@Override
 	public String toString() {
-		return String.format("TractionTranslate(%f)", x);
+		return String.format("TractionTranslate(%f inches)", x);
 	}
 
 }

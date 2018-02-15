@@ -15,23 +15,21 @@ public class WPI_MecanumTranslate extends Command {
 
 	public static int cumError[] = new int[4];
 
+	private String asString;
 	private final double minTime = 0.25;
 	private double TOLERANCE = 300;
 	private double dxInTicks, dyInTicks;
-	private double x, y;
 	private double startTime;
 
-	private double angle, angleInTicks;
+	private double angleInTicks;
 	private double setpoints[];
 
 	public WPI_MecanumTranslate(double x, double y, double angle) {
-		this.x = x;
-		this.y = y;
-		this.angle = angle;
 		this.dyInTicks = y * Constants.WHEEL_FUDGE_MECANUM * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
 		this.dxInTicks = x * Constants.WHEEL_FUDGE_MECANUM * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
 		this.angleInTicks = angle * 4096 * 0.019;
 		this.setpoints = new double[4];
+		asString = String.format("MecanumTranslate (x of %f, y of %f, %f degrees)", x, y, angle);
 	}
 
 	@Override
@@ -49,7 +47,7 @@ public class WPI_MecanumTranslate extends Command {
 
 	@Override
 	protected void execute() {
-		Robot.driveTrain.setSetpoint(setpoints);
+		Robot.driveTrain.setpoint(setpoints);
 	}
 
 	@Override
@@ -57,7 +55,6 @@ public class WPI_MecanumTranslate extends Command {
 		if (Timer.getFPGATimestamp() < startTime + minTime) {
 			return false;
 		}
-		
 		double averageError = 0;
 		for (int i = 0; i < 4; i++) {
 			averageError += Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0));
@@ -69,14 +66,13 @@ public class WPI_MecanumTranslate extends Command {
 	@Override
 	protected void end() {
 		System.out.println(this + " has finished");
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 4; i++)
 			cumError[i] = Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0));
-		}
 	}
 
 	@Override
 	public String toString() {
-		return String.format("MecanumTranslate (%f, %f, %f degrees)", x, y, angle);
+		return asString;
 	}
 
 }
