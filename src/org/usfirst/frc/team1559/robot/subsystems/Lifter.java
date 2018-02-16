@@ -59,4 +59,12 @@ public class Lifter {
 	public void toHome() {
 		lifterMotor.set(ControlMode.Position, Constants.LIFT_BOTTOM_LIMIT);
 	}
+	
+	public void driveUp() {
+		lifterMotor.set(ControlMode.PercentOutput, 0.5);
+	}
+	
+	public void driveDown() {
+		lifterMotor.set(ControlMode.PercentOutput, -0.5);
+	}
 }

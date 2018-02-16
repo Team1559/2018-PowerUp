@@ -9,11 +9,11 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class WPI_TractionTranslate extends Command {
 
-	private static final double kP = .089;
-	private static final double kI = 0.001;
+	private static final double kP = .089;// .089 EVERY .11 you increment it it goes 2 more inches
+	private static final double kI = 0.00; // .001
 	private static final double kD = 0;
 
-	private final double minTime = 0.25;
+	private final double minTime = 3;
 	// private double time = 0;
 	private double TOLERANCE = 300;
 	private double dxInTicks;
@@ -64,14 +64,17 @@ public class WPI_TractionTranslate extends Command {
 
 	@Override
 	protected boolean isFinished() {
-		if (Timer.getFPGATimestamp() < startTime + minTime) {
-			return false;
-		}
+		/*
+		 * System.out.println("now: " + Timer.getFPGATimestamp());
+		 * System.out.println("start: " + startTime + "\n"); if
+		 * (Timer.getFPGATimestamp() < startTime + minTime) { return false; }
+		 */
 		double averageError = 0;
 		for (int i = 0; i < 4; i++) {
 			averageError += Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0));
 		}
 		averageError /= 4;
+		System.out.println("finished: " + (averageError < TOLERANCE) + " (" + averageError + " < " + TOLERANCE + ")");
 		return averageError < TOLERANCE;
 	}
 

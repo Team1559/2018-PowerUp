@@ -12,6 +12,7 @@ import org.usfirst.frc.team1559.robot.auto.commands.WPI_MecanumTranslate;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_RotateAbs;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_TractionTranslate;
 import org.usfirst.frc.team1559.robot.subsystems.DriveTrain;
+import org.usfirst.frc.team1559.robot.subsystems.Lifter;
 import org.usfirst.frc.team1559.util.BNO055;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -29,6 +30,7 @@ public class Robot extends IterativeRobot {
 	private CommandGroup routine;
 	public static UDPClient udp;
 	public static VisionData visionData;
+	public static Lifter lifter;
 
 	@Override
 	public void robotInit() {
@@ -37,13 +39,14 @@ public class Robot extends IterativeRobot {
 		imu = BNO055.getInstance(BNO055.opmode_t.OPERATION_MODE_IMUPLUS, BNO055.vector_type_t.VECTOR_EULER);
 		AutoPicker.init();
 		routine = new CommandGroup();
-		routine.addSequential(new WPI_MecanumTranslate(165, 0, 0));
-		routine.addSequential(new WPI_RotateAbs(90, false));
-		routine.addSequential(new WPI_TractionTranslate(20));
-		routine.addSequential(new WPI_RotateAbs(0, false));
-		routine.addSequential(new WPI_MecanumTranslate(80, 0, 90));
+//		routine.addSequential(new WPI_MecanumTranslate(165, 0, 0));
+//		routine.addSequential(new WPI_RotateAbs(90, false));
+//		routine.addSequential(new WPI_TractionTranslate(20));
+//		routine.addSequential(new WPI_RotateAbs(0, false));
+//		routine.addSequential(new WPI_MecanumTranslate(80, 0, 90));
 		udp = new UDPClient();
 		visionData = new VisionData();
+		lifter = new Lifter();
 	}
 
 	@Override
@@ -81,9 +84,8 @@ public class Robot extends IterativeRobot {
 //			routine.addSequential(new WPI_MecanumTranslate(134.9, 0));
 //			routine.addSequential(new WPI_RotateAbs(19, true));
 		case 4:
-			routine.addSequential(new WPI_TractionTranslate(30));
-			routine.addSequential(new WPI_TractionTranslate(-70));
-			
+			routine.addSequential(new WPI_TractionTranslate(45));
+			routine.addSequential(new WPI_TractionTranslate(-45));
 			break;
 		default:
 			break;
@@ -123,11 +125,22 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		oi.update();
+		System.out.println(lifter.getPot());
 		driveTrain.drive(-oi.getDriverY(), oi.getDriverX(), -oi.getDriverZ());
 		System.out.println(imu.getHeading());
 		if (oi.getDriverButton(1).isPressed()) {
 			driveTrain.shift();
 		}
+		if (oi.getDriverButton(4).isPressed()) {
+			lifter.toTopScale();
+		}
+		if (oi.getDriverButton(3).isPressed()) {
+			lifter.driveUp();
+		}
+		if (oi.getDriverButton(0).isPressed()) {
+			lifter.driveDown();
+		}
+		
 	}
 
 	@Override
