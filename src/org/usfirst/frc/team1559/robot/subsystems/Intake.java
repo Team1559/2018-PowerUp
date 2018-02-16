@@ -1,21 +1,23 @@
 package org.usfirst.frc.team1559.robot.subsystems;
 
+import org.usfirst.frc.team1559.robot.Wiring;
+
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Spark;
 
 public class Intake {
 
 	private Solenoid solenoid;
-	private Spark spark1;
-	private Spark spark2;
-	private Spark spark3;
-
-	public Intake(int... ports) {
-		assert ports.length == 4;
-		solenoid = new Solenoid(ports[0]);
-		spark1 = new Spark(ports[1]);
-		spark2 = new Spark(ports[2]);
-		spark3 = new Spark(ports[3]);
+	private Spark sparkLeft;
+	private Spark sparkRight;
+	private Spark sparkRotate;
+	
+	public Intake() {
+		solenoid = new Solenoid(Wiring.NTK_SOLENOID);
+		sparkLeft = new Spark(Wiring.NTK_SPARK_LEFT);
+		sparkRight = new Spark(Wiring.NTK_SPARK_RIGHT);
+		sparkRotate = new Spark(Wiring.NTK_SPARK_ROTATE);
+		
 	}
 
 	public void open() {
@@ -25,29 +27,40 @@ public class Intake {
 	public void close() {
 		solenoid.set(false);
 	}
+	
+	public void toggle() {
+		solenoid.set(!solenoid.get());
+	}
 
-	public void startTread() {
-		spark1.set(1.0);
-		spark2.set(1.0);
+	public void out() {
+		sparkLeft.set(-1.0);
+		sparkRight.set(1.0);
+	}
+	
+	public void in() {
+		sparkLeft.set(1.0);
+		sparkRight.set(-1.0);
+	}
+	
+	public void stopIntake() {
+		sparkLeft.set(0.0);
+		sparkRight.set(0.0);		
 	}
 
 	public void stopTread() {
-		spark1.set(0);
-		spark2.set(0);
+		sparkLeft.set(0);
+		sparkRight.set(0);
 	}
 
-	public void up() {
-		spark3.set(1.0);
-		// spark4.set(1.0);
+	public void rotateDown() {
+		sparkRotate.set(-0.2);
 	}
 
-	public void down() {
-		spark3.set(-1.0);
-		// spark4.set(-1.0);
+	public void rotateUp() {
+		sparkRotate.set(0.4);
 	}
-
-	public void stop() {
-		spark3.set(0);
-		// spark4.set(0);
+	
+	public void rotateStop() {
+		sparkRotate.set(0);
 	}
 }

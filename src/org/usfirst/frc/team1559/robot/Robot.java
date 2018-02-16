@@ -8,10 +8,9 @@
 package org.usfirst.frc.team1559.robot;
 
 import org.usfirst.frc.team1559.robot.auto.AutoPicker;
-import org.usfirst.frc.team1559.robot.auto.commands.WPI_MecanumTranslate;
-import org.usfirst.frc.team1559.robot.auto.commands.WPI_RotateAbs;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_TractionTranslate;
 import org.usfirst.frc.team1559.robot.subsystems.DriveTrain;
+import org.usfirst.frc.team1559.robot.subsystems.Intake;
 import org.usfirst.frc.team1559.robot.subsystems.Lifter;
 import org.usfirst.frc.team1559.util.BNO055;
 
@@ -31,6 +30,7 @@ public class Robot extends IterativeRobot {
 	public static UDPClient udp;
 	public static VisionData visionData;
 	public static Lifter lifter;
+	public static Intake intake;
 
 	@Override
 	public void robotInit() {
@@ -39,14 +39,15 @@ public class Robot extends IterativeRobot {
 		imu = BNO055.getInstance(BNO055.opmode_t.OPERATION_MODE_IMUPLUS, BNO055.vector_type_t.VECTOR_EULER);
 		AutoPicker.init();
 		routine = new CommandGroup();
-//		routine.addSequential(new WPI_MecanumTranslate(165, 0, 0));
-//		routine.addSequential(new WPI_RotateAbs(90, false));
-//		routine.addSequential(new WPI_TractionTranslate(20));
-//		routine.addSequential(new WPI_RotateAbs(0, false));
-//		routine.addSequential(new WPI_MecanumTranslate(80, 0, 90));
+		// routine.addSequential(new WPI_MecanumTranslate(165, 0, 0));
+		// routine.addSequential(new WPI_RotateAbs(90, false));
+		// routine.addSequential(new WPI_TractionTranslate(20));
+		// routine.addSequential(new WPI_RotateAbs(0, false));
+		// routine.addSequential(new WPI_MecanumTranslate(80, 0, 90));
 		udp = new UDPClient();
 		visionData = new VisionData();
 		lifter = new Lifter();
+		intake = new Intake();
 	}
 
 	@Override
@@ -73,16 +74,16 @@ public class Robot extends IterativeRobot {
 			// routine.addSequential(new WPI_MecanumTranslate(127.5, 16));
 			break;
 		case 1:
-//			routine.addSequential(new WPI_MecanumTranslate(127.5, 0));
-//			routine.addSequential(new WPI_MecanumTranslate(127.5, -16));
+			// routine.addSequential(new WPI_MecanumTranslate(127.5, 0));
+			// routine.addSequential(new WPI_MecanumTranslate(127.5, -16));
 			break;
 		case 2:
-//			routine.addSequential(new WPI_MecanumTranslate(146.4, 0));
-//			routine.addSequential(new WPI_RotateAbs(29.5, true));
+			// routine.addSequential(new WPI_MecanumTranslate(146.4, 0));
+			// routine.addSequential(new WPI_RotateAbs(29.5, true));
 			break;
 		case 3:
-//			routine.addSequential(new WPI_MecanumTranslate(134.9, 0));
-//			routine.addSequential(new WPI_RotateAbs(19, true));
+			// routine.addSequential(new WPI_MecanumTranslate(134.9, 0));
+			// routine.addSequential(new WPI_RotateAbs(19, true));
 		case 4:
 			routine.addSequential(new WPI_TractionTranslate(45));
 			routine.addSequential(new WPI_TractionTranslate(-45));
@@ -125,22 +126,43 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		oi.update();
-		System.out.println(lifter.getPot());
 		driveTrain.drive(-oi.getDriverY(), oi.getDriverX(), -oi.getDriverZ());
-		System.out.println(imu.getHeading());
 		if (oi.getDriverButton(1).isPressed()) {
 			driveTrain.shift();
 		}
-		if (oi.getDriverButton(4).isPressed()) {
-			lifter.toTopScale();
+
+		if (oi.getDriverButton(2).isDown()) {
+			intake.open();
+		} else {
+			intake.close();
 		}
-		if (oi.getDriverButton(3).isPressed()) {
-			lifter.driveUp();
+
+		if (oi.getDriverButton(6).isDown()) {
+			intake.in();
+		} else if (oi.getDriverButton(7).isDown()) {
+			intake.out();
+		} else {
+			intake.stopIntake();
 		}
-		if (oi.getDriverButton(0).isPressed()) {
-			lifter.driveDown();
+
+		if (oi.getDriverButton(4).isDown()) {
+			intake.rotateUp();
+		} else if (oi.getDriverButton(5).isDown()) {
+			intake.rotateDown();
+		} else {
+			intake.rotateStop();
 		}
-		
+
+		// if (oi.getDriverButton(4).isPressed()) {
+		// lifter.toTopScale();
+		// }
+		// if (oi.getDriverButton(3).isPressed()) {
+		// lifter.driveUp();
+		// }
+		// if (oi.getDriverButton(0).isPressed()) {
+		// lifter.driveDown();
+		// }
+
 	}
 
 	@Override

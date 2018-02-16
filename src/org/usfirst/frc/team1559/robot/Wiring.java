@@ -13,12 +13,14 @@ public interface Wiring {
 	public static final int LIFT_TALON = 1;
 
 	// Intake
-	public static final int NTK_TALON = 0;
-	public static final int NTK_SOLENOID = 0;
+	public static final int NTK_SPARK_LEFT = 1;
+	public static final int NTK_SPARK_RIGHT = 0;
+	public static final int NTK_SPARK_ROTATE = 2;
+	public static final int NTK_SOLENOID = 7;
 	
 	// Climber
 	public static final int CLM_SPARK = 0;
-	public static final int CLM_TALON = 0;
+	public static final int CLM_TALON = 2;
 	public static final int CLM_LIMIT_ID = 0;
 	
 	// Controllers

@@ -67,4 +67,8 @@ public class Lifter {
 	public void driveDown() {
 		lifterMotor.set(ControlMode.PercentOutput, -0.5);
 	}
+
+	public void setMotor(double value) {
+		lifterMotor.set(ControlMode.PercentOutput, value);
+	}
 }

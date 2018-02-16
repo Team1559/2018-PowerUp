@@ -51,6 +51,14 @@ public class OperatorInterface {
 	public double getCopilotZ() {
 		return copilotStick.getRawAxis(4);
 	}
+	
+	public double getDriverAxis(int x) {
+		return driverStick.getRawAxis(x);
+	}
+	
+	public double getCopilotAxis(int x) {
+		return copilotStick.getRawAxis(x);
+	}
 
 	/**
 	 * Calls the update methods for all of the driver and co-pilot buttons
