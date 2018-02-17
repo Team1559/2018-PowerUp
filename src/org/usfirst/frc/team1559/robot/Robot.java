@@ -126,15 +126,13 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		oi.update();
-		driveTrain.drive(-oi.getDriverY(), oi.getDriverX(), -oi.getDriverZ());
+		driveTrain.drive(oi.getDriverY(), oi.getDriverX(), -oi.getDriverZ()); //was neg y
 		if (oi.getDriverButton(1).isPressed()) {
 			driveTrain.shift();
 		}
 
-		if (oi.getDriverButton(2).isDown()) {
-			intake.open();
-		} else {
-			intake.close();
+		if (oi.getDriverButton(2).isPressed()) {
+			intake.toggle();
 		}
 
 		if (oi.getDriverButton(6).isDown()) {
@@ -147,11 +145,25 @@ public class Robot extends IterativeRobot {
 
 		if (oi.getDriverButton(4).isDown()) {
 			intake.rotateUp();
+			intake.setState(false);
 		} else if (oi.getDriverButton(5).isDown()) {
+			intake.setState(true);
 			intake.rotateDown();
 		} else {
-			intake.rotateStop();
+			intake.rotate();
 		}
+		
+		double x = (oi.getDriverAxis(3))-(oi.getDriverAxis(2)/4);
+		lifter.setMotor(x);
+		//System.out.println(x);
+		
+		if (oi.getDriverButton(3).isDown()) {
+			lifter.toNeutralScale();
+		}
+		//if (oi.getDriverButton(0).isDown()) {
+			//lifter.toHome();
+		//}
+		System.out.println(lifter.getPot());
 
 		// if (oi.getDriverButton(4).isPressed()) {
 		// lifter.toTopScale();
@@ -162,7 +174,8 @@ public class Robot extends IterativeRobot {
 		// if (oi.getDriverButton(0).isPressed()) {
 		// lifter.driveDown();
 		// }
-
+		System.out.println("Current: " + lifter.getMotor().getOutputCurrent());
+		//System.out.println("Voltage: " + lifter.getMotor().getBusVoltage());
 	}
 
 	@Override

@@ -12,12 +12,16 @@ public class Intake {
 	private Spark sparkRight;
 	private Spark sparkRotate;
 	
+	private boolean isDown;
+	
+	
 	public Intake() {
 		solenoid = new Solenoid(Wiring.NTK_SOLENOID);
 		sparkLeft = new Spark(Wiring.NTK_SPARK_LEFT);
 		sparkRight = new Spark(Wiring.NTK_SPARK_RIGHT);
 		sparkRotate = new Spark(Wiring.NTK_SPARK_ROTATE);
 		
+		isDown = true;
 	}
 
 	public void open() {
@@ -53,11 +57,28 @@ public class Intake {
 	}
 
 	public void rotateDown() {
-		sparkRotate.set(-0.2);
+		sparkRotate.set(-0.3);
 	}
 
 	public void rotateUp() {
-		sparkRotate.set(0.4);
+		sparkRotate.set(0.8);
+	}
+	
+	public void switchState() {
+		isDown = !isDown;
+	}
+	
+	public void rotate() {
+		if (!isDown) {
+			sparkRotate.set(0.268);
+		}
+		else {
+			rotateStop();
+		}
+	}
+	
+	public void setState(boolean b) {
+		isDown = b;
 	}
 	
 	public void rotateStop() {
