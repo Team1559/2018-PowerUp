@@ -1,7 +1,7 @@
 package org.usfirst.frc.team1559.robot.subsystems;
 
-import org.usfirst.frc.team1559.robot.VersaDrive;
 import org.usfirst.frc.team1559.robot.Wiring;
+import org.usfirst.frc.team1559.util.VersaDrive;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -55,6 +55,8 @@ public class DriveTrain {
 	private void configTalon(WPI_TalonSRX talon) {
 		talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, TIMEOUT);
 
+		talon.configClosedloopRamp(0.1, TIMEOUT);
+		
 		talon.configNominalOutputForward(0, TIMEOUT);
 		talon.configNominalOutputReverse(0, TIMEOUT);
 		talon.configPeakOutputForward(+1, TIMEOUT);

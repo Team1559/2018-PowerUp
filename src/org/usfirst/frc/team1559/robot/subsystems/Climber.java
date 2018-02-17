@@ -1,6 +1,8 @@
-package org.usfirst.frc.team1559.robot;
+package org.usfirst.frc.team1559.robot.subsystems;
 
-import edu.wpi.first.wpilibj.DigitalInput;
+import org.usfirst.frc.team1559.robot.Constants;
+import org.usfirst.frc.team1559.robot.Wiring;
+
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Talon;
 
@@ -8,20 +10,14 @@ public class Climber {
 
 	private Spark telescope;
 	private Talon winch;
-	private DigitalInput limitSwitch;
 
 	public Climber() {
 		telescope = new Spark(Wiring.CLM_SPARK); // Up and down telescope
 		winch = new Talon(Wiring.CLM_TALON); // Winch function - the wheel that flips around
-		limitSwitch = new DigitalInput(Wiring.CLM_LIMIT_ID);
 	}
 
 	public void extendTelescope() {
-		if (!limitSwitch.get()) {
-			telescope.set(Constants.CLIMB_TELESCOPE_SPEED);
-		} else {
-			telescope.set(0);
-		}
+		telescope.set(Constants.CLIMB_TELESCOPE_SPEED);
 	}
 
 	public void retractTelescope() {
@@ -29,14 +25,14 @@ public class Climber {
 	}
 
 	public void rotateWinch() {
-		if(!limitSwitch.get()) {
-			winch.set(0);
-		} else {
-			winch.set(Constants.CLIMB_WINCH_SPEED);
-		}
+		winch.set(Constants.CLIMB_WINCH_SPEED);
 	}
 
 	public void stopWinch() {
 		winch.set(0);
+	}
+	
+	public void reverseWinch() {
+		winch.set(-Constants.CLIMB_WINCH_SPEED);
 	}
 }

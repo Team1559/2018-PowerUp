@@ -11,27 +11,27 @@ public class Intake {
 	private Spark sparkLeft;
 	private Spark sparkRight;
 	private Spark sparkRotate;
-	
-	private boolean isDown;
-	
-	
+
+	private boolean isGoingDown;
+	private boolean rotateActive;
+
 	public Intake() {
 		solenoid = new Solenoid(Wiring.NTK_SOLENOID);
 		sparkLeft = new Spark(Wiring.NTK_SPARK_LEFT);
 		sparkRight = new Spark(Wiring.NTK_SPARK_RIGHT);
 		sparkRotate = new Spark(Wiring.NTK_SPARK_ROTATE);
-		
-		isDown = true;
+		isGoingDown = false;
+		rotateActive = false;
 	}
 
 	public void open() {
-		solenoid.set(true);
+		solenoid.set(false);
 	}
 
 	public void close() {
-		solenoid.set(false);
+		solenoid.set(true);
 	}
-	
+
 	public void toggle() {
 		solenoid.set(!solenoid.get());
 	}
@@ -40,47 +40,56 @@ public class Intake {
 		sparkLeft.set(-1.0);
 		sparkRight.set(1.0);
 	}
-	
+
 	public void in() {
 		sparkLeft.set(1.0);
 		sparkRight.set(-1.0);
 	}
 	
+	public void rotateIntake() {	
+		sparkLeft.set(1.0);
+		sparkRight.set(1.0);
+	}
+
 	public void stopIntake() {
 		sparkLeft.set(0.0);
-		sparkRight.set(0.0);		
+		sparkRight.set(0.0);
 	}
-
-	public void stopTread() {
-		sparkLeft.set(0);
-		sparkRight.set(0);
-	}
+	
 
 	public void rotateDown() {
-		sparkRotate.set(-0.3);
+		isGoingDown = true;
 	}
 
 	public void rotateUp() {
-		sparkRotate.set(0.8);
+		isGoingDown = false;
 	}
-	
+
+	public void setActive(boolean b) {
+		rotateActive = b;
+	}
+
+	public void updateRotate() {
+		if (isGoingDown) {
+			if (rotateActive) {
+				sparkRotate.set(-0.4);
+			} else {
+				sparkRotate.set(-0.15);
+			}
+		} else {
+			if (rotateActive) {
+				sparkRotate.set(0.8);
+			} else {
+				sparkRotate.set(0.45);
+			}
+		}
+
+	}
+
 	public void switchState() {
-		isDown = !isDown;
+		isGoingDown = !isGoingDown;
 	}
-	
-	public void rotate() {
-		if (!isDown) {
-			sparkRotate.set(0.268);
-		}
-		else {
-			rotateStop();
-		}
-	}
-	
-	public void setState(boolean b) {
-		isDown = b;
-	}
-	
+
 	public void rotateStop() {
 		sparkRotate.set(0);
 	}

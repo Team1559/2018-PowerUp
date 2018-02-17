@@ -11,27 +11,24 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 public class Lifter {
 
 	private WPI_TalonSRX lifterMotor;
-	private final int TIMEOUT = 0;
-	private double kP = 7;
+	private static final int TIMEOUT = 0;
+	private double kP = 14;
 	private double kI = 0;
 	private double kD = 0;
 	private double kF = 0;
-	
-	private boolean isDown;
-	
 
 	public Lifter() {
 		lifterMotor = new WPI_TalonSRX(Wiring.LIFT_TALON);
 		lifterMotor.set(ControlMode.Position, 0);
 		lifterMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, TIMEOUT);
 
+		lifterMotor.configClosedloopRamp(0.4, TIMEOUT);
+		
 		lifterMotor.configNominalOutputForward(0, TIMEOUT);
 		lifterMotor.configNominalOutputReverse(0, TIMEOUT);
 		lifterMotor.configPeakOutputForward(+1, TIMEOUT);
-		lifterMotor.configPeakOutputReverse(-1, TIMEOUT);
+		lifterMotor.configPeakOutputReverse(-.2, TIMEOUT);
 		
-		//lifterMotor.configPeakCurrentLimit(40, TIMEOUT); //raise the current limit of the boi
-
 		lifterMotor.config_kP(0, kP, TIMEOUT);
 		lifterMotor.config_kI(0, kI, TIMEOUT);
 		lifterMotor.config_kD(0, kD, TIMEOUT);
@@ -41,34 +38,29 @@ public class Lifter {
 		lifterMotor.setNeutralMode(NeutralMode.Brake);
 	}
 
-	//Positions negative, pot mounted backwards
+	//Positions are negative, pot mounted backwards
 	public double getPot() {
 		return lifterMotor.getSensorCollection().getAnalogIn();
-		//return lifterMotor.getSelectedSensorPosition(0);
 	}
 
-	public void toSwitch() {
-		lifterMotor.set(ControlMode.Position, -Constants.SWITCH_TOP_LIMIT);
-	}
-
-	public void toBottomScale() {
-		lifterMotor.set(ControlMode.Position, -Constants.SCALE_BOTTOM_LIMIT);
-	}
-
-	public void toNeutralScale() {
-		lifterMotor.set(ControlMode.Position, -Constants.SCALE_NEUTRAL_LIMIT);
-	}
-
-	public void toTopScale() {
-		lifterMotor.set(ControlMode.Position, -Constants.SCALE_TOP_LIMIT);
-	}
-
-	public void toHome() {
-		lifterMotor.set(ControlMode.Position, -Constants.LIFT_BOTTOM_LIMIT);
+	public void toPosition(int x) {
+		if (x == 1) {
+			lifterMotor.set(ControlMode.Position, -Constants.LIFT_P1_TICKS);
+		} else if (x == 2) {
+			lifterMotor.set(ControlMode.Position, -Constants.LIFT_P2_TICKS);
+		} else if (x == 3) {
+			lifterMotor.set(ControlMode.Position, -Constants.LIFT_P3_TICKS);
+		} else if (x == 4) {
+			lifterMotor.set(ControlMode.Position, -Constants.LIFT_P4_TICKS);
+		} else if (x == 5) {
+			lifterMotor.set(ControlMode.Position, -Constants.LIFT_P5_TICKS);
+		} else {
+			System.err.println("Lifter: Invalid lifter position (" + x + ")");
+		}
 	}
 	
 	public void driveUp() {
-		if (getPot() > Constants.LIFT_TOP_LIMIT) 
+		if (getPot() > Constants.LIFT_UPPER_BOUND) 
 			lifterMotor.set(ControlMode.PercentOutput, 0.5);
 		else {
 			stopMotor();
@@ -76,7 +68,7 @@ public class Lifter {
 	}
 	
 	public void driveDown() {
-		if (getPot() < Constants.LIFT_BOTTOM_LIMIT)
+		if (getPot() < Constants.LIFT_LOWER_BOUND)
 			lifterMotor.set(ControlMode.PercentOutput, -0.5);
 		else {
 			stopMotor();
@@ -84,9 +76,9 @@ public class Lifter {
 	}
 
 	public void setMotor(double value) {
-		if (value > 0 && getPot() > Constants.LIFT_TOP_LIMIT)
+		if (value > 0 && getPot() > Constants.LIFT_UPPER_BOUND)
 			lifterMotor.set(ControlMode.PercentOutput, value);
-		else if (value < 0 && getPot() < Constants.LIFT_BOTTOM_LIMIT) {
+		else if (value < 0 && getPot() < Constants.LIFT_LOWER_BOUND) {
 			lifterMotor.set(ControlMode.PercentOutput, value);
 		}
 		else {
