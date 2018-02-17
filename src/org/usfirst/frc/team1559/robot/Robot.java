@@ -7,7 +7,6 @@
 
 package org.usfirst.frc.team1559.robot;
 
-import org.usfirst.frc.team1559.robot.auto.AutoPicker;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_TractionTranslate;
 import org.usfirst.frc.team1559.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team1559.robot.subsystems.Lifter;
@@ -21,29 +20,27 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 
+	private String gameData;
+	private CommandGroup routine;
+
 	public static OperatorInterface oi;
 	public static DriveTrain driveTrain;
 	public static BNO055 imu;
-	private String gameData;
-	private CommandGroup routine;
 	public static UDPClient udp;
 	public static VisionData visionData;
 	public static Lifter lifter;
 
-	// test commit
-	
 	@Override
 	public void robotInit() {
 		oi = new OperatorInterface();
 		driveTrain = new DriveTrain(false);
 		imu = BNO055.getInstance(BNO055.opmode_t.OPERATION_MODE_IMUPLUS, BNO055.vector_type_t.VECTOR_EULER);
-		AutoPicker.init();
 		routine = new CommandGroup();
-//		routine.addSequential(new WPI_MecanumTranslate(165, 0, 0));
-//		routine.addSequential(new WPI_RotateAbs(90, false));
-//		routine.addSequential(new WPI_TractionTranslate(20));
-//		routine.addSequential(new WPI_RotateAbs(0, false));
-//		routine.addSequential(new WPI_MecanumTranslate(80, 0, 90));
+		// routine.addSequential(new WPI_MecanumTranslate(165, 0, 0));
+		// routine.addSequential(new WPI_RotateAbs(90, false));
+		// routine.addSequential(new WPI_TractionTranslate(20));
+		// routine.addSequential(new WPI_RotateAbs(0, false));
+		// routine.addSequential(new WPI_MecanumTranslate(80, 0, 90));
 		udp = new UDPClient();
 		visionData = new VisionData();
 		lifter = new Lifter();
@@ -58,61 +55,47 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		imu.zeroHeading();
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
-		AutoPicker.pick(gameData, SmartDashboard.getNumber("Starting Position", 1));
+		// AutoPicker.pick(gameData, SmartDashboard.getNumber("Starting Position", 1));
 
 		Robot.driveTrain.resetQuadEncoders();
 
 		// double distance = 43;
 
-		byte r = 4;
+		byte routineToRun = 4;
 
 		// Demo Sequences
-		switch (r) {
+		switch (routineToRun) {
 		case 0:
 			// routine.addSequential(new WPI_MecanumTranslate(127.5, 0));
 			// routine.addSequential(new WPI_MecanumTranslate(127.5, 16));
 			break;
 		case 1:
-//			routine.addSequential(new WPI_MecanumTranslate(127.5, 0));
-//			routine.addSequential(new WPI_MecanumTranslate(127.5, -16));
+			// routine.addSequential(new WPI_MecanumTranslate(127.5, 0));
+			// routine.addSequential(new WPI_MecanumTranslate(127.5, -16));
 			break;
 		case 2:
-//			routine.addSequential(new WPI_MecanumTranslate(146.4, 0));
-//			routine.addSequential(new WPI_RotateAbs(29.5, true));
+			// routine.addSequential(new WPI_MecanumTranslate(146.4, 0));
+			// routine.addSequential(new WPI_RotateAbs(29.5, true));
 			break;
 		case 3:
-//			routine.addSequential(new WPI_MecanumTranslate(134.9, 0));
-//			routine.addSequential(new WPI_RotateAbs(19, true));
+			// routine.addSequential(new WPI_MecanumTranslate(134.9, 0));
+			// routine.addSequential(new WPI_RotateAbs(19, true));
 		case 4:
 			routine.addSequential(new WPI_TractionTranslate(45));
 			routine.addSequential(new WPI_TractionTranslate(-45));
 			break;
 		default:
+			// you done goofed
 			break;
 		}
 
-		// routine.addSequential(new WPI_MecanumTranslate(distance, 0));
-		// System.out.println("Done with translate!");
-		// routine.addSequential(new WPI_RotateRel(90, true));
-		/*
-		 * routine.addSequential(new WPI_Wait(1.5)); routine.addSequential(new
-		 * WPI_RotateRel(90, true)); routine.addSequential(new WPI_Wait(1.5));
-		 * routine.addSequential(new WPI_MecanumTranslate(distance / 2, 0));
-		 * routine.addSequential(new WPI_Wait(1.5)); routine.addSequential(new
-		 * WPI_RotateRel(90, true)); routine.addSequential(new WPI_Wait(1.5));
-		 * routine.addSequential(new WPI_MecanumTranslate(distance, 0));
-		 * routine.addSequential(new WPI_Wait(1.5)); routine.addSequential(new
-		 * WPI_RotateRel(90, true)); routine.addSequential(new WPI_Wait(1.5));
-		 * routine.addSequential(new WPI_MecanumTranslate(distance / 2, 0));
-		 * routine.addSequential(new WPI_Wait(1.5)); routine.addSequential(new
-		 * WPI_RotateRel(90, true));
-		 */
 		routine.start();
 	}
 
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
+		
 		SmartDashboard.putNumber("Motor 0 error: ", driveTrain.motors[0].getClosedLoopError(0));
 		SmartDashboard.putNumber("Motor 0 value: ", driveTrain.motors[0].getMotorOutputVoltage());
 	}
@@ -124,10 +107,16 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopPeriodic() {
+		// get controller/joystick info
 		oi.update();
+
 		System.out.println(lifter.getPot());
+
+		// move the robot if controller has been moved at all
 		driveTrain.drive(-oi.getDriverY(), oi.getDriverX(), -oi.getDriverZ());
+
 		System.out.println(imu.getHeading());
+
 		if (oi.getDriverButton(1).isPressed()) {
 			driveTrain.shift();
 		}
@@ -140,7 +129,7 @@ public class Robot extends IterativeRobot {
 		if (oi.getDriverButton(0).isPressed()) {
 			lifter.driveDown();
 		}
-		
+
 	}
 
 	@Override

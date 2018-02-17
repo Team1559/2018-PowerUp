@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.util.BoundaryException;
  * called by the user from his own thread)
  */
 public class PID {
+	
 	private double m_P; // factor for "proportional" control
 	private double m_I; // factor for "integral" control
 	private double m_D; // factor for "derivative" control
@@ -25,6 +26,7 @@ public class PID {
 	private double m_last_input = Double.NaN;
 
 	public PID() {
+	
 	}
 
 	/**

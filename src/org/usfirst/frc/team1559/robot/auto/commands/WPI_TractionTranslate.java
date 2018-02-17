@@ -1,49 +1,43 @@
 package org.usfirst.frc.team1559.robot.auto.commands;
 
-import org.usfirst.frc.team1559.robot.Constants;
 import org.usfirst.frc.team1559.robot.Robot;
 import org.usfirst.frc.team1559.robot.subsystems.DriveTrain;
+import org.usfirst.frc.team1559.util.Calc;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
+/**
+ * Command that drives the robot forward in traction, using WPI implementations
+ * 
+ * @author Victor Robotics Team 1559, Software
+ */
 public class WPI_TractionTranslate extends Command {
 
-	private static final double kP = .089;// .089 EVERY .11 you increment it it goes 2 more inches
+	private static final double kP = .089; // .089 EVERY .11 you increment it it goes 2 more inches
 	private static final double kI = 0.00; // .001
 	private static final double kD = 0;
 
-	private final double minTime = 3;
-	// private double time = 0;
 	private double TOLERANCE = 300;
 	private double dxInTicks;
 	private double x;
-	private double startTime;
+	private double averageError;
 
 	private double setpoints[];
 
 	public WPI_TractionTranslate(double x) {
 		this.x = x;
-		this.dxInTicks = x * Constants.DT_SPROCKET_RATIO * Constants.WHEEL_FUDGE_TRACTION * 4096
-				/ (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
+		this.dxInTicks = Calc.distanceInTicksTraction(x);
 		this.setpoints = new double[4];
-
-		/*
-		 * if (x <= 45 || y <= 45) { TOLERANCE = 300; } else { TOLERANCE = 992; } //
-		 * 0.000817x + 0.0278 /*if (x != 0) DriveTrain.kP = (0.000817 * Math.abs(x)) +
-		 * 0.0278; else DriveTrain.kP = (0.000817 * Math.abs(y)) + 0.0278; for
-		 * (WPI_TalonSRX motor : Robot.driveTrain.motors) { motor.config_kP(0,
-		 * DriveTrain.kP, 0); }
-		 */
-
 	}
 
 	@Override
 	protected void initialize() {
+		// make sure we're not in mecanum
 		Robot.driveTrain.shift(false);
+		// change the motors' PID values to the ones here
 		Robot.driveTrain.setPID(kP, kI, kD);
 		System.out.println("Initializing " + this);
-		startTime = Timer.getFPGATimestamp();
+		// reset the encoders
 		Robot.driveTrain.resetQuadEncoders();
 		setpoints[DriveTrain.FL] = dxInTicks;
 		setpoints[DriveTrain.FR] = -dxInTicks;
@@ -53,28 +47,18 @@ public class WPI_TractionTranslate extends Command {
 
 	@Override
 	protected void execute() {
-		// double[] s = Robot.driveTrain.rotateVector(dxInTicks, dyInTicks,
-		// Robot.imu.getVector()[0]);
-		// setpoints[DriveTrain.FL] = s[0] + s[1];
-		// setpoints[DriveTrain.FR] = -s[0] + s[1];
-		// setpoints[DriveTrain.RL] = s[0] - s[1];
-		// setpoints[DriveTrain.RR] = -s[0] - s[1];
 		Robot.driveTrain.setSetpoint(setpoints);
 	}
 
 	@Override
 	protected boolean isFinished() {
-		/*
-		 * System.out.println("now: " + Timer.getFPGATimestamp());
-		 * System.out.println("start: " + startTime + "\n"); if
-		 * (Timer.getFPGATimestamp() < startTime + minTime) { return false; }
-		 */
-		double averageError = 0;
 		for (int i = 0; i < 4; i++) {
 			averageError += Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0));
 		}
+		// actually get the average by dividing by the number of motors, which is four
 		averageError /= 4;
-		System.out.println("finished: " + (averageError < TOLERANCE) + " (" + averageError + " < " + TOLERANCE + ")");
+		// System.out.println("Traction finished: " + (averageError < TOLERANCE) + " ("
+		// + averageError + " < " + TOLERANCE + ")");
 		return averageError < TOLERANCE;
 	}
 
@@ -85,7 +69,7 @@ public class WPI_TractionTranslate extends Command {
 
 	@Override
 	public String toString() {
-		return String.format("TractionTranslate(%f)", x);
+		return String.format("TractionTranslate(%f inches)", x);
 	}
 
 }

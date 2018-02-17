@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.hal.HAL;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
 public class VersaDrive extends RobotDriveBase {
+	
 	public static final double kDefaultQuickStopThreshold = 0.2;
 	public static final double kDefaultQuickStopAlpha = 0.1;
 
