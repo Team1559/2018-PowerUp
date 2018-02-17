@@ -8,8 +8,6 @@
 package org.usfirst.frc.team1559.robot;
 
 import org.usfirst.frc.team1559.robot.auto.AutoPicker;
-import org.usfirst.frc.team1559.robot.auto.commands.WPI_MecanumTranslate;
-import org.usfirst.frc.team1559.robot.auto.commands.WPI_RotateAbs;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_TractionTranslate;
 import org.usfirst.frc.team1559.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team1559.robot.subsystems.Lifter;
@@ -32,6 +30,8 @@ public class Robot extends IterativeRobot {
 	public static VisionData visionData;
 	public static Lifter lifter;
 
+	// test commit
+	
 	@Override
 	public void robotInit() {
 		oi = new OperatorInterface();
