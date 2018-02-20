@@ -9,8 +9,9 @@ public interface Constants {
 	public final double WHEEL_FUDGE_MECANUM = 0.723;
 	public final double WHEEL_FUDGE_TRACTION = 0.85;//0.6
 	
-	public final double CLIMB_TELESCOPE_SPEED = 0.2; //TODO: Find actual value.
-	public final double CLIMB_WINCH_SPEED = 0.02; //TODO: Find actual value.
+	public final double CLM_WINCH_SPEED = 0.75; //TODO: Find actual value.
+	public final int CLM_UPPER_BOUND = 0; 
+	public final int CLM_LOWER_BOUND = 0;
 	
 	public final int LIFT_UPPER_BOUND = 300; //MAX VALUE OF POT= 1023
 	public final int LIFT_LOWER_BOUND = 739; //MIN VALUE OF POT = 6

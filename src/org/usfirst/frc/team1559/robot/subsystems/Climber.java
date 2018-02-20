@@ -3,36 +3,32 @@ package org.usfirst.frc.team1559.robot.subsystems;
 import org.usfirst.frc.team1559.robot.Constants;
 import org.usfirst.frc.team1559.robot.Wiring;
 
-import edu.wpi.first.wpilibj.Spark;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Talon;
 
 public class Climber {
-
-	private Spark telescope;
+	private static final int TIMEOUT = 0;
 	private Talon winch;
-
+	private TalonSRX lifter;
+	
 	public Climber() {
-		telescope = new Spark(Wiring.CLM_SPARK); // Up and down telescope
-		winch = new Talon(Wiring.CLM_TALON); // Winch function - the wheel that flips around
-	}
-
-	public void extendTelescope() {
-		telescope.set(Constants.CLIMB_TELESCOPE_SPEED);
-	}
-
-	public void retractTelescope() {
-		telescope.set(-Constants.CLIMB_TELESCOPE_SPEED);
-	}
-
-	public void rotateWinch() {
-		winch.set(Constants.CLIMB_WINCH_SPEED);
-	}
-
-	public void stopWinch() {
-		winch.set(0);
+		winch = new Talon(Wiring.CLM_WINCH);
+		lifter = new TalonSRX(Wiring.CLM_LIFT);
+		lifter.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, TIMEOUT);
 	}
 	
-	public void reverseWinch() {
-		winch.set(-Constants.CLIMB_WINCH_SPEED);
+	public void driveUp() {
+		lifter.set(ControlMode.Position, Constants.CLM_UPPER_BOUND);
+	}
+	
+	public void driveDown() {
+		lifter.set(ControlMode.Position, Constants.CLM_LOWER_BOUND);
+	}
+	
+	public void setWinchMotor() {
+		winch.set(Constants.CLM_WINCH_SPEED);
 	}
 }
