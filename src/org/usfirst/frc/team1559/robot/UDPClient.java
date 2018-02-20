@@ -9,13 +9,13 @@ import java.net.Socket;
  */
 public class UDPClient implements Runnable {
 
-	private static final String HOST = "10.15.59.6"; // 169.254.227.6
+	private static final String HOST = "10.15.59.6";
 	private static final int PORT = 5801;
 
-	Thread clientThread;
-	boolean running;
+	private Thread clientThread;
+	private boolean running;
 
-	String data;
+	private String data;
 
 	public UDPClient() {
 		clientThread = new Thread(this);
@@ -44,6 +44,19 @@ public class UDPClient implements Runnable {
 	 */
 	public String get() {
 		return data;
+	}
+	
+	//don't actually use this, rip
+	public String getID() {
+		return data.substring(0,1);
+	}
+	
+	public String getAngle() {
+		return data.substring(1,data.indexOf(","));
+	}
+	
+	public String getDistance() {
+		return data.substring(data.indexOf(","));
 	}
 
 	private String receive() {

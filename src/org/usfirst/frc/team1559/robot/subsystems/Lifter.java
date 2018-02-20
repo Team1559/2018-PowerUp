@@ -16,13 +16,15 @@ public class Lifter {
 	private double kI = 0;
 	private double kD = 0;
 	private double kF = 0;
-
+	
 	public Lifter() {
 		lifterMotor = new WPI_TalonSRX(Wiring.LIFT_TALON);
-		lifterMotor.set(ControlMode.Position, 0);
 		lifterMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, TIMEOUT);
 
-		lifterMotor.configClosedloopRamp(0.4, TIMEOUT);
+//		lifterMotor.configClosedloopRamp(0.4, TIMEOUT);
+		lifterMotor.configPeakCurrentLimit(30, TIMEOUT);
+		lifterMotor.configContinuousCurrentLimit(30, TIMEOUT);
+		lifterMotor.enableCurrentLimit(true);
 		
 		lifterMotor.configNominalOutputForward(0, TIMEOUT);
 		lifterMotor.configNominalOutputReverse(0, TIMEOUT);
@@ -41,6 +43,7 @@ public class Lifter {
 	//Positions are negative, pot mounted backwards
 	public double getPot() {
 		return lifterMotor.getSensorCollection().getAnalogIn();
+		//return lifterMotor.getSelectedSensorPosition(0); //this one might be better
 	}
 
 	public void toPosition(int x) {
@@ -57,6 +60,10 @@ public class Lifter {
 		} else {
 			System.err.println("Lifter: Invalid lifter position (" + x + ")");
 		}
+	}
+	
+	public boolean isAtPosition(int tolerance) {
+		return Math.abs(lifterMotor.getClosedLoopError(0)) <= tolerance;
 	}
 	
 	public void driveUp() {
@@ -76,14 +83,14 @@ public class Lifter {
 	}
 
 	public void setMotor(double value) {
-		if (value > 0 && getPot() > Constants.LIFT_UPPER_BOUND)
-			lifterMotor.set(ControlMode.PercentOutput, value);
-		else if (value < 0 && getPot() < Constants.LIFT_LOWER_BOUND) {
-			lifterMotor.set(ControlMode.PercentOutput, value);
-		}
-		else {
-			stopMotor();
-		}
+		//if (value > 0 && getPot() > Constants.LIFT_UPPER_BOUND)
+		lifterMotor.set(ControlMode.PercentOutput, value);
+		//else if (value < 0 && getPot() < Constants.LIFT_LOWER_BOUND) {
+			//lifterMotor.set(ControlMode.PercentOutput, value);
+		//}
+		//else {
+			//stopMotor();
+		//}
 	}
 	
 	public void stopMotor() {

@@ -45,8 +45,8 @@ public class Intake {
 		sparkLeft.set(1.0);
 		sparkRight.set(-1.0);
 	}
-	
-	public void rotateIntake() {	
+
+	public void rotateIntake() {
 		sparkLeft.set(1.0);
 		sparkRight.set(1.0);
 	}
@@ -55,7 +55,6 @@ public class Intake {
 		sparkLeft.set(0.0);
 		sparkRight.set(0.0);
 	}
-	
 
 	public void rotateDown() {
 		isGoingDown = true;
@@ -78,9 +77,9 @@ public class Intake {
 			}
 		} else {
 			if (rotateActive) {
-				sparkRotate.set(0.8);
+				sparkRotate.set(0.65);
 			} else {
-				sparkRotate.set(0.45);
+				sparkRotate.set(0.3);
 			}
 		}
 

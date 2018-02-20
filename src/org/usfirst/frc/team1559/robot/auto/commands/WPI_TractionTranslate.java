@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class WPI_TractionTranslate extends Command {
 
 	private static final double kP = .059;
-	private static final double kI = 0; // .001
+	private static final double kI = 0;
 	private static final double kD = 0;
 
 	private double TOLERANCE = 300;

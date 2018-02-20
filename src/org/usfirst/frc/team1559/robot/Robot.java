@@ -72,6 +72,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
+		intake.updateRotate();
 		SmartDashboard.putNumber("Motor 0 error: ", driveTrain.motors[0].getClosedLoopError(0));
 		SmartDashboard.putNumber("Motor 0 value: ", driveTrain.motors[0].getMotorOutputVoltage());
 	}
@@ -93,18 +94,14 @@ public class Robot extends IterativeRobot {
 			intake.toggle();
 		}
 
-		if (oi.getDriverButton(6).isDown()) {
+		if (oi.getDriverButton(4).isDown()) {
+			intake.setActive(true);
 			intake.in();
-		} else if (oi.getDriverButton(7).isDown()) {
+		} else if (oi.getDriverButton(5).isDown()) {
+			intake.setActive(true);
 			intake.out();
-		} else if (oi.getDriverButton(8).isDown()) {
-			intake.rotateIntake();
 		} else {
 			intake.stopIntake();
-		}
-
-		if (oi.getDriverButton(4).isDown() || oi.getDriverButton(5).isDown()) {
-			intake.setActive(true);
 		}
 
 		if (oi.getDriverButton(4).isPressed()) {
@@ -119,12 +116,10 @@ public class Robot extends IterativeRobot {
 
 		// TODO: lifter controls should be given to copilot
 		if (oi.getDriverPOV() == 90) {
-			lifter.toPosition(5);
+			lifter.toPosition(3);
 		} else if (oi.getDriverPOV() == 0) {
-//			lifter.toTopScale();
+			lifter.toPosition(2);
 		}
-
-		SmartDashboard.putNumber("Lifter Error", lifter.getMotor().getClosedLoopError(0));
 	}
 
 	@Override
