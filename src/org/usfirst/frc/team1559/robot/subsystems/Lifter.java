@@ -48,15 +48,15 @@ public class Lifter {
 
 	public void toPosition(int x) {
 		if (x == 1) {
-			lifterMotor.set(ControlMode.Position, -Constants.LIFT_P1_TICKS);
+			lifterMotor.set(ControlMode.Position, Constants.LIFT_P1_TICKS); //sometimes neg
 		} else if (x == 2) {
-			lifterMotor.set(ControlMode.Position, -Constants.LIFT_P2_TICKS);
+			lifterMotor.set(ControlMode.Position, Constants.LIFT_P2_TICKS);
 		} else if (x == 3) {
-			lifterMotor.set(ControlMode.Position, -Constants.LIFT_P3_TICKS);
+			lifterMotor.set(ControlMode.Position, Constants.LIFT_P3_TICKS);
 		} else if (x == 4) {
-			lifterMotor.set(ControlMode.Position, -Constants.LIFT_P4_TICKS);
+			lifterMotor.set(ControlMode.Position, Constants.LIFT_P4_TICKS);
 		} else if (x == 5) {
-			lifterMotor.set(ControlMode.Position, -Constants.LIFT_P5_TICKS);
+			lifterMotor.set(ControlMode.Position, Constants.LIFT_P5_TICKS);
 		} else {
 			System.err.println("Lifter: Invalid lifter position (" + x + ")");
 		}
@@ -67,30 +67,30 @@ public class Lifter {
 	}
 	
 	public void driveUp() {
-		if (getPot() > Constants.LIFT_UPPER_BOUND) 
-			lifterMotor.set(ControlMode.PercentOutput, 0.5);
-		else {
-			stopMotor();
-		}
-	}
-	
-	public void driveDown() {
-		if (getPot() < Constants.LIFT_LOWER_BOUND)
-			lifterMotor.set(ControlMode.PercentOutput, -0.5);
-		else {
-			stopMotor();
-		}
-	}
-
-	public void setMotor(double value) {
-		//if (value > 0 && getPot() > Constants.LIFT_UPPER_BOUND)
-		lifterMotor.set(ControlMode.PercentOutput, value);
-		//else if (value < 0 && getPot() < Constants.LIFT_LOWER_BOUND) {
-			//lifterMotor.set(ControlMode.PercentOutput, value);
-		//}
+		//if (getPot() > Constants.LIFT_UPPER_BOUND) 
+		lifterMotor.set(ControlMode.PercentOutput, 0.5);
 		//else {
 			//stopMotor();
 		//}
+	}
+	
+	public void driveDown() {
+		//if (getPot() < Constants.LIFT_LOWER_BOUND)
+		lifterMotor.set(ControlMode.PercentOutput, -0.5);
+		//else {
+			//stopMotor();
+		//}
+	}
+
+	public void setMotor(double value) {
+		if (value > 0 && getPot() < Constants.LIFT_UPPER_BOUND)
+			lifterMotor.set(ControlMode.PercentOutput, value);
+		else if (value < 0 && getPot() > Constants.LIFT_LOWER_BOUND) {
+			lifterMotor.set(ControlMode.PercentOutput, value);
+		}
+		else {
+			stopMotor();
+		}
 	}
 	
 	public void stopMotor() {

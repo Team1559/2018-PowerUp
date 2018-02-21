@@ -10,7 +10,7 @@ public interface Wiring {
 	
 	// Lifter
 	public static final int LIFT_POT = 0;
-	public static final int LIFT_TALON = 1;
+	public static final int LIFT_TALON = 1; 
 
 	// Intake
 	public static final int NTK_SPARK_LEFT = 1;
@@ -19,7 +19,7 @@ public interface Wiring {
 	public static final int NTK_SOLENOID = 7;
 	
 	// Climber
-	public static final int CLM_LIFT = 0; // Using TalonSRX speed controller.
+	public static final int CLM_LIFT = 2;  // Using TalonSRX speed controller.
 	public static final int CLM_WINCH = 3; // Using TalonSR speed controller.
 	
 	// Controllers

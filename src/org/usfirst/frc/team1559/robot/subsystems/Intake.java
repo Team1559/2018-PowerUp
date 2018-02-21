@@ -79,7 +79,7 @@ public class Intake {
 			if (rotateActive) {
 				sparkRotate.set(0.65);
 			} else {
-				sparkRotate.set(0.3);
+				sparkRotate.set(0.268);
 			}
 		}
 

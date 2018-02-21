@@ -116,10 +116,13 @@ public class Robot extends IterativeRobot {
 
 		// TODO: lifter controls should be given to copilot
 		if (oi.getDriverPOV() == 90) {
+			System.out.println(3);
 			lifter.toPosition(3);
 		} else if (oi.getDriverPOV() == 0) {
 			lifter.toPosition(2);
 		}
+		SmartDashboard.putNumber("Lifter Motor Current:", lifter.getMotor().getOutputCurrent());
+		System.out.println(lifter.getPot()+","+lifter.getMotor().getSelectedSensorPosition(0));
 	}
 
 	@Override
@@ -139,5 +142,6 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void testPeriodic() {
+	
 	}
 }

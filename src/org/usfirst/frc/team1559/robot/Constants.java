@@ -13,8 +13,8 @@ public interface Constants {
 	public final int CLM_UPPER_BOUND = 0; 
 	public final int CLM_LOWER_BOUND = 0;
 	
-	public final int LIFT_UPPER_BOUND = 300; //MAX VALUE OF POT= 1023
-	public final int LIFT_LOWER_BOUND = 739; //MIN VALUE OF POT = 6
+	public final int LIFT_UPPER_BOUND = 717; //MAX VALUE OF POT= 1023
+	public final int LIFT_LOWER_BOUND = 236; //MIN VALUE OF POT = 6
 	
 	public final double LIFT_P5_INCHES = 85.9;
 	public final double LIFT_P4_INCHES = 73.9;
