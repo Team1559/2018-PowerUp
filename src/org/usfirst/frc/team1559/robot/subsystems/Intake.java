@@ -64,7 +64,7 @@ public class Intake {
 		isGoingDown = false;
 	}
 
-	public void setActive(boolean b) {
+	public void setActiveRotate(boolean b) {
 		rotateActive = b;
 	}
 

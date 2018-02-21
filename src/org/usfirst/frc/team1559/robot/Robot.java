@@ -9,6 +9,7 @@ package org.usfirst.frc.team1559.robot;
 
 import org.usfirst.frc.team1559.robot.auto.AutoPicker;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_TractionTranslate;
+import org.usfirst.frc.team1559.robot.subsystems.Climber;
 import org.usfirst.frc.team1559.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team1559.robot.subsystems.Intake;
 import org.usfirst.frc.team1559.robot.subsystems.Lifter;
@@ -30,6 +31,7 @@ public class Robot extends IterativeRobot {
 	public static UDPClient udp;
 	public static VisionData visionData;
 	public static Lifter lifter;
+	public static Climber climber;
 	public static Intake intake;
 
 	@Override
@@ -44,6 +46,7 @@ public class Robot extends IterativeRobot {
 		// subsystems
 		driveTrain = new DriveTrain(false);
 		lifter = new Lifter();
+		climber = new Climber();
 		intake = new Intake();
 
 		// autonomous
@@ -95,13 +98,9 @@ public class Robot extends IterativeRobot {
 		}
 
 		if (oi.getDriverButton(4).isDown()) {
-			intake.setActive(true);
-			intake.in();
+			intake.setActiveRotate(true);
 		} else if (oi.getDriverButton(5).isDown()) {
-			intake.setActive(true);
-			intake.out();
-		} else {
-			intake.stopIntake();
+			intake.setActiveRotate(true);
 		}
 
 		if (oi.getDriverButton(4).isPressed()) {
@@ -111,18 +110,29 @@ public class Robot extends IterativeRobot {
 		}
 		intake.updateRotate();
 
+		if (oi.getDriverButton(6).isDown()) {
+			intake.in();
+		} else if (oi.getDriverButton(7).isDown()) {
+			intake.out();
+		} else {
+			intake.stopIntake();
+		}
+
 		double x = (oi.getDriverAxis(3)) - (oi.getDriverAxis(2) * 0.25);
+		System.out.println("x " + x);
 		lifter.setMotor(x);
 
 		// TODO: lifter controls should be given to copilot
-		if (oi.getDriverPOV() == 90) {
-			System.out.println(3);
-			lifter.toPosition(3);
-		} else if (oi.getDriverPOV() == 0) {
-			lifter.toPosition(2);
+		if (oi.getDriverPOV() == 0) {
+			climber.setMotor(0.2);
+		} else if (oi.getDriverPOV() == 180) {
+			climber.setMotor(-0.2);
+		} else {
+			climber.setMotor(0);
 		}
+		
 		SmartDashboard.putNumber("Lifter Motor Current:", lifter.getMotor().getOutputCurrent());
-		System.out.println(lifter.getPot()+","+lifter.getMotor().getSelectedSensorPosition(0));
+		System.out.println(lifter.getPot() + "," + lifter.getMotor().getSelectedSensorPosition(0));
 	}
 
 	@Override
@@ -142,6 +152,6 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void testPeriodic() {
-	
+
 	}
 }
