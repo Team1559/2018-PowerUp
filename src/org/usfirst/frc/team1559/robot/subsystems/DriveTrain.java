@@ -1,11 +1,13 @@
 package org.usfirst.frc.team1559.robot.subsystems;
 
 import org.usfirst.frc.team1559.robot.Wiring;
+import org.usfirst.frc.team1559.util.MathUtils;
 import org.usfirst.frc.team1559.util.VersaDrive;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Solenoid;
@@ -55,7 +57,8 @@ public class DriveTrain {
 	private void configTalon(WPI_TalonSRX talon) {
 		talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, TIMEOUT);
 
-		talon.configClosedloopRamp(0.1, TIMEOUT);
+//		talon.configClosedloopRamp(0.1, TIMEOUT);
+		talon.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 20, TIMEOUT);
 		
 		talon.configNominalOutputForward(0, TIMEOUT);
 		talon.configNominalOutputReverse(0, TIMEOUT);
@@ -93,6 +96,16 @@ public class DriveTrain {
 		motors[FR].set(ControlMode.Position, setpoints[FR]);
 		motors[RL].set(ControlMode.Position, setpoints[RL]);
 		motors[RR].set(ControlMode.Position, setpoints[RR]);
+	}
+	
+	public void setLeftMotors(ControlMode controlMode, double value) {
+		motors[FL].set(controlMode, value);
+		motors[RL].set(controlMode, value);
+	}
+	
+	public void setRightMotors(ControlMode controlMode, double value) {
+		motors[FR].set(controlMode, value);
+		motors[RR].set(controlMode, value);
 	}
 
 	/**
@@ -144,6 +157,14 @@ public class DriveTrain {
 		} else {
 			drive.curvatureDrive(x, zRot, true);
 		}
+	}
+	
+	public int getAvgLeftEncoderPosition() {
+		return (int) MathUtils.average(motors[FL].getSensorCollection().getQuadratureVelocity(), motors[RL].getSensorCollection().getQuadratureVelocity());	
+	}
+	
+	public int getAvgRightEncoderPosition() {
+		return (int) MathUtils.average(motors[FR].getSensorCollection().getQuadratureVelocity(), motors[RR].getSensorCollection().getQuadratureVelocity());	
 	}
 
 	public boolean getMecanumized() {

@@ -30,20 +30,38 @@ public class MathUtils {
 		return Arrays.asList(array).stream().map(function).collect(Collectors.toList());
 	}
 
-	public static double sum(List<? extends Number> list) {
+	public static double sum(Number... values) {
 		double sum = 0;
-		int n = list.size();
+		int n = values.length;
 		for (int i = 0; i < n; i++) {
-			sum += list.get(i).doubleValue();
+			sum += values[i].doubleValue();
+		}
+		return sum;
+	}
+	
+	public static double sum(List<? extends Number> values) {
+		double sum = 0;
+		int n = values.size();
+		for (int i = 0; i < n; i++) {
+			sum += values.get(i).doubleValue();
 		}
 		return sum;
 	}
 
-	public static double average(List<? extends Number> list) {
+	public static double average(Number... values) {
 		double sum = 0;
-		int n = list.size();
+		int n = values.length;
 		for (int i = 0; i < n; i++) {
-			sum += list.get(i).doubleValue();
+			sum += values[i].doubleValue();
+		}
+		return sum / n;
+	}
+	
+	public static double average(List <? extends Number> values) {
+		double sum = 0;
+		int n = values.size();
+		for (int i = 0; i < n; i++) {
+			sum += values.get(i).doubleValue();
 		}
 		return sum / n;
 	}

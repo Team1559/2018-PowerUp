@@ -8,7 +8,7 @@
 package org.usfirst.frc.team1559.robot;
 
 import org.usfirst.frc.team1559.robot.auto.AutoPicker;
-import org.usfirst.frc.team1559.robot.auto.commands.WPI_TractionTranslate;
+import org.usfirst.frc.team1559.robot.auto.commands.WPI_MoveToCube;
 import org.usfirst.frc.team1559.robot.subsystems.Climber;
 import org.usfirst.frc.team1559.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team1559.robot.subsystems.Intake;
@@ -29,7 +29,6 @@ public class Robot extends IterativeRobot {
 	private String gameData;
 	private CommandGroup routine;
 	public static UDPClient udp;
-	public static VisionData visionData;
 	public static Lifter lifter;
 	public static Climber climber;
 	public static Intake intake;
@@ -41,7 +40,6 @@ public class Robot extends IterativeRobot {
 		oi = new OperatorInterface();
 		imu = BNO055.getInstance(BNO055.opmode_t.OPERATION_MODE_IMUPLUS, BNO055.vector_type_t.VECTOR_EULER);
 		udp = new UDPClient(); // for jetson communications
-		visionData = new VisionData();
 
 		// subsystems
 		driveTrain = new DriveTrain(false);
@@ -51,6 +49,10 @@ public class Robot extends IterativeRobot {
 
 		// autonomous
 		routine = new CommandGroup();
+//		Waypoint[] waypoints = new Waypoint[] {new Waypoint(-2,-1,0), new Waypoint(0, 0, 0) // Waypoint @ x=0, y=0, exit angle=0 radians
+//		};
+//		routine.addSequential(new FollowMotionProfile(waypoints));
+		routine.addSequential(new WPI_MoveToCube(false));
 		AutoPicker.init();
 	}
 
@@ -66,7 +68,6 @@ public class Robot extends IterativeRobot {
 		AutoPicker.pick(gameData, SmartDashboard.getNumber("Starting Position", 1));
 
 		// temporary: routine should be built using AutoPicker
-		routine.addSequential(new WPI_TractionTranslate(60));
 		// </temporary>
 
 		routine.start();
@@ -87,6 +88,8 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopPeriodic() {
+		SmartDashboard.putNumber("Vel", driveTrain.motors[0].getSensorCollection().getQuadratureVelocity());
+
 		oi.update();
 		driveTrain.drive(oi.getDriverY(), -oi.getDriverX(), -oi.getDriverZ());
 		if (oi.getDriverButton(1).isPressed()) {
@@ -130,7 +133,7 @@ public class Robot extends IterativeRobot {
 		} else {
 			climber.setMotor(0);
 		}
-		
+
 		SmartDashboard.putNumber("Lifter Motor Current:", lifter.getMotor().getOutputCurrent());
 		System.out.println(lifter.getPot() + "," + lifter.getMotor().getSelectedSensorPosition(0));
 	}
@@ -152,6 +155,5 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void testPeriodic() {
-
 	}
 }

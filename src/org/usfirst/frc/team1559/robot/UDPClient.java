@@ -40,23 +40,24 @@ public class UDPClient implements Runnable {
 
 	/**
 	 * This is the method you should use.
+	 * 
 	 * @return Raw data.
 	 */
 	public String get() {
 		return data;
 	}
-	
-	//don't actually use this, rip
+
+	// don't actually use this, rip
 	public String getID() {
-		return data.substring(0,1);
+		return data.substring(0, 1);
 	}
-	
-	public String getAngle() {
-		return data.substring(1,data.indexOf(","));
+
+	public double getAngle() {
+		return Double.parseDouble(data.substring(1, data.indexOf(",")));
 	}
-	
-	public String getDistance() {
-		return data.substring(data.indexOf(","));
+
+	public double getDistance() {
+		return Double.parseDouble(data.substring(data.indexOf(",") + 1));
 	}
 
 	private String receive() {
