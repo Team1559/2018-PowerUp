@@ -57,14 +57,8 @@ public class WPI_TractionTranslate extends Command {
 		}
 		
 		List<Integer> errors = MathUtils.map((x) -> Math.abs(((WPI_TalonSRX) x).getClosedLoopError(0)), Robot.driveTrain.motors);
-		double medianError2 = MathUtils.median(errors); // make sure averageError2 == averageError (testing new MathUtil)
-		double medianError = 0;
-		SmartDashboard.putNumber("Median Error", medianError2);
-		for (int i = 0; i < 4; i++) {
-			medianError += Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0));
-		}
-		medianError /= 4;
-		return medianError2 < TOLERANCE;
+		double medianError = MathUtils.median(errors); // make sure averageError2 == averageError (testing new MathUtil)
+		return medianError < TOLERANCE;
 	}
 
 	@Override

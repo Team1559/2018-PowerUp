@@ -6,9 +6,8 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class WPI_RotateShoulder extends Command {
 
-	private static double TIME_DOWN = 0.5;
-	private static double TIME_UP = 0.5;
-	
+	private static double TIME_DOWN = 1;
+	private static double TIME_UP = 1;
 	
 	private boolean up;
 

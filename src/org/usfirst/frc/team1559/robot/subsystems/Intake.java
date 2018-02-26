@@ -13,7 +13,7 @@ public class Intake {
 	private Spark sparkRotate;
 
 	private boolean isGoingDown;
-	private boolean rotateActive;
+	private boolean activeRotate;
 
 	public Intake() {
 		solenoid = new Solenoid(Wiring.NTK_SOLENOID);
@@ -21,7 +21,7 @@ public class Intake {
 		sparkRight = new Spark(Wiring.NTK_SPARK_RIGHT);
 		sparkRotate = new Spark(Wiring.NTK_SPARK_ROTATE);
 		isGoingDown = false;
-		rotateActive = false;
+		activeRotate = false;
 	}
 
 	public void open() {
@@ -65,22 +65,22 @@ public class Intake {
 	}
 
 	public void setActiveRotate(boolean b) {
-		rotateActive = b;
+		activeRotate = b;
 	}
 
 	public void updateRotate() {
 		if (!isGoingDown) {
-			if (rotateActive) {
+			if (activeRotate) {
 				sparkRotate.set(0.85);
 			} else {
 				sparkRotate.set(0.45);
 			}
 		} else {
-			if (rotateActive) {
+			if (activeRotate) {
 				sparkRotate.set(-0.5);
 			} else {
 				//sparkRotate.set(-0.25);
-				sparkRotate.stopMotor();
+				sparkRotate.stopMotor(); // TODO: bottom limit switch is broken, replace when it's not
 			}
 		}
 

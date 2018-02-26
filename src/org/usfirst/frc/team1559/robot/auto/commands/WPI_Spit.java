@@ -6,8 +6,7 @@ public class WPI_Spit extends CommandGroup {
 	
 	public WPI_Spit() {
 		this.addSequential(new WPI_RotateShoulder(false));
-		this.addSequential(new WPI_Spintake(false));
-		this.addSequential(new WPI_OpenMouth());
+		this.addSequential(new WPI_Spintake(false, 0.5));
 	}
 	
 }

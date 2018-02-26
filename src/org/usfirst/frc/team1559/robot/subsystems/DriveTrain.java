@@ -1,6 +1,9 @@
 package org.usfirst.frc.team1559.robot.subsystems;
 
+import org.usfirst.frc.team1559.robot.Constants;
+import org.usfirst.frc.team1559.robot.Robot;
 import org.usfirst.frc.team1559.robot.Wiring;
+import org.usfirst.frc.team1559.util.MathUtils;
 import org.usfirst.frc.team1559.util.VersaDrive;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -11,6 +14,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class DriveTrain {
+
+	private static final int MAX_RPM = 5300;
 
 	public static final int FR = 0;
 	public static final int RR = 1;
@@ -42,21 +47,21 @@ public class DriveTrain {
 	public void setPID(double p, double i, double d) {
 		setPIDF(p, i, d, 0);
 	}
-	
+
 	public void setPIDF(double p, double i, double d, double f) {
 		for (int j = 0; j < 4; j++) {
 			motors[j].config_kP(0, p, TIMEOUT);
 			motors[j].config_kI(0, i, TIMEOUT);
 			motors[j].config_kD(0, d, TIMEOUT);
-			motors[j].config_kF(0, f, TIMEOUT);		
+			motors[j].config_kF(0, f, TIMEOUT);
 		}
 	}
-	
+
 	private void configTalon(WPI_TalonSRX talon) {
 		talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, TIMEOUT);
 
 		talon.configClosedloopRamp(0.2, TIMEOUT);
-		
+
 		talon.configNominalOutputForward(0, TIMEOUT);
 		talon.configNominalOutputReverse(0, TIMEOUT);
 		talon.configPeakOutputForward(+1, TIMEOUT);
@@ -67,14 +72,28 @@ public class DriveTrain {
 		talon.setNeutralMode(NeutralMode.Brake);
 	}
 
+	public void autoShift() {
+		System.out.println(averageRPM());
+		double magic = 500;
+		if (Math.abs(Robot.oi.getDriverX()) >= 0.2) {
+			shift(true);
+		} else if (!isMecanumized && averageRPM() > MAX_RPM / 2 + magic) {
+			shift(true);
+		} else if (isMecanumized && averageRPM() < MAX_RPM / 2 - magic) {
+			shift(false);
+		}
+	}
+
+	private double averageRPM() {
+		return MathUtils.average(MathUtils.map((x) -> Math.abs(
+				((WPI_TalonSRX) x).getSensorCollection().getQuadratureVelocity() / 4096.0 * 600.0 * 9 * Constants.DT_SPROCKET_RATIO),
+				motors));
+	}
+
 	public void resetQuadEncoders() {
 		for (WPI_TalonSRX motor : motors) {
 			motor.getSensorCollection().setQuadraturePosition(0, TIMEOUT);
 		}
-	}
-
-	public void translateAbsolute(double x, double y) { // slope
-		translateRotate(x, y, 0);
 	}
 
 	// TODO: replace the code please
@@ -83,11 +102,6 @@ public class DriveTrain {
 		motors[FR].set(ControlMode.PercentOutput, -speed);
 		motors[RL].set(ControlMode.PercentOutput, -speed);
 		motors[RR].set(ControlMode.PercentOutput, -speed);
-	}
-
-	public void translateRotate(double x, double y, double angle) {
-//		setMotors(ControlMode.Position,
-//				new double[] { (x + y - angle), (-x + y - angle), (x - y - angle), (-x - y - angle) });
 	}
 
 	public void setSetpoint(double[] setpoints) {
@@ -145,7 +159,7 @@ public class DriveTrain {
 		if (isMecanumized) {
 			drive.driveCartesian(y, x, zRot);
 		} else {
-			drive.curvatureDrive(x, zRot, true);
+			drive.curvatureDrive(x * Constants.DT_SPROCKET_RATIO, zRot, true);
 		}
 	}
 

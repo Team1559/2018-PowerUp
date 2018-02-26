@@ -35,13 +35,9 @@ public class Robot extends IterativeRobot {
 	public static Lifter lifter;
 	public static Climber climber;
 	public static Intake intake;
-	
-	private WPI_Ingest ingest;
-	private WPI_Spit spit;
-	private WPI_OpenMouth openMouth;
 
 	private SetupData setupData;
-	
+
 	@Override
 	public void robotInit() {
 
@@ -60,36 +56,33 @@ public class Robot extends IterativeRobot {
 		// autonomous
 		routine = new CommandGroup();
 		AutoPicker.init();
-		
-		ingest = new WPI_Ingest();
-		spit = new WPI_Spit();
-		openMouth = new WPI_OpenMouth();
-		
+
 		setupData = new SetupData();
-		
+
 	}
 
 	@Override
 	public void robotPeriodic() {
 		SmartDashboard.putNumber("Lifter Pot", lifter.getPot());
+		setupData.updateData();
 	}
 
 	@Override
 	public void autonomousInit() {
-		setupData.updateData();
 		imu.zeroHeading();
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
-		routine = AutoPicker.pick(gameData, (int) SmartDashboard.getNumber("Starting Position", setupData.getPosition()));
+		routine = AutoPicker.pick(gameData,
+				(int) SmartDashboard.getNumber("Starting Position", setupData.getPosition()));
 
 		// temporary: routine should be built using AutoPicker
 		// routine.addSequential(new WPI_FindCube());
 		// routine.addSequential(new WPI_RotateToCube(false));
 		// routine.addSequential(new WPI_Spit());
-		
-//		routine.addParallel(new WPI_LifterTo(2));
-//		routine.addSequential(new WPI_TractionTranslate(148));
-//		routine.addSequential(new WPI_RotateAbs(90, false));
-//		routine.addSequential(new WPI_Spit());
+
+		// routine.addParallel(new WPI_LifterTo(2));
+		// routine.addSequential(new WPI_TractionTranslate(148));
+		// routine.addSequential(new WPI_RotateAbs(90, false));
+		// routine.addSequential(new WPI_Spit());
 		// </temporary>
 
 		routine.start();
@@ -104,7 +97,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Motor 1 error: ", driveTrain.motors[1].getClosedLoopError(0));
 		SmartDashboard.putNumber("Motor 2 error: ", driveTrain.motors[2].getClosedLoopError(0));
 		SmartDashboard.putNumber("Motor 3 error: ", driveTrain.motors[3].getClosedLoopError(0));
-		
+
 		SmartDashboard.putNumber("Motor 0 value: ", driveTrain.motors[0].getMotorOutputVoltage());
 	}
 
@@ -122,88 +115,89 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().run();
 		oi.update();
 		driveTrain.drive(oi.getDriverY(), -oi.getDriverX(), -oi.getDriverZ());
-		//XBOX//
-//		if (oi.getDriverButton(1).isPressed()) {
-//			driveTrain.shift();
-//		}
-		//PS4//
-		if (oi.getDriverButton(11).isPressed()) {
+		// XBOX//
+		if (oi.getDriverButton(1).isPressed()) {
 			driveTrain.shift();
 		}
+		// PS4//
+		// if (oi.getDriverButton(11).isPressed()) {
+		// driveTrain.shift();
+		// }
 
-//		if (oi.getDriverButton(2).isPressed()) {
-//			intake.toggle();
-//		}
-
-		//XBOX//
-//		if (oi.getDriverButton(4).isPressed()) {
-//			ingest.start();
-//		}
-//		if (oi.getDriverButton(5).isPressed()) {
-//			spit.start();
-//		}
-//		if (oi.getDriverButton(2).isPressed()) {
-//			openMouth.start();
-//		}
-		//CHANGES FOR PS4 CONTROLLER//
+		// XBOX//
 		if (oi.getDriverButton(4).isPressed()) {
-			ingest.start();
+			intake.setActiveRotate(true);
+			intake.rotateDown();
+			intake.open();
+		}
+		if (oi.getDriverButton(4).isReleased()) {
+			new WPI_Ingest().start();
 		}
 		if (oi.getDriverButton(5).isPressed()) {
-			spit.start();
+			new WPI_Spit().start();
 		}
-		if (oi.getDriverButton(0).isPressed()) {
-			openMouth.start();
-		}
-		if(oi.getDriverButton(6).isDown()) {
-			intake.in();
-		}
-		else if(oi.getDriverButton(7).isDown()) {
-			intake.out();
-		}
-		else {
+		if (oi.getDriverButton(5).isReleased()) {
 			intake.stopIntake();
+			intake.rotateUp();
 		}
-		
-//		if (oi.getDriverButton(4).isDown()) {
-//			intake.setActiveRotate(true);
-//		} else if (oi.getDriverButton(5).isDown()) {
-//			intake.setActiveRotate(true);
-//		}
-//		if (oi.getDriverButton(4).isPressed()) {
-//			intake.rotateUp();
-//			intake.close();
-//		} else if (oi.getDriverButton(5).isPressed()) {
-//			intake.rotateDown();
-//			intake.open();
-//		}
+		// CHANGES FOR PS4 CONTROLLER//
+		// if (oi.getDriverButton(4).isPressed()) {
+		// ingest.start();
+		// }
+		// if (oi.getDriverButton(5).isPressed()) {
+		// spit.start();
+		// }
+		// if (oi.getDriverButton(0).isPressed()) {
+		// openMouth.start();
+		// }
+		// if(oi.getDriverButton(6).isDown()) {
+		// intake.in();
+		// }
+		// else if(oi.getDriverButton(7).isDown()) {
+		// intake.out();
+		// }
+		// else {
+		// intake.stopIntake();
+		// }
+
+		// if (oi.getDriverButton(4).isDown()) {
+		// intake.setActiveRotate(true);
+		// } else if (oi.getDriverButton(5).isDown()) {
+		// intake.setActiveRotate(true);
+		// }
+		// if (oi.getDriverButton(4).isPressed()) {
+		// intake.rotateUp();
+		// intake.close();
+		// } else if (oi.getDriverButton(5).isPressed()) {
+		// intake.rotateDown();
+		// intake.open();
+		// }
 		intake.updateRotate();
 
-//		if (oi.getDriverButton(4).isDown()) {
-//			intake.in();
-//		} else if (oi.getDriverButton(5).isDown()) {
-//			intake.out();
-//		} else {
-//			intake.stopIntake();
-//		}
-		double x = (oi.getDriverAxis(4)) - (oi.getDriverAxis(3));
+		// if (oi.getDriverButton(4).isDown()) {
+		// intake.in();
+		// } else if (oi.getDriverButton(5).isDown()) {
+		// intake.out();
+		// } else {
+		// intake.stopIntake();
+		// }
+		//double x = (oi.getDriverAxis(4)) - (oi.getDriverAxis(3));
 		// System.out.println("x " + x);
-		//climber.setWinchMotor(x);
-		System.out.println(x);
-		
-		
-//		if (oi.getDriverButton().isDown()) {
-//			climber.setWinchMotor(.5);
-//		}
-//		else if (oi.getDriverButton().isDown()) {
-//			climber.setWinchMotor(-0.5);
-//		}
+		// climber.setWinchMotor(x);
+		// System.out.println(x);
+
+		// if (oi.getDriverButton().isDown()) {
+		// climber.setWinchMotor(.5);
+		// }
+		// else if (oi.getDriverButton().isDown()) {
+		// climber.setWinchMotor(-0.5);
+		// }
 
 		// TODO: lifter controls should be given to copilot
-//		if (Math.abs(oi.getCopilotAxis(0)) >= 0.05) {
-//			System.out.println(oi.getCopilotAxis(0));
-//			lifter.setManual(oi.getCopilotAxis(0));
-		//} else 
+		// if (Math.abs(oi.getCopilotAxis(0)) >= 0.05) {
+		// System.out.println(oi.getCopilotAxis(0));
+		// lifter.setManual(oi.getCopilotAxis(0));
+		// } else
 		if (oi.getCopilotButton(1).isPressed()) {
 			lifter.setPosition(1);// y'all put climber instead...
 		} else if (oi.getCopilotButton(3).isPressed()) {
@@ -218,15 +212,16 @@ public class Robot extends IterativeRobot {
 			lifter.setPosition(15);
 		}
 
+		driveTrain.autoShift();
 		lifter.update();
 		SmartDashboard.putNumber("Lifter Motor Current:", lifter.getMotor().getOutputCurrent());
-		System.out.println(lifter.getPot() + "," + Constants.LIFT_P2_TICKS);
 	}
 
 	@Override
 	public void disabledPeriodic() {
 
 	}
+
 	@Override
 	public void testInit() {
 

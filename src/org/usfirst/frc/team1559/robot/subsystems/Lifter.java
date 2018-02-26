@@ -11,13 +11,14 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 public class Lifter {
 
-	private static final double[] POSITIONS_INCHES = { 8.75, 18.75, 29.5, 61.9, 73.9, 85.9 };
+	private static final double[] POSITIONS_INCHES = { 8.75, 29.5, 61.9, 73.9, 85.9 };
 	private static final double POSITION_BOT_INCHES = 8.75;
 	private static final double POSITION_TOP_INCHES = 80.5;
 
 	private static final int RANGE = 510; // difference between up and down in ticks
 	public int lowerBound = 255; // MIN VALUE OF POT = 6
-	public int upperBound;
+	public int upperBound = lowerBound + RANGE;
+	
 
 	private double[] positionsTicks = new double[POSITIONS_INCHES.length];
 
@@ -43,8 +44,8 @@ public class Lifter {
 		lifterMotor.configPeakOutputForward(+1, TIMEOUT);
 		lifterMotor.configPeakOutputReverse(-.45, TIMEOUT);
 
-		lifterMotor.configReverseSoftLimitThreshold(Constants.LIFT_LOWER_BOUND, TIMEOUT);
-		lifterMotor.configForwardSoftLimitThreshold(Constants.LIFT_UPPER_BOUND, TIMEOUT);
+		lifterMotor.configReverseSoftLimitThreshold(lowerBound, TIMEOUT);
+		lifterMotor.configForwardSoftLimitThreshold(upperBound, TIMEOUT);
 		lifterMotor.configForwardSoftLimitEnable(true, TIMEOUT);
 		lifterMotor.configReverseSoftLimitEnable(true, TIMEOUT);
 

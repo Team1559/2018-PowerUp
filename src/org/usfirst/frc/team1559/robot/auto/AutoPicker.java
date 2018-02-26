@@ -71,7 +71,7 @@ public class AutoPicker {
 			break;
 		case "RLR":
 			if (position == 0) {
-				return crossLine;
+				return rightCrossSwitch;
 			} else if (position == 1) {
 				
 			} else if (position == 2) {
@@ -80,7 +80,7 @@ public class AutoPicker {
 			break;
 		case "RRR":
 			if (position == 0) {
-				return crossLine;
+				return rightCrossSwitch;
 			} else if (position == 1) {
 				
 			} else if (position == 2) {
@@ -93,7 +93,7 @@ public class AutoPicker {
 			} else if (position == 1) {
 				
 			} else if (position == 2) {
-				return crossLine;
+				return leftCrossSwitch;
 			}
 			break;
 		default:

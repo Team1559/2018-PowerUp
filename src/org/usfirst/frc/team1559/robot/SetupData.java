@@ -12,7 +12,7 @@ public class SetupData {
 	
 	public SetupData() {
 //		NetworkTableInstance inst = NetworkTableInstance.getDefault();
-//		NetworkTable table = inst.getTable("Setup/Position");
+//		NetworkTable table = inst.getTable("SmartDashboard/Position");
 //		positionEntry = table.getEntry("Position");
 //		position = (int) positionEntry.getDouble(0);
 	}
