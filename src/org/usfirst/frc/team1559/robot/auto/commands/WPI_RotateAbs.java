@@ -17,7 +17,7 @@ public class WPI_RotateAbs extends Command {
 
 	private final double TOLERANCE = 1;
 	private double angle;
-	private final boolean mecanum;
+	protected final boolean mecanum;
 	private static PID pid;
 
 	public WPI_RotateAbs(double angle, boolean mecanum) {
@@ -39,7 +39,7 @@ public class WPI_RotateAbs extends Command {
 	protected void execute() {
 		// getHeadingRelative() is relative to a zero heading set in autonomousInit(),
 		// so it's not super relative.
-		Robot.driveTrain.rotate(-1 * pid.calculate(Robot.imu.getHeadingRelative()));
+		Robot.driveTrain.rotate(pid.calculate(Robot.imu.getHeadingRelative()));
 		SmartDashboard.putNumber("Heading", Robot.imu.getHeadingRelative());
 	}
 

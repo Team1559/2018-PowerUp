@@ -55,7 +55,7 @@ public class DriveTrain {
 	private void configTalon(WPI_TalonSRX talon) {
 		talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, TIMEOUT);
 
-		talon.configClosedloopRamp(0.1, TIMEOUT);
+		talon.configClosedloopRamp(0.2, TIMEOUT);
 		
 		talon.configNominalOutputForward(0, TIMEOUT);
 		talon.configNominalOutputReverse(0, TIMEOUT);
@@ -79,7 +79,10 @@ public class DriveTrain {
 
 	// TODO: replace the code please
 	public void rotate(double speed) { // slope
-//		setMotors(ControlMode.PercentOutput, speed);
+		motors[FL].set(ControlMode.PercentOutput, -speed);
+		motors[FR].set(ControlMode.PercentOutput, -speed);
+		motors[RL].set(ControlMode.PercentOutput, -speed);
+		motors[RR].set(ControlMode.PercentOutput, -speed);
 	}
 
 	public void translateRotate(double x, double y, double angle) {

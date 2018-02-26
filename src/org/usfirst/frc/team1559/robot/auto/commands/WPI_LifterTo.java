@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class WPI_LifterTo extends Command {
 
 	private int position;
-	private static final int TOLERANCE = 10;
+	private static final int TOLERANCE = 12;
 
 	public WPI_LifterTo(int position) {
 		this.position = position;
@@ -15,11 +15,12 @@ public class WPI_LifterTo extends Command {
 
 	@Override
 	protected void initialize() {
+		Robot.lifter.setPosition(position);
 	}
 
 	@Override
 	protected void execute() {
-		Robot.lifter.toPosition(position);
+
 	}
 
 	@Override
@@ -29,10 +30,11 @@ public class WPI_LifterTo extends Command {
 
 	@Override
 	protected void end() {
+		System.out.println(this + " IS FINISHED");
 	}
 
 	@Override
 	public String toString() {
-		return "WPI_Ingest";
+		return String.format("WPI_LifterTo(position=" + position + ")");
 	}
 }

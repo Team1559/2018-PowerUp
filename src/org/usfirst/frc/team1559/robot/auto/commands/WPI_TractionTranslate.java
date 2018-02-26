@@ -11,14 +11,15 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WPI_TractionTranslate extends Command {
 
-	private static final double kP = .059;
+	private static final double kP = .09;//.61;
 	private static final double kI = 0;
-	private static final double kD = 0;
+	private static final double kD = 25*kP;
 
-	private double TOLERANCE = 300;
+	private double TOLERANCE = 1000;
 	private double dxInTicks;
 	private double x;
 
@@ -26,8 +27,8 @@ public class WPI_TractionTranslate extends Command {
 
 	public WPI_TractionTranslate(double x) {
 		this.x = x;
-		this.dxInTicks = x * Constants.DT_SPROCKET_RATIO * Constants.WHEEL_FUDGE_TRACTION * 4096
-				/ (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
+		this.dxInTicks = x * Constants.WHEEL_FUDGE_TRACTION * 4096
+				/ (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES_TRACTION);
 		this.setpoints = new double[4];
 	}
 
@@ -51,14 +52,19 @@ public class WPI_TractionTranslate extends Command {
 	@Override
 	protected boolean isFinished() {
 
-		List<Integer> errors = MathUtils.map((x) -> Math.abs(((WPI_TalonSRX) x).getClosedLoopError(0)), Robot.driveTrain.motors);
-		double averageError2 = MathUtils.average(errors); // make sure averageError2 == averageError (testing new MathUtil)
-		double averageError = 0;
-		for (int i = 0; i < 4; i++) {
-			averageError += Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0));
+		if (this.timeSinceInitialized() <= .25) {
+			return false;
 		}
-		averageError /= 4;
-		return averageError < TOLERANCE;
+		
+		List<Integer> errors = MathUtils.map((x) -> Math.abs(((WPI_TalonSRX) x).getClosedLoopError(0)), Robot.driveTrain.motors);
+		double medianError2 = MathUtils.median(errors); // make sure averageError2 == averageError (testing new MathUtil)
+		double medianError = 0;
+		SmartDashboard.putNumber("Median Error", medianError2);
+		for (int i = 0; i < 4; i++) {
+			medianError += Math.abs(Robot.driveTrain.motors[i].getClosedLoopError(0));
+		}
+		medianError /= 4;
+		return medianError2 < TOLERANCE;
 	}
 
 	@Override

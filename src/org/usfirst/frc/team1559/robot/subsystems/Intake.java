@@ -25,11 +25,11 @@ public class Intake {
 	}
 
 	public void open() {
-		solenoid.set(false);
+		solenoid.set(true);
 	}
 
 	public void close() {
-		solenoid.set(true);
+		solenoid.set(false);
 	}
 
 	public void toggle() {
@@ -69,17 +69,18 @@ public class Intake {
 	}
 
 	public void updateRotate() {
-		if (isGoingDown) {
+		if (!isGoingDown) {
 			if (rotateActive) {
-				sparkRotate.set(-0.4);
+				sparkRotate.set(0.85);
 			} else {
-				sparkRotate.set(-0.15);
+				sparkRotate.set(0.45);
 			}
 		} else {
 			if (rotateActive) {
-				sparkRotate.set(0.65);
+				sparkRotate.set(-0.5);
 			} else {
-				sparkRotate.set(0.268);
+				//sparkRotate.set(-0.25);
+				sparkRotate.stopMotor();
 			}
 		}
 

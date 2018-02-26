@@ -4,9 +4,9 @@ import org.usfirst.frc.team1559.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class WPI_PollVisionData extends Command {
+public class WPI_FindCube extends Command {
 
-	public WPI_PollVisionData(double x, double y) {
+	public WPI_FindCube() {
 	}
 
 	@Override
@@ -29,7 +29,7 @@ public class WPI_PollVisionData extends Command {
 
 	@Override
 	public String toString() {
-		return String.format("PollVisionData()");
+		return String.format("FindCube()");
 	}
 
 }

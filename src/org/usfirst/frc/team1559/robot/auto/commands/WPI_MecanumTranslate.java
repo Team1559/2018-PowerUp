@@ -28,8 +28,8 @@ public class WPI_MecanumTranslate extends Command {
 		this.x = x;
 		this.y = y;
 		this.angle = angle;
-		this.dyInTicks = y * Constants.WHEEL_FUDGE_MECANUM * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
-		this.dxInTicks = x * Constants.WHEEL_FUDGE_MECANUM * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES);
+		this.dyInTicks = y * Constants.WHEEL_FUDGE_MECANUM * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES_MECANUM);
+		this.dxInTicks = x * Constants.WHEEL_FUDGE_MECANUM * 4096 / (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES_MECANUM);
 		this.angleInTicks = angle * 4096 * 0.019;
 		this.setpoints = new double[4];
 	}

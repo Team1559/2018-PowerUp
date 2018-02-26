@@ -47,4 +47,15 @@ public class MathUtils {
 		}
 		return sum / n;
 	}
+	
+	public static double median(List<? extends Number> list) {
+		Number[] array = new Number[list.size()];
+		list.toArray(array);
+		Arrays.sort(array);
+		if (array.length % 2 == 0) {
+			return array[array.length / 2].doubleValue() + array[array.length / 2 - 1].doubleValue() / 2.0;
+		} else {
+			return array[array.length / 2].doubleValue();
+		}
+	}
 }

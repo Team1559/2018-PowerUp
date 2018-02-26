@@ -10,8 +10,8 @@ public class OperatorInterface {
 	public OperatorInterface() {
 		driverStick = new Joystick(Wiring.JOY_DRIVER);
 		copilotStick = new Joystick(Wiring.JOY_COPILOT);
-		driverButtons = new DTButton[10];
-		copilotButtons = new DTButton[10];
+		driverButtons = new DTButton[14]; //increased from size 10 to 14 because of PS4 controller
+		copilotButtons = new DTButton[14];
 		for (int i = 0; i < driverButtons.length; i++) {
 			driverButtons[i] = new DTButton(driverStick, i + 1);
 		}
@@ -36,8 +36,12 @@ public class OperatorInterface {
 		return driverStick.getRawAxis(1);
 	}
 
+	//CHANGES FOR PS4 CONTROLLER//
 	public double getDriverZ() {
-		return driverStick.getRawAxis(4);
+		//XBOX//
+		//return driverStick.getRawAxis(4);
+		//PS4//
+		return driverStick.getRawAxis(2);
 	}
 
 	public double getCopilotX() {
