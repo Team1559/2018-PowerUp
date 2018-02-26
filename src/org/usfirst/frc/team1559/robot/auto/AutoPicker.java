@@ -4,7 +4,6 @@ import org.usfirst.frc.team1559.robot.auto.commands.WPI_LifterTo;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_RotateAbs;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_Spit;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_TractionTranslate;
-import org.usfirst.frc.team1559.robot.auto.strategies.Strategy1A;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
@@ -15,21 +14,22 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
  */
 public class AutoPicker {
 
-	private static Strategy1A strategy1a;
-	
 	private static CommandGroup leftSwitch;
 	private static CommandGroup rightSwitch;
+	
+	private static CommandGroup leftCrossSwitch;
+	private static CommandGroup rightCrossSwitch;
+
 	private static CommandGroup crossLine;
 	
-	// private static Strategy1B strategy1b;
-
 	public static void init() {
-		strategy1a = new Strategy1A();
-		
+
 		leftSwitch = new CommandGroup();
 		rightSwitch = new CommandGroup();
 		crossLine = new CommandGroup();
-		
+		leftCrossSwitch = new CommandGroup();
+		rightCrossSwitch = new CommandGroup();
+
 		leftSwitch.addParallel(new WPI_LifterTo(2));
 		leftSwitch.addSequential(new WPI_TractionTranslate(148));
 		leftSwitch.addSequential(new WPI_RotateAbs(90, false));
@@ -40,7 +40,21 @@ public class AutoPicker {
 		rightSwitch.addSequential(new WPI_RotateAbs(-90, false));
 		rightSwitch.addSequential(new WPI_Spit());
 		
-		crossLine.addParallel(new WPI_TractionTranslate(210));
+		leftCrossSwitch.addSequential(new WPI_TractionTranslate(228));
+		leftCrossSwitch.addSequential(new WPI_RotateAbs(-90, false));
+		leftCrossSwitch.addParallel(new WPI_LifterTo(4));
+		leftCrossSwitch.addSequential(new WPI_TractionTranslate(180));
+		leftCrossSwitch.addSequential(new WPI_RotateAbs(-180, false));
+		leftCrossSwitch.addSequential(new WPI_Spit());
+		
+		rightCrossSwitch.addSequential(new WPI_TractionTranslate(228));
+		rightCrossSwitch.addSequential(new WPI_RotateAbs(90, false));
+		rightCrossSwitch.addParallel(new WPI_LifterTo(4));
+		rightCrossSwitch.addSequential(new WPI_TractionTranslate(180));
+		rightCrossSwitch.addSequential(new WPI_RotateAbs(180, false));
+		rightCrossSwitch.addSequential(new WPI_Spit());
+
+		crossLine.addSequential(new WPI_TractionTranslate(210));
 		// strategy1b = new Strategy1B();
 	}
 
@@ -52,7 +66,7 @@ public class AutoPicker {
 			} else if (position == 1) {
 				
 			} else if (position == 2) {
-				return crossLine;
+				return leftCrossSwitch;
 			}
 			break;
 		case "RLR":

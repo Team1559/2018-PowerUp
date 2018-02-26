@@ -16,7 +16,7 @@ public class MathUtils {
 	 * @param maxF Upper bound of final range.
 	 * @return Mapped value.
 	 */
-	public static double map(double value, double minI, double maxI, double minF, double maxF) {
+	public static double mapRange(double value, double minI, double maxI, double minF, double maxF) {
 		return (value - minI) / (maxI - minI) * (maxF - minF) + minF;
 	}
 

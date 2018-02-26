@@ -2,15 +2,24 @@ package org.usfirst.frc.team1559.robot.subsystems;
 
 import org.usfirst.frc.team1559.robot.Constants;
 import org.usfirst.frc.team1559.robot.Wiring;
+import org.usfirst.frc.team1559.util.MathUtils;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 public class Lifter {
+
+	private static final double[] POSITIONS_INCHES = { 8.75, 18.75, 29.5, 61.9, 73.9, 85.9 };
+	private static final double POSITION_BOT_INCHES = 8.75;
+	private static final double POSITION_TOP_INCHES = 80.5;
+
+	private static final int RANGE = 510; // difference between up and down in ticks
+	public int lowerBound = 255; // MIN VALUE OF POT = 6
+	public int upperBound;
+
+	private double[] positionsTicks = new double[POSITIONS_INCHES.length];
 
 	private WPI_TalonSRX lifterMotor;
 	private static final int TIMEOUT = 0;
@@ -19,9 +28,6 @@ public class Lifter {
 	private double kD = 0;// 5
 	private double kF = 0;
 	private double setpoint;
-
-	private boolean manualControl;
-	private double output;
 
 	public Lifter() {
 		lifterMotor = new WPI_TalonSRX(Wiring.LIFT_TALON);
@@ -52,88 +58,42 @@ public class Lifter {
 
 		lifterMotor.enableVoltageCompensation(false);
 
-		setpoint = Constants.LIFT_P1_TICKS;
-		manualControl = false;
-		output = 0;
+		calculatePositions();
+		setpoint = positionsTicks[0];
 	}
 
-	// Positions are negative, pot mounted backwards
 	public double getPot() {
 		return lifterMotor.getSensorCollection().getAnalogIn();
-		// return lifterMotor.getSelectedSensorPosition(0); //this one might be better
 	}
 
 	public void update() {
-		if (manualControl) {
-			lifterMotor.set(ControlMode.PercentOutput, output);
-		} else {
-			lifterMotor.set(ControlMode.Position, setpoint);
-		}
-		SmartDashboard.putNumber("Lifter Motor Voltage", lifterMotor.getMotorOutputVoltage());
+		lifterMotor.set(ControlMode.Position, setpoint);
 	}
 
 	public void setPosition(int pos) {
-		manualControl = false;
-		if (pos == 1) {
-			setpoint = Constants.LIFT_P1_TICKS;
-		} else if (pos == 15) {
-			setpoint = Constants.LIFT_P1_5_TICKS;
-		} else if (pos == 2) {
-			setpoint = Constants.LIFT_P2_TICKS;
-		} else if (pos == 3) {
-			setpoint = Constants.LIFT_P3_TICKS;
-		} else if (pos == 4) {
-			setpoint = Constants.LIFT_P4_TICKS;
-		} else if (pos == 5) {
-			setpoint = Constants.LIFT_P5_TICKS;
-		}
+		pos -= 1;
+		
+		setpoint = positionsTicks[pos];
 	}
 
 	public boolean isAtPosition(int tolerance) {
 		return Math.abs(lifterMotor.getClosedLoopError(0)) <= tolerance;
 	}
 
-	public void driveUp() {
-		// if (getPot() > Constants.LIFT_UPPER_BOUND)
-		lifterMotor.set(ControlMode.PercentOutput, 0.5);
-		// else {
-		// stopMotor();
-		// }
-	}
-
-	public void holdPosition() {
-		lifterMotor.set(ControlMode.Position, getPot());
-	}
-
-	public void driveDown() {
-		// if (getPot() < Constants.LIFT_LOWER_BOUND)
-		lifterMotor.set(ControlMode.PercentOutput, -0.5);
-		// else {
-		// stopMotor();
-		// }
-	}
-
 	public void setMotor(double value) {
-		// if (value > 0 && getPot() < Constants.LIFT_UPPER_BOUND)
 		lifterMotor.set(ControlMode.PercentOutput, value);
-		// else if (value < 0 && getPot() > Constants.LIFT_LOWER_BOUND) {
-		// lifterMotor.set(ControlMode.PercentOutput, value);
-		// }
-		// else {
-		// stopMotor();
-		// }
-	}
-
-	public void stopMotor() {
-		lifterMotor.set(ControlMode.PercentOutput, 0);
 	}
 
 	public WPI_TalonSRX getMotor() {
 		return lifterMotor;
 	}
-	
-	public void setManual(double value) {
-		manualControl = true;
-		output = value;
+
+	private void calculatePositions() {
+		upperBound = lowerBound + RANGE;
+		int n = POSITIONS_INCHES.length;
+		for (int i = 0; i < n; i++) {
+			positionsTicks[i] = MathUtils.mapRange(POSITIONS_INCHES[i], POSITION_BOT_INCHES, POSITION_TOP_INCHES,
+					lowerBound, upperBound);
+		}
 	}
 }

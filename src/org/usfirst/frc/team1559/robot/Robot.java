@@ -40,6 +40,8 @@ public class Robot extends IterativeRobot {
 	private WPI_Spit spit;
 	private WPI_OpenMouth openMouth;
 
+	private SetupData setupData;
+	
 	@Override
 	public void robotInit() {
 
@@ -63,6 +65,8 @@ public class Robot extends IterativeRobot {
 		spit = new WPI_Spit();
 		openMouth = new WPI_OpenMouth();
 		
+		setupData = new SetupData();
+		
 	}
 
 	@Override
@@ -72,10 +76,10 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
+		setupData.updateData();
 		imu.zeroHeading();
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
-		gameData = "LRL";
-		routine = AutoPicker.pick(gameData, (int) SmartDashboard.getNumber("Starting Position", 0));
+		routine = AutoPicker.pick(gameData, (int) SmartDashboard.getNumber("Starting Position", setupData.getPosition()));
 
 		// temporary: routine should be built using AutoPicker
 		// routine.addSequential(new WPI_FindCube());
@@ -212,8 +216,6 @@ public class Robot extends IterativeRobot {
 			lifter.setPosition(5);
 		} else if (oi.getCopilotButton(0).isPressed()) {
 			lifter.setPosition(15);
-		} else {
-			lifter.holdPosition();
 		}
 
 		lifter.update();

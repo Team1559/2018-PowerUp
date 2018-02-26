@@ -39,9 +39,9 @@ public class OperatorInterface {
 	//CHANGES FOR PS4 CONTROLLER//
 	public double getDriverZ() {
 		//XBOX//
-		//return driverStick.getRawAxis(4);
+		return driverStick.getRawAxis(4);
 		//PS4//
-		return driverStick.getRawAxis(2);
+		//return driverStick.getRawAxis(2);
 	}
 
 	public double getCopilotX() {

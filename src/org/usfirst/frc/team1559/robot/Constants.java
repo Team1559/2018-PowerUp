@@ -25,10 +25,10 @@ public interface Constants {
 	public final double LIFT_P1_5_INCHES = 18.75;
 	public final double LIFT_P1_INCHES = 8.75;
 	
-	public final double LIFT_P5_TICKS = MathUtils.map(LIFT_P5_INCHES, 8.75, 80.5, LIFT_LOWER_BOUND, LIFT_UPPER_BOUND);
-	public final double LIFT_P4_TICKS = MathUtils.map(LIFT_P4_INCHES, 8.75, 80.5, LIFT_LOWER_BOUND, LIFT_UPPER_BOUND);
-	public final double LIFT_P3_TICKS = MathUtils.map(LIFT_P3_INCHES, 8.75, 80.5, LIFT_LOWER_BOUND, LIFT_UPPER_BOUND);
-	public final double LIFT_P2_TICKS = MathUtils.map(LIFT_P2_INCHES, 8.75, 80.5, LIFT_LOWER_BOUND, LIFT_UPPER_BOUND);
-	public final double LIFT_P1_TICKS = MathUtils.map(LIFT_P1_INCHES, 8.75, 80.5, LIFT_LOWER_BOUND, LIFT_UPPER_BOUND);
-	public final double LIFT_P1_5_TICKS = MathUtils.map(LIFT_P1_5_INCHES, 8.75, 80.5, LIFT_LOWER_BOUND, LIFT_UPPER_BOUND);
+	public final double LIFT_P5_TICKS = MathUtils.mapRange(LIFT_P5_INCHES, 8.75, 80.5, LIFT_LOWER_BOUND, LIFT_UPPER_BOUND);
+	public final double LIFT_P4_TICKS = MathUtils.mapRange(LIFT_P4_INCHES, 8.75, 80.5, LIFT_LOWER_BOUND, LIFT_UPPER_BOUND);
+	public final double LIFT_P3_TICKS = MathUtils.mapRange(LIFT_P3_INCHES, 8.75, 80.5, LIFT_LOWER_BOUND, LIFT_UPPER_BOUND);
+	public final double LIFT_P2_TICKS = MathUtils.mapRange(LIFT_P2_INCHES, 8.75, 80.5, LIFT_LOWER_BOUND, LIFT_UPPER_BOUND);
+	public final double LIFT_P1_TICKS = MathUtils.mapRange(LIFT_P1_INCHES, 8.75, 80.5, LIFT_LOWER_BOUND, LIFT_UPPER_BOUND);
+	public final double LIFT_P1_5_TICKS = MathUtils.mapRange(LIFT_P1_5_INCHES, 8.75, 80.5, LIFT_LOWER_BOUND, LIFT_UPPER_BOUND);
 }
