@@ -1,6 +1,5 @@
 package org.usfirst.frc.team1559.robot.subsystems;
 
-import org.usfirst.frc.team1559.robot.Constants;
 import org.usfirst.frc.team1559.robot.Wiring;
 import org.usfirst.frc.team1559.util.MathUtils;
 
@@ -65,6 +64,15 @@ public class Lifter {
 
 	public double getPot() {
 		return lifterMotor.getSensorCollection().getAnalogIn();
+	}
+	
+	public void driveManual(double val) {
+		if(val >= 0) {
+			setpoint -= 3*val;
+		}
+		else if (val <= 0) {
+			setpoint -= 5*val;
+		}
 	}
 
 	public void update() {

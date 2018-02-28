@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class WPI_LifterTo extends Command {
 
 	private int position;
-	private static final int TOLERANCE = 12;
+//	private static final int TOLERANCE = 12;
 
 	public WPI_LifterTo(int position) {
 		this.position = position;
@@ -25,7 +25,8 @@ public class WPI_LifterTo extends Command {
 
 	@Override
 	protected boolean isFinished() {
-		return Robot.lifter.isAtPosition(TOLERANCE);
+		return true;
+//		return Robot.lifter.isAtPosition(TOLERANCE);
 	}
 
 	@Override

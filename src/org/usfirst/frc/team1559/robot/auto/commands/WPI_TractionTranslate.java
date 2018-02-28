@@ -15,9 +15,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WPI_TractionTranslate extends Command {
 
-	private static final double kP = .09;//.61;
+	private static final double kP = .08;//.61;
 	private static final double kI = 0;
-	private static final double kD = 25*kP;
+	private static final double kD = 22*kP;
 
 	private double TOLERANCE = 1000;
 	private double dxInTicks;
@@ -57,8 +57,9 @@ public class WPI_TractionTranslate extends Command {
 		}
 		
 		List<Integer> errors = MathUtils.map((x) -> Math.abs(((WPI_TalonSRX) x).getClosedLoopError(0)), Robot.driveTrain.motors);
-		double medianError = MathUtils.median(errors); // make sure averageError2 == averageError (testing new MathUtil)
-		return medianError < TOLERANCE;
+		double averageError = MathUtils.average(errors); // make sure averageError2 == averageError (testing new MathUtil)
+		SmartDashboard.putNumber("average error", averageError);
+		return averageError < TOLERANCE;
 	}
 
 	@Override

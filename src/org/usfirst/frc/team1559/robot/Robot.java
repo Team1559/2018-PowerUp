@@ -9,7 +9,6 @@ package org.usfirst.frc.team1559.robot;
 
 import org.usfirst.frc.team1559.robot.auto.AutoPicker;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_Ingest;
-import org.usfirst.frc.team1559.robot.auto.commands.WPI_OpenMouth;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_Spit;
 import org.usfirst.frc.team1559.robot.subsystems.Climber;
 import org.usfirst.frc.team1559.robot.subsystems.DriveTrain;
@@ -37,6 +36,8 @@ public class Robot extends IterativeRobot {
 	public static Intake intake;
 
 	private SetupData setupData;
+	
+	public boolean xbox = false;
 
 	@Override
 	public void robotInit() {
@@ -63,7 +64,7 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void robotPeriodic() {
-		SmartDashboard.putNumber("Lifter Pot", lifter.getPot());
+		//SmartDashboard.putNumber("Lifter Pot", lifter.getPot());
 		setupData.updateData();
 	}
 
@@ -93,6 +94,7 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().run();
 		intake.updateRotate();
 		lifter.update();
+		
 		SmartDashboard.putNumber("Motor 0 error: ", driveTrain.motors[0].getClosedLoopError(0));
 		SmartDashboard.putNumber("Motor 1 error: ", driveTrain.motors[1].getClosedLoopError(0));
 		SmartDashboard.putNumber("Motor 2 error: ", driveTrain.motors[2].getClosedLoopError(0));
@@ -114,92 +116,69 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
 		oi.update();
-		driveTrain.drive(oi.getDriverY(), -oi.getDriverX(), -oi.getDriverZ());
-		// XBOX//
-		if (oi.getDriverButton(1).isPressed()) {
-			driveTrain.shift();
+		if (xbox) {
+			driveTrain.drive(oi.getDriverY(), -oi.getDriverX(), -oi.getDriverZ());
+			
+			if (oi.getDriverButton(1).isPressed()) {
+				driveTrain.shift();
+			}
+			
+			if (oi.getDriverButton(4).isPressed()) {
+				intake.setActiveRotate(true);
+				intake.rotateDown();
+				intake.open();
+			}
+			if (oi.getDriverButton(4).isReleased()) {
+				new WPI_Ingest().start();
+			}
+			if (oi.getDriverButton(5).isPressed()) {
+				new WPI_Spit().start();
+			}
+			if (oi.getDriverButton(5).isReleased()) {
+				intake.stopIntake();
+				intake.rotateUp();
+			}		
 		}
-		// PS4//
-		// if (oi.getDriverButton(11).isPressed()) {
-		// driveTrain.shift();
-		// }
-
-		// XBOX//
-		if (oi.getDriverButton(4).isPressed()) {
-			intake.setActiveRotate(true);
-			intake.rotateDown();
-			intake.open();
+		else { //ps4
+			driveTrain.drive(oi.getDriverY(), -oi.getDriverX(), -oi.getDriverAxis(2));
+			
+			if (oi.getDriverButton(11).isPressed()) {
+				driveTrain.shift();
+			}
+			
+			if (oi.getDriverButton(4).isPressed()) {
+				intake.setActiveRotate(true);
+				intake.rotateDown();
+				intake.open();
+			}
+			if (oi.getDriverButton(4).isReleased()) {
+				new WPI_Ingest().start();
+			}
+			if (oi.getDriverButton(5).isPressed()) {
+				new WPI_Spit().start();
+			}
+			if (oi.getDriverButton(5).isReleased()) {
+				intake.stopIntake();
+				intake.rotateUp();
+				intake.close();
+			}
+			
+			if(oi.getDriverPOV() == 0) {
+				intake.rotateUp();
+				intake.setActiveRotate(true);
+			}
+			else if(oi.getDriverPOV() == 180) {
+				intake.rotateDown();
+				intake.setActiveRotate(true);
+			}
+			
 		}
-		if (oi.getDriverButton(4).isReleased()) {
-			new WPI_Ingest().start();
+
+		if(Math.abs(oi.getCopilotAxis(0)) >= 0.05) {
+			lifter.driveManual(oi.getCopilotAxis(0));
 		}
-		if (oi.getDriverButton(5).isPressed()) {
-			new WPI_Spit().start();
-		}
-		if (oi.getDriverButton(5).isReleased()) {
-			intake.stopIntake();
-			intake.rotateUp();
-		}
-		// CHANGES FOR PS4 CONTROLLER//
-		// if (oi.getDriverButton(4).isPressed()) {
-		// ingest.start();
-		// }
-		// if (oi.getDriverButton(5).isPressed()) {
-		// spit.start();
-		// }
-		// if (oi.getDriverButton(0).isPressed()) {
-		// openMouth.start();
-		// }
-		// if(oi.getDriverButton(6).isDown()) {
-		// intake.in();
-		// }
-		// else if(oi.getDriverButton(7).isDown()) {
-		// intake.out();
-		// }
-		// else {
-		// intake.stopIntake();
-		// }
-
-		// if (oi.getDriverButton(4).isDown()) {
-		// intake.setActiveRotate(true);
-		// } else if (oi.getDriverButton(5).isDown()) {
-		// intake.setActiveRotate(true);
-		// }
-		// if (oi.getDriverButton(4).isPressed()) {
-		// intake.rotateUp();
-		// intake.close();
-		// } else if (oi.getDriverButton(5).isPressed()) {
-		// intake.rotateDown();
-		// intake.open();
-		// }
-		intake.updateRotate();
-
-		// if (oi.getDriverButton(4).isDown()) {
-		// intake.in();
-		// } else if (oi.getDriverButton(5).isDown()) {
-		// intake.out();
-		// } else {
-		// intake.stopIntake();
-		// }
-		//double x = (oi.getDriverAxis(4)) - (oi.getDriverAxis(3));
-		// System.out.println("x " + x);
-		// climber.setWinchMotor(x);
-		// System.out.println(x);
-
-		// if (oi.getDriverButton().isDown()) {
-		// climber.setWinchMotor(.5);
-		// }
-		// else if (oi.getDriverButton().isDown()) {
-		// climber.setWinchMotor(-0.5);
-		// }
-
-		// TODO: lifter controls should be given to copilot
-		// if (Math.abs(oi.getCopilotAxis(0)) >= 0.05) {
-		// System.out.println(oi.getCopilotAxis(0));
-		// lifter.setManual(oi.getCopilotAxis(0));
-		// } else
 		if (oi.getCopilotButton(1).isPressed()) {
-			lifter.setPosition(1);// y'all put climber instead...
+			lifter.setPosition(1);
 		} else if (oi.getCopilotButton(3).isPressed()) {
 			lifter.setPosition(2);
 		} else if (oi.getCopilotButton(5).isPressed()) {
@@ -208,13 +187,17 @@ public class Robot extends IterativeRobot {
 			lifter.setPosition(4);
 		} else if (oi.getCopilotButton(4).isPressed()) {
 			lifter.setPosition(5);
-		} else if (oi.getCopilotButton(0).isPressed()) {
-			lifter.setPosition(15);
 		}
-
+			
 		driveTrain.autoShift();
+		intake.updateRotate();
 		lifter.update();
+		
 		SmartDashboard.putNumber("Lifter Motor Current:", lifter.getMotor().getOutputCurrent());
+		SmartDashboard.putNumber("Motor 0 error: ", driveTrain.motors[0].getClosedLoopError(0));
+		SmartDashboard.putNumber("Motor 1 error: ", driveTrain.motors[1].getClosedLoopError(0));
+		SmartDashboard.putNumber("Motor 2 error: ", driveTrain.motors[2].getClosedLoopError(0));
+		SmartDashboard.putNumber("Motor 3 error: ", driveTrain.motors[3].getClosedLoopError(0));
 	}
 
 	@Override

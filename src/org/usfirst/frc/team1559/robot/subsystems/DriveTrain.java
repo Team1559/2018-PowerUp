@@ -75,7 +75,7 @@ public class DriveTrain {
 	public void autoShift() {
 		System.out.println(averageRPM());
 		double magic = 500;
-		if (Math.abs(Robot.oi.getDriverX()) >= 0.2) {
+		if (Math.abs(Robot.oi.getDriverX()) >= 0.15) {
 			shift(true);
 		} else if (!isMecanumized && averageRPM() > MAX_RPM / 2 + magic) {
 			shift(true);
@@ -91,8 +91,9 @@ public class DriveTrain {
 	}
 
 	public void resetQuadEncoders() {
-		for (WPI_TalonSRX motor : motors) {
-			motor.getSensorCollection().setQuadraturePosition(0, TIMEOUT);
+		System.out.println("resetting quad encoders");
+		for (int i = 0; i < motors.length; i++) {
+			motors[i].getSensorCollection().setQuadraturePosition(0, TIMEOUT);
 		}
 	}
 

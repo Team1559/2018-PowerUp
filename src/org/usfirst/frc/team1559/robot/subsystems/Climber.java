@@ -5,56 +5,33 @@ import org.usfirst.frc.team1559.robot.Wiring;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Talon;
 
 public class Climber {
 	private static final int TIMEOUT = 0;
 	private Talon winch;
-	private WPI_TalonSRX lifter;
+	private WPI_TalonSRX belt;
+	private double displacement;
 	
 	public Climber() {
 		winch = new Talon(Wiring.CLM_WINCH);
-		lifter = new WPI_TalonSRX(Wiring.CLM_LIFT);
-		lifter.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, TIMEOUT);
+		belt = new WPI_TalonSRX(Wiring.CLM_BELT);
+		belt.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, TIMEOUT);
+		displacement = 0;
 	}
 	
 	public double getPot() {
-		return lifter.getSelectedSensorPosition(0);
+		return belt.getSelectedSensorPosition(0);
+	}
+
+	public void stageOne() {
+		belt.set(ControlMode.Position, getPot() + displacement); // TODO: lol robots don't quit
 	}
 	
-	public void driveUp() {
-		lifter.set(ControlMode.Position, Constants.CLM_UPPER_BOUND);
-	}
-	
-	public void driveDown() {
-		lifter.set(ControlMode.Position, Constants.CLM_LOWER_BOUND);
-	}
-	
-	public void setWinchMotor(double x) {
-		winch.set(x);
-	}
-	
-	public void setMotor(double x) {
-		lifter.set(ControlMode.PercentOutput, x);
-	}
-	
-	public WPI_TalonSRX getMotor() {
-		return lifter;
-	}
-	
-	public Talon getWinchMotor() {
-		return winch;
-	}
-	
-	public void stopMotor() {
-		lifter.set(ControlMode.PercentOutput, 0);
-	}
-	
-	public void stopWinchMotor() {
-		winch.set(0);
+	public void stageTwo() {
+		winch.set(1);
+		belt.set(ControlMode.Current, -20);
 	}
 }
