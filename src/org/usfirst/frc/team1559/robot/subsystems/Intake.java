@@ -71,16 +71,16 @@ public class Intake {
 	public void updateRotate() {
 		if (!isGoingDown) {
 			if (activeRotate) {
-				sparkRotate.set(0.85);
+				sparkRotate.set(0.55);
 			} else {
 				sparkRotate.set(0.45);
 			}
 		} else {
 			if (activeRotate) {
-				sparkRotate.set(-0.5);
+				sparkRotate.set(-0.4);
 			} else {
-				//sparkRotate.set(-0.25);
-				sparkRotate.stopMotor(); // TODO: bottom limit switch is broken, replace when it's not
+				sparkRotate.set(-0.2);
+				//sparkRotate.stopMotor(); // TODO: bottom limit switch is broken, replace when it's not
 			}
 		}
 
@@ -92,5 +92,9 @@ public class Intake {
 
 	public void rotateStop() {
 		sparkRotate.set(0);
+	}
+	
+	public boolean isGoingDown() {
+		return isGoingDown;
 	}
 }

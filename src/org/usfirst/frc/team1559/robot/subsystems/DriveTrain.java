@@ -73,18 +73,18 @@ public class DriveTrain {
 	}
 
 	public void autoShift() {
-		System.out.println(averageRPM());
+		//System.out.println(averageRPM());
 		double magic = 500;
 		if (Math.abs(Robot.oi.getDriverX()) >= 0.15) {
 			shift(true);
-		} else if (!isMecanumized && averageRPM() > MAX_RPM / 2 + magic) {
+		} else if (!isMecanumized && getAverageRPM() > MAX_RPM / 2 + magic) {
 			shift(true);
-		} else if (isMecanumized && averageRPM() < MAX_RPM / 2 - magic) {
+		} else if (isMecanumized && getAverageRPM() < MAX_RPM / 2 - magic) {
 			shift(false);
 		}
 	}
 
-	private double averageRPM() {
+	public double getAverageRPM() {
 		return MathUtils.average(MathUtils.map((x) -> Math.abs(
 				((WPI_TalonSRX) x).getSensorCollection().getQuadratureVelocity() / 4096.0 * 600.0 * 9 * Constants.DT_SPROCKET_RATIO),
 				motors));
@@ -136,7 +136,7 @@ public class DriveTrain {
 	 *            {@link #solenoid} has its output enabled
 	 */
 	public void shift(boolean b) {
-		System.out.println("Shifting! (solenoid being enabled: " + b + ")");
+		//System.out.println("Shifting! (solenoid being enabled: " + b + ")");
 		isMecanumized = b;
 		solenoid.set(b);
 	}

@@ -25,6 +25,7 @@ public interface Wiring {
 	// Controllers
 	public static final int JOY_DRIVER = 0;
 	public static final int JOY_COPILOT = 1;
+	public static final int EXTRA_BUTTONS = 2;
 
 	// Buttons
 	public static final int BTN_CLIMB = 0;

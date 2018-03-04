@@ -15,11 +15,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WPI_TractionTranslate extends Command {
 
-	private static final double kP = .08;//.61;
-	private static final double kI = 0;
+	private static final double kP = .09;
+	private static final double kI = kP/100;
 	private static final double kD = 22*kP;
 
-	private double TOLERANCE = 1000;
+	private double kTOLERANCE = 0; // 4e6;
+	
+	private double tolerance;
+	
+	private double DEFAULT_TOLERANCE = 1500; // in ticks
 	private double dxInTicks;
 	private double x;
 
@@ -30,6 +34,7 @@ public class WPI_TractionTranslate extends Command {
 		this.dxInTicks = x * Constants.WHEEL_FUDGE_TRACTION * 4096
 				/ (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES_TRACTION);
 		this.setpoints = new double[4];
+		this.tolerance = DEFAULT_TOLERANCE;
 	}
 
 	@Override
@@ -38,10 +43,10 @@ public class WPI_TractionTranslate extends Command {
 		Robot.driveTrain.shift(false);
 		Robot.driveTrain.setPID(kP, kI, kD);
 		Robot.driveTrain.resetQuadEncoders();
-		setpoints[DriveTrain.FL] = -dxInTicks;
-		setpoints[DriveTrain.FR] = dxInTicks;
-		setpoints[DriveTrain.RL] = -dxInTicks;
-		setpoints[DriveTrain.RR] = dxInTicks;
+		setpoints[DriveTrain.FL] = dxInTicks; //NEGATE all of these for robot 2
+		setpoints[DriveTrain.FR] = -dxInTicks;
+		setpoints[DriveTrain.RL] = dxInTicks;
+		setpoints[DriveTrain.RR] = -dxInTicks;
 	}
 
 	@Override
@@ -52,14 +57,18 @@ public class WPI_TractionTranslate extends Command {
 	@Override
 	protected boolean isFinished() {
 
+		// prevents command from finishing before the talon sets its setpoint
 		if (this.timeSinceInitialized() <= .25) {
 			return false;
 		}
 		
 		List<Integer> errors = MathUtils.map((x) -> Math.abs(((WPI_TalonSRX) x).getClosedLoopError(0)), Robot.driveTrain.motors);
-		double averageError = MathUtils.average(errors); // make sure averageError2 == averageError (testing new MathUtil)
+		double averageError = MathUtils.average(errors);
 		SmartDashboard.putNumber("average error", averageError);
-		return averageError < TOLERANCE;
+		
+		
+		tolerance += 1.0 / averageError * 1.0 / Robot.driveTrain.getAverageRPM() * kTOLERANCE;
+		return averageError < tolerance;
 	}
 
 	@Override

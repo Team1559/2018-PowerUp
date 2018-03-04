@@ -15,7 +15,7 @@ public class WPI_TranslateTractionForTime extends Command {
 	}
 	
 	public void execute() {
-		Robot.driveTrain.drive(-speed, 0, 0);
+		Robot.driveTrain.drive(speed, 0, 0); //negative speed for robot 2
 	}
 	
 	public boolean isFinished() {

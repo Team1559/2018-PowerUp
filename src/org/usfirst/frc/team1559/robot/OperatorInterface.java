@@ -4,19 +4,25 @@ import edu.wpi.first.wpilibj.Joystick;
 
 public class OperatorInterface {
 
-	private Joystick driverStick, copilotStick;
-	private DTButton[] driverButtons, copilotButtons;
+	private Joystick driverStick, copilotStick, cocopilotStick;
+	private DTButton[] driverButtons, copilotButtons, cocopilotButtons;
 
 	public OperatorInterface() {
 		driverStick = new Joystick(Wiring.JOY_DRIVER);
 		copilotStick = new Joystick(Wiring.JOY_COPILOT);
+		cocopilotStick = new Joystick(Wiring.EXTRA_BUTTONS);
 		driverButtons = new DTButton[14]; //increased from size 10 to 14 because of PS4 controller
 		copilotButtons = new DTButton[14];
+		cocopilotButtons = new DTButton[2];
 		for (int i = 0; i < driverButtons.length; i++) {
 			driverButtons[i] = new DTButton(driverStick, i + 1);
 		}
 		for (int i = 0; i < copilotButtons.length; i++) {
 			copilotButtons[i] = new DTButton(copilotStick, i + 1);
+		}
+		
+		for (int i = 0; i < cocopilotButtons.length; i++) {
+			cocopilotButtons[i] = new DTButton(cocopilotStick, i + 1);
 		}
 	}
 
@@ -27,6 +33,10 @@ public class OperatorInterface {
 	public DTButton getCopilotButton(int i) {
 		return copilotButtons[i];
 	}
+	
+	public DTButton getCocopilotButton(int i) {
+		return cocopilotButtons[i];
+	}
 
 	public double getDriverX() {
 		return driverStick.getRawAxis(0);
@@ -36,12 +46,13 @@ public class OperatorInterface {
 		return driverStick.getRawAxis(1);
 	}
 
-	//CHANGES FOR PS4 CONTROLLER//
+	//XBOX//
 	public double getDriverZ() {
-		//XBOX//
 		return driverStick.getRawAxis(4);
-		//PS4//
-		//return driverStick.getRawAxis(2);
+	}
+	
+	public double getPS4Z() {
+		return driverStick.getRawAxis(2);
 	}
 
 	public double getCopilotX() {
@@ -81,6 +92,9 @@ public class OperatorInterface {
 			button.update();
 		}
 		for (DTButton button : copilotButtons) {
+			button.update();
+		}
+		for (DTButton button : cocopilotButtons) {
 			button.update();
 		}
 	}

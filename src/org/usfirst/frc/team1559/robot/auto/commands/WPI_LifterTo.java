@@ -26,7 +26,7 @@ public class WPI_LifterTo extends Command {
 	@Override
 	protected boolean isFinished() {
 		return true;
-//		return Robot.lifter.isAtPosition(TOLERANCE);
+		//return Robot.lifter.isAtPosition(TOLERANCE);
 	}
 
 	@Override
