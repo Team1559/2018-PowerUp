@@ -83,18 +83,19 @@ public class Intake {
 	}
 
 	public void updateRotate() {
-		//FOR ROBOT 1//		
+		//FOR ROBOT 1//	
+		//TODO possibly change this for robot 2, unsure of the wiring currently
 		if (!isGoingDown) {
 			if (activeRotate) {
-				sparkRotate.set(1);//.55 //.65 //1
+				sparkRotate.set(1);
 			} else {
-				sparkRotate.set(0.6);//.45
+				sparkRotate.set(0.6);
 			}
 		} else {
 			if (activeRotate) {
-				sparkRotate.set(-0.06); //-0.4 //-0.6 //turn this guy down
+				sparkRotate.set(-0.06); 
 			} else {
-				sparkRotate.set(-0.7); //turn this down guy
+				sparkRotate.set(-0.7); 
 			}
 		}
 		

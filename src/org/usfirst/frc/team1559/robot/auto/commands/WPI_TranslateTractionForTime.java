@@ -14,8 +14,12 @@ public class WPI_TranslateTractionForTime extends Command {
 		this.time = time;
 	}
 	
-	public void execute() { //TODO change this for robot 1
-		Robot.driveTrain.drive(speed, 0, 0); //negative speed for robot 2, positive for robot 1
+	public void execute() { 
+		if (Robot.robotOne) {
+			Robot.driveTrain.drive(speed, 0, 0); //negative speed for robot 2, positive for robot 1
+		} else { //robot 2
+			Robot.driveTrain.drive(-speed, 0, 0);
+		}
 	}
 	
 	public boolean isFinished() {

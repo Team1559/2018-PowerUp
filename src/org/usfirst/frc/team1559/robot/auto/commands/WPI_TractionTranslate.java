@@ -47,11 +47,19 @@ public class WPI_TractionTranslate extends Command {
 		Robot.driveTrain.shift(false);
 		Robot.driveTrain.setPID(kP, kI, kD);
 		Robot.driveTrain.resetQuadEncoders();
+		
 		//Left is negative on robot 2, right is negative on robot 1
-		setpoints[DriveTrain.FL] = dxInTicks; //NEGATE all of these for robot 2 (currently negated) TODO change back for robot 1
-		setpoints[DriveTrain.FR] = -dxInTicks;
-		setpoints[DriveTrain.RL] = dxInTicks;
-		setpoints[DriveTrain.RR] = -dxInTicks;
+		if (Robot.robotOne) {
+			setpoints[DriveTrain.FL] = dxInTicks; //NEGATE all of these for robot 2 (currently negated) TODO change back for robot 1
+			setpoints[DriveTrain.FR] = -dxInTicks;
+			setpoints[DriveTrain.RL] = dxInTicks;
+			setpoints[DriveTrain.RR] = -dxInTicks;
+		} else {
+			setpoints[DriveTrain.FL] = -dxInTicks; //NEGATE all of these for robot 2 (currently negated) TODO change back for robot 1
+			setpoints[DriveTrain.FR] = dxInTicks;
+			setpoints[DriveTrain.RL] = -dxInTicks;
+			setpoints[DriveTrain.RR] = dxInTicks;
+		}
 	}
 
 	@Override

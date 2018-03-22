@@ -78,8 +78,6 @@ public class DriveTrain {
 	}
 
 	public void autoShift() {
-		//System.out.println(averageRPM());
-		//if (!manual) {
 		if (true) {
 			double magic = 500;
 			if (Math.abs(Robot.oi.getDriverY()) >= 0.1) {

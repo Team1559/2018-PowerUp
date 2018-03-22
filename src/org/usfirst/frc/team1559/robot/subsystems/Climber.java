@@ -1,5 +1,6 @@
 package org.usfirst.frc.team1559.robot.subsystems;
 
+import org.usfirst.frc.team1559.robot.Robot;
 import org.usfirst.frc.team1559.robot.Wiring;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -50,6 +51,12 @@ public class Climber {
 		belt.setNeutralMode(NeutralMode.Brake);
 
 		belt.enableVoltageCompensation(false);
+		
+		//for robot 2
+		if(!Robot.robotOne) {
+			upperBound = 359;
+			lowerBound = 905;
+		}
 	}
 
 	public double getPot() {

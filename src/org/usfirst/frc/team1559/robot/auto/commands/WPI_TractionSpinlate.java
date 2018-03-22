@@ -63,17 +63,22 @@ public class WPI_TractionSpinlate extends Command {
 	@Override
 	protected void initialize() {
 		System.out.println("INITIALIZING " + this + " (t=" + Timer.getFPGATimestamp() + ")");
-		//relative
-		//this.targetAngle = Robot.imu.getHeadingRelative() + this.exitAngle;
-		//absolute
-		//this.targetAngle = this.exitAngle;
+		
 		Robot.driveTrain.shift(false);
 		Robot.driveTrain.resetQuadEncoders();
+		
 		//Left is negative on robot 2, right is negative on robot 1
-		setpoints[DriveTrain.FL] = dxInTicks; //NEGATE all of these for robot 2 (currently negated) TODO change back for robot 1
-		setpoints[DriveTrain.FR] = -dxInTicks;
-		setpoints[DriveTrain.RL] = dxInTicks;
-		setpoints[DriveTrain.RR] = -dxInTicks;
+		if (Robot.robotOne) {
+			setpoints[DriveTrain.FL] = dxInTicks; //NEGATE all of these for robot 2 (currently negated) TODO change back for robot 1
+			setpoints[DriveTrain.FR] = -dxInTicks;
+			setpoints[DriveTrain.RL] = dxInTicks;
+			setpoints[DriveTrain.RR] = -dxInTicks;
+		} else {
+			setpoints[DriveTrain.FL] = -dxInTicks; //NEGATE all of these for robot 2 (currently negated) TODO change back for robot 1
+			setpoints[DriveTrain.FR] = dxInTicks;
+			setpoints[DriveTrain.RL] = -dxInTicks;
+			setpoints[DriveTrain.RR] = dxInTicks;
+		}
 		
 		for(int i = 0; i <= 3; i++) {
 			pids[i].reset();
@@ -93,19 +98,10 @@ public class WPI_TractionSpinlate extends Command {
 		//double errorAngle = targetAngle - Robot.imu.getHeadingRelative();
 		double R = spinPID.calculate(Robot.imu.getHeadingRelative());
 		
-		//TODO check these signs for robot 1
 		setpercents[DriveTrain.FL] -= R/(2*Math.abs(setpercents[DriveTrain.FL])+1);
 		setpercents[DriveTrain.FR] -= R/(2*Math.abs(setpercents[DriveTrain.FR])+1);
 		setpercents[DriveTrain.RL] -= R/(2*Math.abs(setpercents[DriveTrain.RL])+1);
 		setpercents[DriveTrain.RR] -= R/(2*Math.abs(setpercents[DriveTrain.RR])+1);
-		
-		//TODO take this out
-//		SmartDashboard.putNumber("R", R);
-//		SmartDashboard.putNumber("FL percent", setpercents[DriveTrain.FL]);
-//		SmartDashboard.putNumber("FR percent", setpercents[DriveTrain.FR]);
-//		SmartDashboard.putNumber("RL percent", setpercents[DriveTrain.RL]);
-//		SmartDashboard.putNumber("RR percent", setpercents[DriveTrain.RR]);
-//		SmartDashboard.putNumber("Error FL", setpoints[0]-Robot.driveTrain.getMotors()[0].getSensorCollection().getQuadraturePosition());
 		
 		Robot.driveTrain.getMotors()[DriveTrain.FL].set(ControlMode.PercentOutput, setpercents[DriveTrain.FL]);
 		Robot.driveTrain.getMotors()[DriveTrain.FR].set(ControlMode.PercentOutput, setpercents[DriveTrain.FR]);
@@ -135,8 +131,6 @@ public class WPI_TractionSpinlate extends Command {
 				
 		//return averageError < tolerance || (Robot.driveTrain.getAverageRPM() < minRPM && aboveMinRPM);
 		return Math.abs(Robot.driveTrain.getAbsoluteAverageRPM()) < minRPM && aboveMinRPM;
-		
-		
 	}
 
 	@Override

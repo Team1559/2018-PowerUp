@@ -1,5 +1,6 @@
 package org.usfirst.frc.team1559.robot.subsystems;
 
+import org.usfirst.frc.team1559.robot.Robot;
 import org.usfirst.frc.team1559.robot.Wiring;
 import org.usfirst.frc.team1559.util.MathUtils;
 
@@ -12,7 +13,7 @@ public class Lifter {
 	
 	private static final double[] POSITIONS_INCHES = { 8.75, 29.5, 61.9, 73.9, 84 }; // 5 should be 85.9 //was 82
 	private static final double POSITION_BOT_INCHES = 8.75;
-	private static final double POSITION_TOP_INCHES = 84; // 80.5 on robot 2 //82 for robot 1 //was 82
+	private static final double POSITION_TOP_INCHES = 84; // 80.5 on robot 2 //82 for robot 1 //was 82 on robot 1
 
 	private static final int RANGE = 535; //508 // difference between up and down in ticks //POS FOR ROBOT 2
 	public int lowerBound = 139; //147 FOR ROBOT 2 //183 for robot 1
@@ -28,6 +29,9 @@ public class Lifter {
 	private double setpoint;
 
 	public Lifter() {
+		if (!Robot.robotOne) {
+			lowerBound = 147;
+		}
 		calculatePositions();
 
 		lifterMotor = new WPI_TalonSRX(Wiring.LIFT_TALON);
@@ -73,12 +77,6 @@ public class Lifter {
 		else if (val <= 0) {
 			setpoint -= 5*val;
 		}
-//		if(val >= 0) {
-//			setpoint += 5*val;
-//		}
-//		else if (val <= 0) {
-//			setpoint += 3*val;
-//		}
 	}
 
 	public void update() {
