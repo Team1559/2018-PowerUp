@@ -15,12 +15,10 @@ public class Climber {
 	private static final int TIMEOUT = 0;
 	private Talon winch;
 	private WPI_TalonSRX belt;
-	private PowerDistributionPanel pdp;
-	private int displacement = -546; // TODO change this
-	public int lowerBound = 815; // TODO change this
-	private double setpoint = lowerBound;
-	public int upperBound = lowerBound + displacement;
-
+	 // TODO figure that out for robot 1
+	public int upperBound = 269; //359 for robot 2//pot value decrease as it moves up
+	public int lowerBound = 815; //905 for robot 2
+	
 	private double kP = 10;
 	private double kI = 0;
 	private double kD = 0;
@@ -30,10 +28,6 @@ public class Climber {
 		winch = new Talon(Wiring.CLM_WINCH);
 		belt = new WPI_TalonSRX(Wiring.CLM_BELT);
 		belt.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, TIMEOUT);
-		pdp = new PowerDistributionPanel();
-		// belt.configClosedloopRamp(0.2, TIMEOUT);
-		// belt.configPeakCurrentLimit(40, TIMEOUT);
-		// belt.configContinuousCurrentLimit(20, TIMEOUT);
 		belt.enableCurrentLimit(false);
 
 		belt.configNominalOutputForward(+0, TIMEOUT);
@@ -62,35 +56,38 @@ public class Climber {
 		return belt.getSelectedSensorPosition(0);
 	}
 
-	public void setPosition() {
-		belt.set(ControlMode.Position, setpoint);
-	}
-
 	public void driveManual(double val) {
 		belt.set(ControlMode.PercentOutput, val);
 	}
 
 	public void stageOne(double manual) {
 		if (Math.abs(manual) > 0.1) {
-			if (manual > 0) { // going up
+			if (manual > 0 && getPot() > upperBound) { // going up
 				belt.set(ControlMode.PercentOutput, manual * 1.33);
-			} else if (manual < 0){ // going down
-				belt.set(ControlMode.PercentOutput, manual);
+			} else { // going down
+				belt.set(ControlMode.PercentOutput, manual/1.5);
 			}
 		}
-		else {
-			belt.set(ControlMode.PercentOutput, 0.1);
+		else { //holding voltage
+			belt.set(ControlMode.PercentOutput, -0.1);
 		}
 	}
 
 	public void stageTwo(boolean b) {
-		winch.set(b ? 0.9 : 0);
-		//System.out.println("winching at " + winch.get());
-		// belt.set(ControlMode.Current, 20);
+		winch.set(b ? 1 : 0);
+		//belt.set(ControlMode.Current, -40);
+	}
+	
+	public void winchDown(boolean b) {
+		winch.set(b ? -0.5 : 0);
 	}
 	
 	public void stopClimbing() {
 		winch.stopMotor();
+	}
+	
+	public void stopBelting() {
+		belt.stopMotor();
 	}
 
 	public void disable() {

@@ -3,6 +3,7 @@ package org.usfirst.frc.team1559.robot;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.io.DataOutputStream;
 
 /**
  * This class is responsible for communicating to a server over UDP.
@@ -71,6 +72,18 @@ public class UDPClient implements Runnable {
 		}
 
 		return ret;
+	}
+	
+	public void send(String data) {
+		System.out.println("sending");
+		try {
+			Socket clientSocket = new Socket(HOST, PORT);
+			//clientSocket.
+			DataOutputStream os = new DataOutputStream(clientSocket.getOutputStream());
+			os.writeUTF(data);
+		} catch (Exception e) {
+			
+		}
 	}
 
 }

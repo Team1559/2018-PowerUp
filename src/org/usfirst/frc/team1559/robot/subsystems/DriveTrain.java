@@ -28,6 +28,10 @@ public class DriveTrain {
 	private Solenoid solenoid;
 	private VersaDrive drive;
 	public WPI_TalonSRX[] motors;
+	
+	private boolean manual = false;
+	private boolean strafing = false;
+	
 
 	public DriveTrain(boolean mecanumized) {
 		motors = new WPI_TalonSRX[4];
@@ -39,7 +43,7 @@ public class DriveTrain {
 		for (int i = 0; i < 4; i++) {
 			configTalon(motors[i]);
 		}
-		drive.setDeadband(0.1);
+		drive.setDeadband(0.2);
 		solenoid = new Solenoid(0, 0);
 		shift(mecanumized);
 	}
@@ -61,6 +65,7 @@ public class DriveTrain {
 		talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, TIMEOUT);
 
 		talon.configClosedloopRamp(0.2, TIMEOUT);
+		talon.configOpenloopRamp(0.15, TIMEOUT);
 
 		talon.configNominalOutputForward(0, TIMEOUT);
 		talon.configNominalOutputReverse(0, TIMEOUT);
@@ -74,19 +79,44 @@ public class DriveTrain {
 
 	public void autoShift() {
 		//System.out.println(averageRPM());
-		double magic = 500;
-		if (Math.abs(Robot.oi.getDriverX()) >= 0.15) {
-			shift(true);
-		} else if (!isMecanumized && getAverageRPM() > MAX_RPM / 2 + magic) {
-			shift(true);
-		} else if (isMecanumized && getAverageRPM() < MAX_RPM / 2 - magic) {
-			shift(false);
+		//if (!manual) {
+		if (true) {
+			double magic = 500;
+			if (Math.abs(Robot.oi.getDriverY()) >= 0.1) {
+				this.strafing = false;
+			}
+			if (Math.abs(Robot.oi.getDriverX()) >= 0.15) {
+				shift(true);
+				this.strafing = true;
+			} else if (!isMecanumized && getAverageRPM() > MAX_RPM / 2 + magic) {
+				shift(true);
+			} else if (isMecanumized && getAverageRPM() < MAX_RPM / 2 - magic && !this.strafing) {
+				shift(false);
+			}
 		}
+	}
+	
+	public void setManual(boolean b) {
+		manual = b;
+	}
+	
+	public void toggleManual() {
+		manual = !manual;
+	}
+	
+	public boolean isManual() {
+		return manual;
 	}
 
 	public double getAverageRPM() {
 		return MathUtils.average(MathUtils.map((x) -> Math.abs(
 				((WPI_TalonSRX) x).getSensorCollection().getQuadratureVelocity() / 4096.0 * 600.0 * 9 * Constants.DT_SPROCKET_RATIO),
+				motors));
+	}
+	
+	public double getAbsoluteAverageRPM() {
+		return MathUtils.average(MathUtils.map((x) -> Math.abs(
+				Math.abs(((WPI_TalonSRX) x).getSensorCollection().getQuadratureVelocity() / 4096.0 * 600.0 * 9 * Constants.DT_SPROCKET_RATIO)),
 				motors));
 	}
 

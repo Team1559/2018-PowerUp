@@ -8,18 +8,24 @@ public class WPI_Spintake extends Command {
 	
 	private boolean in;
 	private double time;
+	private double speed;
 
-	public WPI_Spintake(boolean in, double time) {
+	public WPI_Spintake(boolean in, double time, double speed) {
 		this.in = in;
 		this.time = time;
+		this.speed = speed;
+	}
+	
+	public WPI_Spintake(boolean in, double time) {
+		this(in, time, 1);
 	}
 
 	@Override
 	protected void initialize() {
 		if (in) {
-			Robot.intake.in();
+			Robot.intake.in(speed);
 		} else {
-			Robot.intake.out();
+			Robot.intake.out(speed);
 		}
 	}
 	

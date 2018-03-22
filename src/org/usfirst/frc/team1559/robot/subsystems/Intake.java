@@ -25,22 +25,36 @@ public class Intake {
 	}
 
 	public void open() {
-		solenoid.set(true);
+		solenoid.set(true); //true
 	}
 
 	public void close() {
-		solenoid.set(false);
+		solenoid.set(false); //false
 	}
 
 	public void toggle() {
 		solenoid.set(!solenoid.get());
 	}
+	
+	public void toggleRotate() {
+		isGoingDown = !isGoingDown;
+	}
+	
+	public void out(double speed) {
+		sparkLeft.set(-speed);
+		sparkRight.set(speed);
+	}
 
-	public void out() {
+	public void out() { 
 		sparkLeft.set(-1.0);
 		sparkRight.set(1.0);
 	}
 
+	public void in(double speed) {
+		sparkLeft.set(speed);
+		sparkRight.set(-speed);
+	}
+	
 	public void in() {
 		sparkLeft.set(1.0);
 		sparkRight.set(-1.0);
@@ -69,20 +83,37 @@ public class Intake {
 	}
 
 	public void updateRotate() {
+		//FOR ROBOT 1//		
 		if (!isGoingDown) {
 			if (activeRotate) {
-				sparkRotate.set(0.55);
+				sparkRotate.set(1);//.55 //.65 //1
 			} else {
-				sparkRotate.set(0.45);
+				sparkRotate.set(0.6);//.45
 			}
 		} else {
 			if (activeRotate) {
-				sparkRotate.set(-0.4);
+				sparkRotate.set(-0.06); //-0.4 //-0.6 //turn this guy down
 			} else {
-				sparkRotate.set(-0.2);
-				//sparkRotate.stopMotor(); // TODO: bottom limit switch is broken, replace when it's not
+				sparkRotate.set(-0.7); //turn this down guy
 			}
 		}
+		
+//		//ROBOT 2
+//		if (!isGoingDown) {
+//			if (activeRotate) {
+//				sparkRotate.set(-0.8);//.55
+//			} else {
+//				sparkRotate.set(0);//.45 //-0.5
+//			}
+//		} else {
+//			if (activeRotate) {
+//				sparkRotate.set(0.5);
+//			} else {
+//				sparkRotate.set(0); //0.35
+//				//sparkRotate.stopMotor(); // TODO: bottom limit switch is broken, replace when it's not
+//			}
+//		}
+		
 
 	}
 

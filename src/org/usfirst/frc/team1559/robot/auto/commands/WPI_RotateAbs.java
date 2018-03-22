@@ -8,14 +8,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WPI_RotateAbs extends Command {
 
-	// TODO: Weird oscillating error with jerky motions on second run
-	// TODO: PID loop tuning (consider PI)
+	private final double kP = .039;//0.037 //0.039
+	private final double kI = 0.0007;//0.0009
+	private final double kD = 0.15;//0.1
 
-	private final double kP = .04;
-	private final double kI = 0.0009;
-	private final double kD = 0.1;
-
-	private final double TOLERANCE = 1;
+	private final double TOLERANCE = 2;//1
 	private double angle;
 	protected final boolean mecanum;
 	private static PID pid;

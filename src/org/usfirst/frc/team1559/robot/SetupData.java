@@ -8,6 +8,9 @@ public class SetupData {
 	private int position;
 	private NetworkTableEntry positionEntry;
 	
+	private String target;
+	private NetworkTableEntry targetEntry;
+	
 	public SetupData() {
 //		NetworkTableInstance inst = NetworkTableInstance.getDefault();
 //		NetworkTable table = inst.getTable("SmartDashboard/Position");
@@ -24,10 +27,19 @@ public class SetupData {
 		position = number;
 	}
 	
+	public void setTarget(String n) {
+		target = n;
+	}
+	
+	public String getTarget() {
+		return target;
+	}
+	
 	public void updateData() {
 		int pos = (int) SmartDashboard.getNumber("Position", 0);
 		//positionEntry.setDouble(pos);
 		position = pos;
+		target = SmartDashboard.getString("Target", "switch");
 	}
 	
 }
