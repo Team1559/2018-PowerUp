@@ -12,7 +12,7 @@ public class OperatorInterface {
 		copilotStick = new Joystick(Wiring.JOY_COPILOT);
 		cocopilotStick = new Joystick(Wiring.EXTRA_BUTTONS);
 		driverButtons = new DTButton[14]; //increased from size 10 to 14 because of PS4 controller
-		copilotButtons = new DTButton[14];
+		copilotButtons = new DTButton[15];
 		cocopilotButtons = new DTButton[2];
 		for (int i = 0; i < driverButtons.length; i++) {
 			driverButtons[i] = new DTButton(driverStick, i + 1);

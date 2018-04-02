@@ -14,6 +14,8 @@ import org.usfirst.frc.team1559.robot.auto.commands.WPI_ManualDownOpen;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_RotateShoulder;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_Spit;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_Spit2;
+import org.usfirst.frc.team1559.robot.auto.commands.WPI_TractionSpinlate;
+import org.usfirst.frc.team1559.robot.auto.commands.WPI_TractionMove;
 import org.usfirst.frc.team1559.robot.subsystems.Climber;
 import org.usfirst.frc.team1559.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team1559.robot.subsystems.Intake;
@@ -44,7 +46,8 @@ public class Robot extends IterativeRobot {
 
 	private SetupData setupData;
 
-	public boolean xbox = false;
+	public static boolean xbox = false;
+	public static boolean fightStick = true;
 	public boolean scott = false; //for axis 4 manual toggle
 	
 	public final static boolean robotOne = false;
@@ -110,7 +113,11 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putString("target returned is:", setupData.getTarget());
 		routine = AutoPicker.pick(gameData, (int) setupData.getPosition(), "both");
 		
-		//routine = new CommandGroup();
+		routine = new CommandGroup();
+		
+		routine.addSequential(new WPI_TractionMove(100, 0));
+		routine.addSequential(new WPI_TractionMove(0, -90));
+		//routine.addSequential(new WPI_TractionSpinlate(250, 0));
 		
 		routine.start();
 	}
@@ -143,6 +150,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopInit() {
 		driveTrain.shift(true);
+		driveTrain.setDefaultPID();
 		lifter.holdPosition();
 	}
 
@@ -240,39 +248,70 @@ public class Robot extends IterativeRobot {
 		}
 
 		// LIFTING
-		if (Math.abs(oi.getCopilotAxis(0)) >= 0.05 && !oi.getCocopilotButton(1).isDown()) {
-			lifter.driveManual(oi.getCopilotAxis(0));
+		if(!fightStick) {
+			if (Math.abs(oi.getCopilotAxis(0)) >= 0.05 && !oi.getCocopilotButton(1).isDown()) {
+				lifter.driveManual(oi.getCopilotAxis(0));
+			}
+			if (oi.getCopilotButton(1).isPressed()) {
+				lifter.setPosition(1);
+			} else if (oi.getCopilotButton(3).isPressed()) {
+				lifter.setPosition(2);
+			} else if (oi.getCopilotButton(5).isPressed()) {
+				lifter.setPosition(3);
+			} else if (oi.getCopilotButton(2).isPressed()) {
+				lifter.setPosition(4);
+			} else if (oi.getCopilotButton(4).isPressed()) {
+				lifter.setPosition(5);
+			}
+	
+			if (oi.getCopilotButton(0).isPressed()) {
+				lifter.reset();
+				System.out.println("New Pot Lower Bound: " + lifter.lowerBound);
+			}
+	
+			// CLIMBING
+			if (oi.getCocopilotButton(1).isDown()) {
+				climber.stageOne(oi.getCopilotAxis(0));
+			} else if (oi.getCopilotButton(1).isDown() && oi.getCopilotButton(3).isDown()) { //redundant failsafe, replace climb button with pressing 1 and 2 on lifter
+				climber.stageOne(oi.getCopilotAxis(0));
+			}
+			else {
+				climber.stopBelting();
+			}
+			//winch if easy button or if 1 and 4 are held
+			climber.stageTwo(oi.getCocopilotButton(0).isDown()); //EASY BUTTON
+			
+		} else { //yes fightstick!
+			if (Math.abs(oi.getCopilotAxis(1)) >= 0 && !oi.getCopilotButton(8).isDown()) { //LT/L2
+				lifter.driveManual(oi.getCopilotAxis(1));
+			}
+			if (oi.getCopilotButton(0).isPressed()) { //A/X
+				lifter.setPosition(1);
+			} else if (oi.getCopilotButton(3).isPressed()) { //X/SQUARE
+				lifter.setPosition(2);
+			} else if (oi.getCopilotButton(4).isPressed()) { //Y/TRIANGLE
+				lifter.setPosition(3);
+			} else if (oi.getCopilotButton(7).isPressed()) { //RB/R1
+				lifter.setPosition(4);
+			} else if (oi.getCopilotButton(6).isPressed()) { //LB/L1
+				lifter.setPosition(5);
+			}
+	
+			if (oi.getCopilotButton(12).isPressed()) { //PS/HOME
+				lifter.reset();
+				System.out.println("New Pot Lower Bound: " + lifter.lowerBound);
+			}
+	
+			// CLIMBING
+			if (oi.getCocopilotButton(1).isDown()) { 
+				climber.stageOne(oi.getCopilotAxis(1));
+			} else {
+				climber.stopBelting();
+			}
+			//winch if easy button or if 1 and 4 are held
+			climber.stageTwo(oi.getCopilotButton(11).isDown()); //START/OPTIONS/MENU
 		}
-		if (oi.getCopilotButton(1).isPressed()) {
-			lifter.setPosition(1);
-		} else if (oi.getCopilotButton(3).isPressed()) {
-			lifter.setPosition(2);
-		} else if (oi.getCopilotButton(5).isPressed()) {
-			lifter.setPosition(3);
-		} else if (oi.getCopilotButton(2).isPressed()) {
-			lifter.setPosition(4);
-		} else if (oi.getCopilotButton(4).isPressed()) {
-			lifter.setPosition(5);
-		}
-
-		if (oi.getCopilotButton(0).isPressed()) {
-			lifter.reset();
-			System.out.println("New Pot Lower Bound: " + lifter.lowerBound);
-		}
-
-		// CLIMBING
-		if (oi.getCocopilotButton(1).isDown()) {
-			climber.stageOne(oi.getCopilotAxis(0));
-		} else if (oi.getCopilotButton(1).isDown() && oi.getCopilotButton(3).isDown()) { //redundant failsafe, replace climb button with pressing 1 and 2 on lifter
-			climber.stageOne(oi.getCopilotAxis(0));
-		}
-		else {
-			climber.stopBelting();
-		}
-
-		//winch if easy button or if 1 and 4 are held
-		climber.stageTwo(oi.getCocopilotButton(0).isDown() || (oi.getCopilotButton(1).isDown() && oi.getCopilotButton(2).isDown()));
-		
+			
 		driveTrain.autoShift();
 		intake.updateRotate();
 		lifter.update();

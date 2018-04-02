@@ -15,20 +15,21 @@ public class Lifter {
 	private static final double POSITION_BOT_INCHES = 8.75;
 	private static final double POSITION_TOP_INCHES = 84; // 80.5 on robot 2 //82 for robot 1 //was 82 on robot 1
 
-	private static final int RANGE = 535; //508 // difference between up and down in ticks //POS FOR ROBOT 2
-	public int lowerBound = 139; //147 FOR ROBOT 2 //183 for robot 1
+	private static final int RANGE = 535; //508 // difference between up and down in ticks //should be the same on both robots
+	public int lowerBound = 139; //147 FOR ROBOT 2 //139 for robot 1
 	public int upperBound;
 	private double[] positionsTicks = new double[POSITIONS_INCHES.length];
 
 	private WPI_TalonSRX lifterMotor;
 	private static final int TIMEOUT = 0;
-	private double kP = 15;//15 with bands //18
+	private double kP = 15;//15 with bands
 	private double kI = 0;
 	private double kD = 10*kP;// 5
 	private double kF = 0;
 	private double setpoint;
 
 	public Lifter() {
+		//change this to adjust lower bound on robot 2
 		if (!Robot.robotOne) {
 			lowerBound = 147;
 		}
@@ -70,12 +71,17 @@ public class Lifter {
 		return lifterMotor.getSelectedSensorPosition(0);
 	}
 	
+	//TODO adjust this for new digital joystick
 	public void driveManual(double val) {
-		if(val >= 0) {
-			setpoint -= 3*val;
-		}
-		else if (val <= 0) {
-			setpoint -= 5*val;
+		if (!Robot.fightStick) {
+			if(val >= 0) {
+				setpoint -= 3*val;
+			}
+			else if (val <= 0) {
+				setpoint -= 5*val;
+			}
+		} else { //TODO adjust this boyo
+			setpoint += val; //should add/subtract 1 tick each loop
 		}
 	}
 

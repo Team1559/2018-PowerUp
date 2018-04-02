@@ -68,15 +68,23 @@ public class Climber {
 	}
 
 	public void stageOne(double manual) {
-		if (Math.abs(manual) > 0.1) {
-			if (manual > 0 && getPot() > upperBound) { // going up
-				belt.set(ControlMode.PercentOutput, manual * 1.33);
-			} else { // going down
-				belt.set(ControlMode.PercentOutput, manual/1.5);
+		if (!Robot.fightStick) {
+			if (Math.abs(manual) > 0.1) {
+				if (manual > 0 && getPot() > upperBound) { // going up
+					belt.set(ControlMode.PercentOutput, manual * 1.33);
+				} else { // going down
+					belt.set(ControlMode.PercentOutput, manual/1.5);
+				}
 			}
-		}
-		else { //holding voltage
-			belt.set(ControlMode.PercentOutput, -0.1);
+			else { //holding voltage
+				belt.set(ControlMode.PercentOutput, -0.1);
+			}
+		} else { //TODO adjust these boyos
+			if (getPot() > upperBound) { //going up
+				belt.set(ControlMode.PercentOutput, -0.65); //goes up at 65%
+			} else { //going down
+				belt.set(ControlMode.PercentOutput, 0.4); //goes down at 40%
+			}
 		}
 	}
 

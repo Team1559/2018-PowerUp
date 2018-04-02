@@ -15,14 +15,14 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class WPI_TractionSpinlate extends Command {
+public class WPI_TractionMove extends Command {
 
 	//TODO tweak these values, possibly adjust by a factor of 1023 or 1024
-	private static PID[] pids;
-	private static final double kP = .05/1023; //was 0.09
-	private static final double kI = 0; //was kP/100
-	private static final double kD = 23*kP/1023;//22*kP
-
+	private static PID pid;
+	private static final double kP = .09/1023;//.05
+	private static final double kI = 0; 
+	private static final double kD = 3*kP;//0.188;
+	
 	private double kTOLERANCE = 0; // 4e6;
 	private double tolerance;
 	private double DEFAULT_TOLERANCE = 300; // in ticks, worked with 1500, was 1200
@@ -32,8 +32,8 @@ public class WPI_TractionSpinlate extends Command {
 	private boolean aboveMinRPM = false;
 	private double minRPM = 100;
 	
-	private double setpoints[];
-	private double setpercents[];
+	private double setpoint;
+	private double setpercent;
 	
 	private double targetAngle;
 	private double spin_kP = 0.037;
@@ -42,19 +42,15 @@ public class WPI_TractionSpinlate extends Command {
 	private static PID spinPID;
 	
 	
-	public WPI_TractionSpinlate(double x, double targetAngle) {
+	public WPI_TractionMove(double x, double targetAngle) {
 		this.x = x;
 		this.dxInTicks = x * Constants.WHEEL_FUDGE_TRACTION * 4096
 				/ (2 * Math.PI * Constants.WHEEL_RADIUS_INCHES_TRACTION);
-		this.setpoints = new double[4];
-		this.setpercents = new double[4];
-		this.pids = new PID[4];
+		this.pid = new PID();
 		this.tolerance = DEFAULT_TOLERANCE;
 		this.targetAngle = targetAngle;
 		
-		for(int i = 0; i <= 3; i++) {
-			pids[i] = new PID(kP,kI,kD);
-		}
+		pid = new PID(kP,kI,kD);
 		spinPID = new PID(spin_kP, spin_kI, spin_kD);
 	}
 
@@ -65,49 +61,32 @@ public class WPI_TractionSpinlate extends Command {
 		Robot.driveTrain.shift(false);
 		Robot.driveTrain.resetQuadEncoders();
 		
-		//Left is negative on robot 2, right is negative on robot 1
-		if (Robot.robotOne) {
-			setpoints[DriveTrain.FL] = dxInTicks; //NEGATE all of these for robot 2 (currently negated) TODO change back for robot 1
-			setpoints[DriveTrain.FR] = -dxInTicks;
-			setpoints[DriveTrain.RL] = dxInTicks;
-			setpoints[DriveTrain.RR] = -dxInTicks;
-		} else {
-			setpoints[DriveTrain.FL] = -dxInTicks; //NEGATE all of these for robot 2 (currently negated) TODO change back for robot 1
-			setpoints[DriveTrain.FR] = dxInTicks;
-			setpoints[DriveTrain.RL] = -dxInTicks;
-			setpoints[DriveTrain.RR] = dxInTicks;
-		}
+		setpoint = dxInTicks;
 		
-		for(int i = 0; i <= 3; i++) {
-			pids[i].reset();
-			pids[i].setSetpoint(setpoints[i]);
-		}
+		pid.reset();
+		pid.setSetpoint(setpoint);
+		
 		spinPID.reset();
 		spinPID.setSetpoint(this.targetAngle);
+		
+		Robot.driveTrain.setDefaultPID();
 	}
 	
 	protected void execute() {
 		
-		SmartDashboard.putNumber("Motor 0 RPM", Robot.driveTrain.getMotors()[0].getSelectedSensorVelocity(0));
+		//SmartDashboard.putNumber("Motor 0 RPM", Robot.driveTrain.getMotors()[0].getSensorCollection().getQuadratureVelocity());
 		
-		for(int i = 0; i <= 3; i++) {
-			double x = pids[i].calculate(Robot.driveTrain.getMotors()[i].getSensorCollection().getQuadraturePosition());
-			setpercents[i] = x;
-		}
+		SmartDashboard.putNumber("average position", Robot.driveTrain.getAveragePosition());
+		setpercent = pid.calculate(Robot.driveTrain.getAveragePosition());
+		System.out.println(Robot.driveTrain.getAveragePosition()+","+setpoint);
 		
 		//adjust for the error angle
 		//double errorAngle = targetAngle - Robot.imu.getHeadingRelative();
 		double R = spinPID.calculate(Robot.imu.getHeadingRelative());
 		
-		setpercents[DriveTrain.FL] -= R/(2*Math.abs(setpercents[DriveTrain.FL])+1);
-		setpercents[DriveTrain.FR] -= R/(2*Math.abs(setpercents[DriveTrain.FR])+1);
-		setpercents[DriveTrain.RL] -= R/(2*Math.abs(setpercents[DriveTrain.RL])+1);
-		setpercents[DriveTrain.RR] -= R/(2*Math.abs(setpercents[DriveTrain.RR])+1);
-		
-		Robot.driveTrain.getMotors()[DriveTrain.FL].set(ControlMode.PercentOutput, setpercents[DriveTrain.FL]);
-		Robot.driveTrain.getMotors()[DriveTrain.FR].set(ControlMode.PercentOutput, setpercents[DriveTrain.FR]);
-		Robot.driveTrain.getMotors()[DriveTrain.RL].set(ControlMode.PercentOutput, setpercents[DriveTrain.RL]);
-		Robot.driveTrain.getMotors()[DriveTrain.RR].set(ControlMode.PercentOutput, setpercents[DriveTrain.RR]);
+		//TODO this is probably positive on robot 1
+		SmartDashboard.putNumber("R", R);
+		Robot.driveTrain.drive(-setpercent,0,-R);
 	}
 
 	@Override
