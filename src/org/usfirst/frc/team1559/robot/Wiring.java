@@ -15,7 +15,7 @@ public interface Wiring {
 	// Intake
 	public static final int NTK_SPARK_LEFT = 1;
 	public static final int NTK_SPARK_RIGHT = 0;
-	public static final int NTK_SPARK_ROTATE = 2;
+	public static final int NTK_TALON_ROTATE = 9;
 	public static final int NTK_SOLENOID = 7;
 
 	// Climber

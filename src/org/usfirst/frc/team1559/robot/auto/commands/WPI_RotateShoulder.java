@@ -6,32 +6,23 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class WPI_RotateShoulder extends Command {
 
-	private static double TIME_DOWN = 1;
-	private static double TIME_UP = 1;
+	private double angle;
 	
-	private boolean up;
-
-	public WPI_RotateShoulder(boolean up) {
-		this.up = up;
+	public WPI_RotateShoulder(double angle) {
+		this.angle = angle;
 	}
 
 	@Override
 	protected void initialize() {
-		if (up) {
-			Robot.intake.rotateUp();
-		} else {
-			Robot.intake.rotateDown();
-		}
-		Robot.intake.setActiveRotate(true);
+		Robot.intake.setShoulderAngle(angle);
 	}
 
 	@Override
 	protected boolean isFinished() {
-		return this.timeSinceInitialized() >= (up ? TIME_UP : TIME_DOWN);
+		return Robot.intake.shoulderInTolerance(300);
 	}
 	
 	@Override
 	protected void end() {
-		Robot.intake.setActiveRotate(false);
 	}
 }

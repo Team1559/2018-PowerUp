@@ -4,16 +4,15 @@ import org.usfirst.frc.team1559.robot.Constants;
 import org.usfirst.frc.team1559.robot.Robot;
 import org.usfirst.frc.team1559.robot.Wiring;
 import org.usfirst.frc.team1559.util.MathUtils;
-import org.usfirst.frc.team1559.util.VersaDrive;
+import org.usfirst.frc.team1559.util.PIDFGains;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.drive.MecanumDrive;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.drive.MecanumDrive;
 
 public class DriveTrain {
 
@@ -24,16 +23,11 @@ public class DriveTrain {
 	public static final int RL = 2;
 	public static final int FL = 3;
 	
-	private static final double traction_kP = 2.11;
-	private static final double traction_kI = 5.9;
-	private static final double traction_kD = 0;
-	private static final double traction_kF = 0.4;
+	private static final PIDFGains tractionPidf = new PIDFGains(2.11, 5.9, 0, 0.4);
+	private static final PIDFGains mecanumPidf = new PIDFGains(2.11, 5.9, 0, 0.4);
+	private static final int TRACTION_PROFILE = 0;
+	private static final int MECANUM_PROFILE = 1;
 	
-	private static final double mecanum_kP = 2.11;
-	private static final double mecanum_kI = 5.9;
-	private static final double mecanum_kD = 0;
-	private static final double mecanum_kF = 0.4;
-
 	private static final int TIMEOUT = 0;
 
 	private boolean isMecanumized;
@@ -60,49 +54,22 @@ public class DriveTrain {
 		drive.setDeadband(0.2);
 		solenoid = new Solenoid(0, 0);
 		shift(mecanumized);
-		setDefaultPID();
+		setPIDF(tractionPidf.kP, tractionPidf.kI, tractionPidf.kD, tractionPidf.kF, TRACTION_PROFILE);
+		setPIDF(mecanumPidf.kP, mecanumPidf.kI, mecanumPidf.kD, mecanumPidf.kF, MECANUM_PROFILE);
 	}
 	
-	public void setDefaultPID() {
-		setPIDF(traction_kP, traction_kI, traction_kD, traction_kF, mecanum_kP, mecanum_kI, mecanum_kD, mecanum_kF);
-	}
-	
-	public void setTraction() {
+	public void setProfile(int profile) {
 		for(int i = 0; i <= 3; i++) {
-			motors[0].selectProfileSlot(0, 0);
-		}
-	}
-	
-	public void setMecanum() {
-		for(int i = 0; i <= 3; i++) {
-			motors[0].selectProfileSlot(1, 0);
+			motors[0].selectProfileSlot(profile, 0);
 		}
 	}
 
-	public void setPID(double p, double i, double d) {
-		setPIDF(p, i, d, 0);
-	}
-
-	public void setPIDF(double p, double i, double d, double f) {
+	public void setPIDF(double p, double i, double d, double f, double profile) {
 		for (int j = 0; j < 4; j++) {
 			motors[j].config_kP(0, p, TIMEOUT);
 			motors[j].config_kI(0, i, TIMEOUT);
 			motors[j].config_kD(0, d, TIMEOUT);
 			motors[j].config_kF(0, f, TIMEOUT);
-		}
-	}
-	
-	public void setPIDF(double p0, double i0, double d0, double f0, double p1, double i1, double d1, double f1) {
-		for (int j = 0; j < 4; j++) {
-			motors[j].config_kP(0, p0, TIMEOUT);
-			motors[j].config_kI(0, i0, TIMEOUT);
-			motors[j].config_kD(0, d0, TIMEOUT);
-			motors[j].config_kF(0, f0, TIMEOUT);
-			
-			motors[j].config_kP(1, p1, TIMEOUT);
-			motors[j].config_kI(1, i1, TIMEOUT);
-			motors[j].config_kD(1, d1, TIMEOUT);
-			motors[j].config_kF(1, f1, TIMEOUT);
 		}
 	}
 
@@ -226,9 +193,9 @@ public class DriveTrain {
 		solenoid.set(b);
 		
 		if(isMecanumized) {
-			setMecanum();
+			setProfile(MECANUM_PROFILE);
 		} else {
-			setTraction();
+			setProfile(TRACTION_PROFILE);
 		}
 	}
 
@@ -255,6 +222,10 @@ public class DriveTrain {
 			//drive.curvatureDriveVelocity(x * Constants.DT_SPROCKET_RATIO, zRot, true);
 			drive.driveCartesian(0, x, zRot);
 		}
+	}
+	
+	public int getEncoder(int id) {
+		return motors[id].getSensorCollection().getQuadraturePosition();
 	}
 
 	public boolean getMecanumized() {

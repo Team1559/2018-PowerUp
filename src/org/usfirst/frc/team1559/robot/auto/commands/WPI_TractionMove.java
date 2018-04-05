@@ -68,8 +68,6 @@ public class WPI_TractionMove extends Command {
 		
 		spinPID.reset();
 		spinPID.setSetpoint(this.targetAngle);
-		
-		Robot.driveTrain.setDefaultPID();
 	}
 	
 	protected void execute() {

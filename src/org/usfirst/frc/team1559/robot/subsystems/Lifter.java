@@ -81,7 +81,7 @@ public class Lifter {
 				setpoint -= 5*val;
 			}
 		} else { //TODO adjust this boyo
-			setpoint += val; //should add/subtract 1 tick each loop
+			setpoint -= 5*val; //should add/subtract 1 tick each loop
 		}
 	}
 

@@ -6,7 +6,7 @@ public class WPI_ManualDownOpen extends CommandGroup {
 
 	public WPI_ManualDownOpen() {
 		//this.addSequential(new WPI_OpenClaw());
-		this.addSequential(new WPI_RotateShoulder(false));
+		this.addSequential(new WPI_RotateShoulder(0));
 		this.addSequential(new WPI_Wait(0.25));
 		this.addSequential(new WPI_OpenClaw());
 	}

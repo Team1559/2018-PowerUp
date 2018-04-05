@@ -8,7 +8,7 @@ public class WPI_Spit2 extends CommandGroup {
 		this.addParallel(new WPI_Spintake(false, 0.8, 0.8169));
 		CommandGroup waitRotate = new CommandGroup();
 		waitRotate.addSequential(new WPI_Wait(0.15));
-		waitRotate.addSequential(new WPI_RotateShoulder(false));
+		waitRotate.addSequential(new WPI_RotateShoulder(0));
 		this.addSequential(waitRotate);
 		this.addSequential(new WPI_OpenMouth()); //this is new, probably bad, actually its not bad
 	}

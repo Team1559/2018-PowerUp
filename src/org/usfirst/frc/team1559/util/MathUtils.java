@@ -38,6 +38,10 @@ public class MathUtils {
 		}
 		return sum;
 	}
+	
+	public static double average(Number... values) {
+		return average(Arrays.asList(values));
+	}
 
 	public static double average(List<? extends Number> list) {
 		double sum = 0;

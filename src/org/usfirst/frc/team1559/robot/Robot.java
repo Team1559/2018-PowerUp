@@ -10,12 +10,10 @@ package org.usfirst.frc.team1559.robot;
 import org.usfirst.frc.team1559.robot.auto.AutoPicker;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_Ingest;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_IngestNoSpin;
+import org.usfirst.frc.team1559.robot.auto.commands.WPI_MP;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_ManualDownOpen;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_RotateShoulder;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_Spit;
-import org.usfirst.frc.team1559.robot.auto.commands.WPI_Spit2;
-import org.usfirst.frc.team1559.robot.auto.commands.WPI_TractionSpinlate;
-import org.usfirst.frc.team1559.robot.auto.commands.WPI_TractionMove;
 import org.usfirst.frc.team1559.robot.subsystems.Climber;
 import org.usfirst.frc.team1559.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team1559.robot.subsystems.Intake;
@@ -71,6 +69,8 @@ public class Robot extends IterativeRobot {
 		routine = new CommandGroup();
 		AutoPicker.init();
 		setupData = new SetupData();
+		
+		intake.setShoulderAngle(90);
 
 	}
 
@@ -90,6 +90,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Climber Pot", climber.getPot());
 
 		SmartDashboard.putNumber("IMU", imu.getHeadingRelative());
+		SmartDashboard.putNumber("Shoulder", intake.getPot());
 
 //		SmartDashboard.putNumber("Motor 0 CL Error", driveTrain.getMotors()[0].getClosedLoopError(0));
 //		SmartDashboard.putNumber("Motor 1 CL Error", driveTrain.getMotors()[1].getClosedLoopError(0));
@@ -115,8 +116,9 @@ public class Robot extends IterativeRobot {
 		
 		routine = new CommandGroup();
 		
-		routine.addSequential(new WPI_TractionMove(100, 0));
-		routine.addSequential(new WPI_TractionMove(0, -90));
+		routine.addSequential(new WPI_MP("leftguy.csv", "rightguy.csv"));
+		//routine.addSequential(new WPI_TractionMove(100, 0));
+		//routine.addSequential(new WPI_TractionMove(0, -90));
 		//routine.addSequential(new WPI_TractionSpinlate(250, 0));
 		
 		routine.start();
@@ -125,8 +127,8 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-		intake.updateRotate();
 		lifter.update();
+		intake.updateShoulder();
 		
 		//udp.send("c");
 
@@ -150,7 +152,6 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopInit() {
 		driveTrain.shift(true);
-		driveTrain.setDefaultPID();
 		lifter.holdPosition();
 	}
 
@@ -170,8 +171,7 @@ public class Robot extends IterativeRobot {
 			}
 
 			if (oi.getDriverButton(4).isPressed()) { // LT
-				intake.setActiveRotate(true);
-				intake.rotateDown();
+				intake.setShoulderAngle(0);
 				intake.open();
 			}
 			if (oi.getDriverButton(4).isReleased()) {
@@ -182,7 +182,7 @@ public class Robot extends IterativeRobot {
 			}
 			if (oi.getDriverButton(5).isReleased()) {
 				intake.stopIntake();
-				intake.rotateUp();
+				intake.setShoulderAngle(90);
 			}
 		} else { // ps4
 			if (robotOne) { //robot 1
@@ -198,8 +198,7 @@ public class Robot extends IterativeRobot {
 			}
 
 			if (oi.getDriverButton(4).isPressed()) {
-				intake.setActiveRotate(true);
-				intake.rotateDown();
+				intake.setShoulderAngle(45);
 				intake.open();
 			}
 			if (oi.getDriverButton(4).isReleased()) {
@@ -221,18 +220,13 @@ public class Robot extends IterativeRobot {
 			}
 			if (oi.getDriverButton(5).isReleased()) {
 				intake.stopIntake();
-				new WPI_RotateShoulder(true).start();
+				new WPI_RotateShoulder(90).start();
 				intake.close();
 			}
 
 			// MANUAL CONTROLS
 			if (oi.getDriverButton(2).isPressed()) {
 				intake.toggleRotate();
-			}
-			if (oi.getDriverButton(2).isDown()) {
-				intake.setActiveRotate(true);
-			} else {
-				intake.setActiveRotate(false);
 			}
 			if (oi.getDriverButton(0).isPressed()) {
 				intake.toggle();
@@ -313,7 +307,7 @@ public class Robot extends IterativeRobot {
 		}
 			
 		driveTrain.autoShift();
-		intake.updateRotate();
+		intake.updateShoulder();
 		lifter.update();
 	}
 
@@ -346,11 +340,9 @@ public class Robot extends IterativeRobot {
 			}
 
 			if (oi.getDriverButton(5).isDown()) { // RT
-				intake.setActiveRotate(true);
-				intake.rotateDown();
+				intake.setShoulderAngle(0);
 			} else if (oi.getDriverButton(4).isDown()) { // LT
-				intake.setActiveRotate(true);
-				intake.rotateUp();
+				intake.setShoulderAngle(90);
 			}
 			
 			if (oi.getDriverButton(2).isPressed()) { // O
@@ -399,6 +391,6 @@ public class Robot extends IterativeRobot {
 		climber.winchDown(oi.getCocopilotButton(0).isDown() && oi.getCocopilotButton(1).isDown());
 
 		lifter.update();
-		intake.updateRotate();
+		intake.updateShoulder();
 	}
 }
