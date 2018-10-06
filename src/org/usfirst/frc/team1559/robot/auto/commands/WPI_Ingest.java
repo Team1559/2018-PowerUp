@@ -9,7 +9,7 @@ public class WPI_Ingest extends CommandGroup {
 		this.addSequential(new WPI_Spintake(true, .75)); //time was 0.5 then changed to .75
 		this.addSequential(new WPI_Wait(0.25));
 		this.addParallel(new WPI_RotateShoulder(90));
-		this.addParallel(new WPI_Spintake(true, 1));
+		//this.addParallel(new WPI_Spintake(true, 1)); //no longer gay bowser
 	}
 	
 }

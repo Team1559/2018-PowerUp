@@ -15,12 +15,12 @@ public interface Wiring {
 	// Intake
 	public static final int NTK_SPARK_LEFT = 1;
 	public static final int NTK_SPARK_RIGHT = 0;
-	public static final int NTK_TALON_ROTATE = 9;
+	public static final int NTK_TALON_ROTATE = 2; //9
 	public static final int NTK_SOLENOID = 7;
 
 	// Climber
 	public static final int CLM_BELT = 2; // Using TalonSRX speed controller.
-	public static final int CLM_WINCH = 3; // Using TalonSR speed controller.
+	public static final int CLM_WINCH = 11; // Using TalonSR speed controller.
 
 	// Controllers
 	public static final int JOY_DRIVER = 0;

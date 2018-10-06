@@ -3,7 +3,7 @@ package org.usfirst.frc.team1559.robot;
 public interface Constants {
 
 	public final double WHEEL_RADIUS_INCHES_MECANUM = 3;
-	public final double WHEEL_RADIUS_INCHES_TRACTION = 3.125;
+	public final double WHEEL_RADIUS_INCHES_TRACTION = 3.028; //3.125;
 	public final double DT_SPROCKET_RATIO = 32.0 / 22.0;
 	public final double WHEEL_FUDGE_MECANUM = 0.723;
 	public final double WHEEL_FUDGE_TRACTION = 1;//0.6

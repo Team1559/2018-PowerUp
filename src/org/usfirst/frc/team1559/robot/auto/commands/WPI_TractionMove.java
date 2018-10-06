@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WPI_TractionMove extends Command {
 
-	//TODO tweak these values, possibly adjust by a factor of 1023 or 1024
+	//TODO tweak these values, possibly adjust by a factor of 1024
 	private static PID pid;
 	private static final double kP = .09/1023;//.05
 	private static final double kI = 0; 
@@ -36,9 +36,9 @@ public class WPI_TractionMove extends Command {
 	private double setpercent;
 	
 	private double targetAngle;
-	private double spin_kP = 0.037;
-	private double spin_kI = 0.0007;
-	private double spin_kD = 0.15;
+	private double spin_kP = 0.02; //0.037
+	private double spin_kI = 0; //0.0007
+	private double spin_kD = 0; //0.15
 	private static PID spinPID;
 	
 	
@@ -82,9 +82,9 @@ public class WPI_TractionMove extends Command {
 		//double errorAngle = targetAngle - Robot.imu.getHeadingRelative();
 		double R = spinPID.calculate(Robot.imu.getHeadingRelative());
 		
-		//TODO this is probably positive on robot 1
+		//TODO this is probably positive on robot 1, - on robot 2
 		SmartDashboard.putNumber("R", R);
-		Robot.driveTrain.drive(-setpercent,0,-R);
+		Robot.driveTrain.drive(setpercent,0,-R);
 	}
 
 	@Override

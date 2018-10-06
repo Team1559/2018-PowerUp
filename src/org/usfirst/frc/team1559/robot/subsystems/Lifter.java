@@ -11,11 +11,11 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 public class Lifter {
 	
-	private static final double[] POSITIONS_INCHES = { 8.75, 29.5, 61.9, 73.9, 84 }; // 5 should be 85.9 //was 82
+	private static final double[] POSITIONS_INCHES = { 8.75, 29.5, 61.9, 73.9, 82 }; //84 // 5 should be 85.9 //was 82
 	private static final double POSITION_BOT_INCHES = 8.75;
-	private static final double POSITION_TOP_INCHES = 84; // 80.5 on robot 2 //82 for robot 1 //was 82 on robot 1
+	private static final double POSITION_TOP_INCHES = 82;//80.5;//this should be 84 (jk not!), but it's not // 80.5 on robot 2 //82 for robot 1 //was 82 on robot 1
 
-	private static final int RANGE = 535; //508 // difference between up and down in ticks //should be the same on both robots
+	private static final int RANGE = 540;//535 //508 // difference between up and down in ticks //should be the same on both robots
 	public int lowerBound = 139; //147 FOR ROBOT 2 //139 for robot 1
 	public int upperBound;
 	private double[] positionsTicks = new double[POSITIONS_INCHES.length];
@@ -27,18 +27,20 @@ public class Lifter {
 	private double kD = 10*kP;// 5
 	private double kF = 0;
 	private double setpoint;
+	
+	private int position = 1;
 
 	public Lifter() {
 		//change this to adjust lower bound on robot 2
 		if (!Robot.robotOne) {
-			lowerBound = 147;
+			lowerBound = 160;
 		}
 		calculatePositions();
 
 		lifterMotor = new WPI_TalonSRX(Wiring.LIFT_TALON);
 		lifterMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, TIMEOUT);
 
-		lifterMotor.configClosedloopRamp(0.2, TIMEOUT);
+		lifterMotor.configClosedloopRamp(0.1, TIMEOUT);
 		lifterMotor.configPeakCurrentLimit(70, TIMEOUT); //TODO raise this? 40A on 12:1
 		lifterMotor.configContinuousCurrentLimit(40, TIMEOUT); 
 		lifterMotor.enableCurrentLimit(true);
@@ -47,7 +49,7 @@ public class Lifter {
 		lifterMotor.configNominalOutputForward(+.05, TIMEOUT); // +0.25 on robot 2 with band//0 on robot 1
 		lifterMotor.configNominalOutputReverse(-0.1, TIMEOUT); //0 on robot 1, -0.1 on robot 2 with band
 		lifterMotor.configPeakOutputForward(+1, TIMEOUT);
-		lifterMotor.configPeakOutputReverse(-0.55, TIMEOUT); //-.45 for robot 1
+		lifterMotor.configPeakOutputReverse(-0.55, TIMEOUT); //-.45 for robot 1 //-0.55 for robot 2
 
 		lifterMotor.configReverseSoftLimitThreshold(lowerBound, TIMEOUT); //TODO possibly switch these
 		lifterMotor.configForwardSoftLimitThreshold(upperBound, TIMEOUT);
@@ -87,11 +89,13 @@ public class Lifter {
 
 	public void update() {
 		lifterMotor.set(ControlMode.Position, setpoint); //setpoint is pos for robot 2
+		//Robot.driveTrain.updateRamp(position); //ONLY DO THIS IN VELOCITY
 	}
 
 	public void setPosition(int pos) {
 		pos -= 1;	
 		setpoint = positionsTicks[pos];
+		position = pos;
 	}
 
 	public boolean isAtPosition(int position) {
