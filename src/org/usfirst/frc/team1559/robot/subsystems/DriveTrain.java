@@ -5,6 +5,7 @@ import org.usfirst.frc.team1559.robot.Robot;
 import org.usfirst.frc.team1559.robot.Wiring;
 import org.usfirst.frc.team1559.util.MathUtils;
 import org.usfirst.frc.team1559.util.PIDFGains;
+import org.usfirst.frc.team1559.util.VersaDrive;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -16,15 +17,17 @@ import edu.wpi.first.wpilibj.drive.MecanumDrive;
 
 public class DriveTrain {
 
-	private static final int MAX_RPM = 5300;
+	private static final int MAX_RPM = 5300; //this is wrong
 
 	public static final int FR = 0;
 	public static final int RR = 1;
 	public static final int RL = 2;
 	public static final int FL = 3;
-	
-	private static final PIDFGains tractionPidf = new PIDFGains(2.11, 5.9, 0, 0.4);
-	private static final PIDFGains mecanumPidf = new PIDFGains(2.11, 5.9, 0, 0.4);
+
+	public static final double MAX_SPEED_FPS_TRACTION = 9.67 * 1.01; //6 inch wheels????
+	public static final double MAX_TICKS_PER_100MS = MAX_SPEED_FPS_TRACTION * 4096.0 / (Math.PI * Constants.WHEEL_RADIUS_INCHES_TRACTION * 2.0 / 12.0) / 10.0; //2459; // t/100ms = ft/s 
+	private static final PIDFGains tractionPidf = new PIDFGains(7.8*1.0/MAX_TICKS_PER_100MS*1024/4, 0, 15.9/5, 1.0/MAX_TICKS_PER_100MS*1024); //TODO retune this boi
+	private static final PIDFGains mecanumPidf = tractionPidf;//new PIDFGains(0, 0, 0, 0);
 	private static final int TRACTION_PROFILE = 0;
 	private static final int MECANUM_PROFILE = 1;
 	
@@ -32,12 +35,16 @@ public class DriveTrain {
 
 	private boolean isMecanumized;
 	private Solenoid solenoid;
-	//private VersaDrive drive;
-	private MecanumDrive drive;
+	private VersaDrive drive;
+	//private MecanumDrive driveTele;
 	public WPI_TalonSRX[] motors;
 	
 	private boolean manual = false;
 	private boolean strafing = false;
+	
+	private int lifterPos = 1;
+	
+	private boolean tele = false;
 	
 
 	public DriveTrain(boolean mecanumized) {
@@ -46,12 +53,13 @@ public class DriveTrain {
 		motors[RL] = new WPI_TalonSRX(Wiring.DRV_RL_SRX);
 		motors[FR] = new WPI_TalonSRX(Wiring.DRV_FR_SRX);
 		motors[RR] = new WPI_TalonSRX(Wiring.DRV_RR_SRX);
-		//drive = new VersaDrive(motors[FL], motors[RL], motors[FR], motors[RR]);
-		drive = new MecanumDrive(motors[FL], motors[RL], motors[FR], motors[RR]);
+		drive = new VersaDrive(motors[FL], motors[RL], motors[FR], motors[RR]);
+		//driveTele = new MecanumDrive(motors[FL], motors[RL], motors[FR], motors[RR]);
+		//drive.setMaxOutput(MAX_TICKS_PER_100MS); //JD THIS IS NEW 4/14 //john no, this is bad 4/16/18
 		for (int i = 0; i < 4; i++) {
 			configTalon(motors[i]);
 		}
-		drive.setDeadband(0.2);
+		drive.setDeadband(0.005); //0.001 for auto
 		solenoid = new Solenoid(0, 0);
 		shift(mecanumized);
 		setPIDF(tractionPidf.kP, tractionPidf.kI, tractionPidf.kD, tractionPidf.kF, TRACTION_PROFILE);
@@ -64,19 +72,19 @@ public class DriveTrain {
 		}
 	}
 
-	public void setPIDF(double p, double i, double d, double f, double profile) {
+	public void setPIDF(double p, double i, double d, double f, int profile) {
 		for (int j = 0; j < 4; j++) {
-			motors[j].config_kP(0, p, TIMEOUT);
-			motors[j].config_kI(0, i, TIMEOUT);
-			motors[j].config_kD(0, d, TIMEOUT);
-			motors[j].config_kF(0, f, TIMEOUT);
+			motors[j].config_kP(profile, p, TIMEOUT);// was 0
+			motors[j].config_kI(profile, i, TIMEOUT);
+			motors[j].config_kD(profile, d, TIMEOUT);
+			motors[j].config_kF(profile, f, TIMEOUT);
 		}
 	}
 
 	private void configTalon(WPI_TalonSRX talon) {
 		talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, TIMEOUT);
 
-		talon.configClosedloopRamp(0.08, TIMEOUT); //0.2
+		talon.configClosedloopRamp(0.0, TIMEOUT); //0.08
 		talon.configOpenloopRamp(0.15, TIMEOUT);
 
 		talon.configNominalOutputForward(0, TIMEOUT);
@@ -86,12 +94,48 @@ public class DriveTrain {
 		
 		talon.setInverted(true);
 		talon.setSensorPhase(true);
-		talon.setNeutralMode(NeutralMode.Brake);
+		talon.setNeutralMode(NeutralMode.Coast);
+		
+		talon.configNeutralDeadband(.04, TIMEOUT);
 		
 		//TODO this is new
 		talon.set(ControlMode.Velocity, 0);
 	}
+	
+	public void setTeleConfig() {
+		tele = true;
+		drive.setDeadband(0.02);
+		for(int i = 0; i <= 3; i++) {
+			motors[i].configClosedloopRamp(0.23, TIMEOUT); //0.08
+			motors[i].setNeutralMode(NeutralMode.Brake);
+			motors[i].set(ControlMode.PercentOutput, 0); //this is here for percent output
+		}
+	}
+	
+	public void setAutoConfig() {
+		tele = false;
+		drive.setDeadband(0.005);
+		for (int i = 0; i < 4; i++) {
+			configTalon(motors[i]);
+		}
+	}
+	
+	public void updateRamp(int position) {
+		if (position != lifterPos) {
+			lifterPos = position;
+			if(position > 2) {
+				for(int i = 0; i <= 3; i++) {
+					motors[i].configClosedloopRamp(0.15, TIMEOUT); //0.08
+				}
+			} else if (position > 2) {
+				for(int i = 0; i <= 3; i++) {
+					motors[i].configClosedloopRamp(0.23, TIMEOUT); //0.08
+				}
+			}
+		}
+	}
 
+	
 	public void autoShift() {
 		if (true) {
 			double magic = 500;
@@ -123,9 +167,9 @@ public class DriveTrain {
 
 	public double getAveragePosition() {
 		//TODO change this for robot 1 encoders, idk why its neg
-		return (motors[0].getSensorCollection().getQuadraturePosition()+ //- for robot 1
-				motors[1].getSensorCollection().getQuadraturePosition()-
-				motors[2].getSensorCollection().getQuadraturePosition()+
+		return (motors[0].getSensorCollection().getQuadraturePosition()- //- for robot 1
+				motors[1].getSensorCollection().getQuadraturePosition()+
+				motors[2].getSensorCollection().getQuadraturePosition()-
 				motors[3].getSensorCollection().getQuadraturePosition())/4.0;
 	}
 	
@@ -205,7 +249,7 @@ public class DriveTrain {
 	 * </p>
 	 * <p>
 	 * This also will depend on the value of {@link #isMecanumized}
-	 * </p>
+	 * </p>z
 	 * 
 	 * @param x
 	 *            Speed along the x-axis
@@ -216,11 +260,17 @@ public class DriveTrain {
 	 */
 	public void drive(double x, double y, double zRot) {
 		if (isMecanumized) {
-			//drive.driveCartesianVelocity(y, x, zRot);
 			drive.driveCartesian(y, x, zRot);
 		} else {
-			//drive.curvatureDriveVelocity(x * Constants.DT_SPROCKET_RATIO, zRot, true);
-			drive.driveCartesian(0, x, zRot);
+			drive.driveCartesian(0, x * Constants.DT_SPROCKET_RATIO, zRot);
+		}
+	}
+		
+	public void driveTele(double x, double y, double zRot) {
+		if (isMecanumized) {
+			drive.driveCartesianTele(y, x, zRot);
+		} else {
+			drive.driveCartesianTele(0, x * Constants.DT_SPROCKET_RATIO, zRot);
 		}
 	}
 	

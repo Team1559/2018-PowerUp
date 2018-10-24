@@ -29,9 +29,13 @@ public class Intake {
 
 	private static final int TIMEOUT = 0;
 
-	private double angle = 0;
-	private double ticksAt0 = 675;
-	private double ticksAt90 = 316;
+	private double angle = 90;
+	//TODO change these for ROBOT 1 only
+	private int ticksAt0 = 564; //92 //change these up (139)
+	private int ticksAt90 = 236; //439 (434)
+	private int ticksAt120 = 1000; //i just guessed
+	
+	private int downLimit = 685;
 
 	public Intake() {
 		solenoid = new Solenoid(Wiring.NTK_SOLENOID);
@@ -40,23 +44,31 @@ public class Intake {
 
 		shoulder = new WPI_TalonSRX(Wiring.NTK_TALON_ROTATE);
 		
-		pid = new PID(1.0/300.0,0,0);
-		pid.reset();
+		setShoulderAngle(this.angle);
 		
-		shoulderPidf = new PIDFGains(4.11, 0, 0, 0.4);
+		//pid = new PID(1.0/300.0,0,0);
+		//pid.reset();
+		
+		//shoulderPidf = new PIDFGains(4.0/186*1024*1,0,23*5*4.0/186*1024,0);
+		shoulderPidf = new PIDFGains(4.0/186*1024*0.2,0,0,0);
 
 		shoulder.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, TIMEOUT);
 
+		shoulder.configReverseSoftLimitThreshold(ticksAt90, TIMEOUT); //TODO possibly switch these
+		shoulder.configForwardSoftLimitThreshold(downLimit, TIMEOUT);
 		shoulder.configForwardSoftLimitEnable(false, TIMEOUT);
 		shoulder.configReverseSoftLimitEnable(false, TIMEOUT);
 
-		//forward is down, reverse is up
+		//forward is up, reverse is down
 		shoulder.configNominalOutputForward(+0, TIMEOUT); 
-		shoulder.configNominalOutputReverse(-0, TIMEOUT); 
-		shoulder.configPeakOutputForward(+1, TIMEOUT);
-		shoulder.configPeakOutputReverse(-1, TIMEOUT);
+		shoulder.configNominalOutputReverse(-0, TIMEOUT); //these values worked in the warehouse
+		shoulder.configPeakOutputForward(+0.85, TIMEOUT);//was then 0.6// was +0.75
+		shoulder.configPeakOutputReverse(-0.35, TIMEOUT);//was -1.0
 		
-		shoulder.enableCurrentLimit(false);
+		shoulder.configPeakCurrentLimit(50, TIMEOUT); //80
+		shoulder.configContinuousCurrentLimit(30, TIMEOUT); //40
+		shoulder.configPeakCurrentDuration(1000, TIMEOUT); //1800
+		shoulder.enableCurrentLimit(true);
 		
 		shoulder.config_kP(0, shoulderPidf.kP, TIMEOUT);
 		shoulder.config_kI(0, shoulderPidf.kI, TIMEOUT);
@@ -66,12 +78,16 @@ public class Intake {
 		shoulder.setSensorPhase(false);
 		shoulder.setNeutralMode(NeutralMode.Brake);
 		
-		shoulder.set(ControlMode.Velocity, 0);
+		shoulder.enableVoltageCompensation(false);
 
-		if (!Robot.robotOne) {
-			ticksAt0 = 675;
-			ticksAt90 = 316;
-		}
+	}
+	
+	public void rotateSpeed(double speed) {
+		shoulder.set(ControlMode.PercentOutput, speed);
+	}
+	
+	public WPI_TalonSRX getMotor() {
+		return shoulder;
 	}
 
 	public void open() {
@@ -86,29 +102,30 @@ public class Intake {
 		solenoid.set(!solenoid.get());
 	}
 
+	//TODO red to red, white to white, this is not racist
 	public void out(double speed) {
-		//sparkLeft.set(-speed);
-		//sparkRight.set(speed);
+		sparkLeft.set(-speed);
+		sparkRight.set(speed);
 	}
 
 	public void out() {
-		//sparkLeft.set(-1.0);
-		//sparkRight.set(1.0);
+		sparkLeft.set(-1.0);
+		sparkRight.set(1.0);
 	}
 
 	public void in(double speed) {
-		//sparkLeft.set(speed);
-		//sparkRight.set(-speed);
+		sparkLeft.set(speed);
+		sparkRight.set(-speed);
 	}
 
 	public void in() {
-		//sparkLeft.set(1.0);
-		//sparkRight.set(-1.0);
+		sparkLeft.set(1.0);
+		sparkRight.set(-1.0);
 	}
 
 	public void rotateIntake() {
-		//sparkLeft.set(1.0);
-		//sparkRight.set(1.0);
+		sparkLeft.set(1.0);
+		sparkRight.set(1.0);
 	}
 
 	public void stopIntake() {
@@ -118,14 +135,19 @@ public class Intake {
 
 	public void updateShoulder() {
 		SmartDashboard.putNumber("Shoulder Setpoint", shoulderSetpoint);
-		System.out.println(-pid.calculate(getPot()));
-		shoulder.set(ControlMode.Velocity, 0);
+		SmartDashboard.putNumber("Shoulder Output", shoulder.getMotorOutputPercent());
+		SmartDashboard.putNumber("shoulder current", shoulder.getOutputCurrent());
+		SmartDashboard.putNumber("Shoulder Pot", getPot());
+		SmartDashboard.putNumber("Shoulder voltage", shoulder.getMotorOutputVoltage());
+		//System.out.println(-pid.calculate(getPot()));
+		//shoulder.set(ControlMode.Velocity, -pid.calculate(getPot());
+		shoulder.set(ControlMode.Position, shoulderSetpoint);
 	}
 
 	public void setShoulderAngle(double degrees) {
 		this.angle = degrees;
 		shoulderSetpoint = MathUtils.mapRange(-this.angle, 0, -90, ticksAt0, ticksAt90);
-		pid.setSetpoint(shoulderSetpoint);
+		//pid.setSetpoint(shoulderSetpoint);
 	}
 
 	public boolean shoulderInTolerance(double tolerance) {

@@ -8,13 +8,11 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Spark;
 
 public class Climber {
 	private static final int TIMEOUT = 0;
-	private Talon winch;
+	private Spark winch;
 	private WPI_TalonSRX belt;
 	 // TODO figure that out for robot 1
 	public int upperBound = 269; //359 for robot 2//pot value decrease as it moves up
@@ -26,7 +24,7 @@ public class Climber {
 	private double kF = 0;
 
 	public Climber() {
-		winch = new Talon(Wiring.CLM_WINCH);
+		winch = new Spark(Wiring.CLM_WINCH);
 		belt = new WPI_TalonSRX(Wiring.CLM_BELT);
 		belt.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, TIMEOUT);
 		belt.enableCurrentLimit(false);
@@ -80,10 +78,12 @@ public class Climber {
 				belt.set(ControlMode.PercentOutput, -0.1);
 			}
 		} else { //TODO adjust these boyos
-			if (getPot() > upperBound) { //going up
+			if (manual < 0 && getPot() > upperBound) { //going up
 				belt.set(ControlMode.PercentOutput, -0.65); //goes up at 65%
-			} else { //going down
-				belt.set(ControlMode.PercentOutput, 0.4); //goes down at 40%
+			} else if(manual > 0) { //going down
+				belt.set(ControlMode.PercentOutput, 0.65); //goes down at 40%
+			} else {
+				belt.stopMotor();
 			}
 		}
 	}

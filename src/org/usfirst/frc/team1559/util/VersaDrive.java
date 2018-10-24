@@ -1,5 +1,7 @@
 package org.usfirst.frc.team1559.util;
 
+import org.usfirst.frc.team1559.robot.Robot;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -220,11 +222,57 @@ public class VersaDrive extends RobotDriveBase {
 		wheelSpeeds[MotorType.kRearRight.value] = -input.x - input.y + zRotation;
 
 		normalize(wheelSpeeds);
+		
+//		m_frontLeftMotor.set(ControlMode.Velocity, wheelSpeeds[MotorType.kFrontLeft.value] * m_maxOutput);
+//		m_frontRightMotor.set(ControlMode.Velocity, wheelSpeeds[MotorType.kFrontRight.value] * m_maxOutput);
+//		m_rearLeftMotor.set(ControlMode.Velocity, wheelSpeeds[MotorType.kRearLeft.value] * m_maxOutput);
+//		m_rearRightMotor.set(ControlMode.Velocity, wheelSpeeds[MotorType.kRearRight.value] * m_maxOutput);
+		
+		m_frontLeftMotor.set(ControlMode.Velocity, wheelSpeeds[MotorType.kFrontLeft.value] * m_maxOutput * Robot.driveTrain.MAX_TICKS_PER_100MS);
+		m_frontRightMotor.set(ControlMode.Velocity, wheelSpeeds[MotorType.kFrontRight.value] * m_maxOutput * Robot.driveTrain.MAX_TICKS_PER_100MS);
+		m_rearLeftMotor.set(ControlMode.Velocity, wheelSpeeds[MotorType.kRearLeft.value] * m_maxOutput * Robot.driveTrain.MAX_TICKS_PER_100MS);
+		m_rearRightMotor.set(ControlMode.Velocity, wheelSpeeds[MotorType.kRearRight.value] * m_maxOutput * Robot.driveTrain.MAX_TICKS_PER_100MS);
 
+		m_safetyHelper.feed();
+	}
+	
+	public void driveCartesianTele(double ySpeed, double xSpeed, double zRotation) {
+		driveCartesianTele(ySpeed, xSpeed, zRotation, 0);
+	}
+	
+	public void driveCartesianTele(double ySpeed, double xSpeed, double zRotation, double gyroAngle) {
+		if (!m_reported) {
+			HAL.report(tResourceType.kResourceType_RobotDrive, 4, tInstances.kRobotDrive_MecanumCartesian);
+			m_reported = true;
+		}
+
+		ySpeed = limit(ySpeed);
+		ySpeed = applyDeadband(ySpeed, m_deadband);
+
+		xSpeed = limit(xSpeed);
+		xSpeed = applyDeadband(xSpeed, m_deadband);
+
+		// Compensate for gyro angle.
+		Vector2d input = new Vector2d(ySpeed, xSpeed);
+		input.rotate(-gyroAngle);
+
+		double[] wheelSpeeds = new double[4];
+		wheelSpeeds[MotorType.kFrontLeft.value] = input.x + input.y + zRotation;
+		wheelSpeeds[MotorType.kFrontRight.value] = input.x - input.y + zRotation;
+		wheelSpeeds[MotorType.kRearLeft.value] = -input.x + input.y + zRotation;
+		wheelSpeeds[MotorType.kRearRight.value] = -input.x - input.y + zRotation;
+
+		normalize(wheelSpeeds);
+		
 		m_frontLeftMotor.set(ControlMode.PercentOutput, wheelSpeeds[MotorType.kFrontLeft.value] * m_maxOutput);
 		m_frontRightMotor.set(ControlMode.PercentOutput, wheelSpeeds[MotorType.kFrontRight.value] * m_maxOutput);
 		m_rearLeftMotor.set(ControlMode.PercentOutput, wheelSpeeds[MotorType.kRearLeft.value] * m_maxOutput);
 		m_rearRightMotor.set(ControlMode.PercentOutput, wheelSpeeds[MotorType.kRearRight.value] * m_maxOutput);
+		
+//		m_frontLeftMotor.set(ControlMode.Velocity, wheelSpeeds[MotorType.kFrontLeft.value] * m_maxOutput * Robot.driveTrain.MAX_TICKS_PER_100MS);
+//		m_frontRightMotor.set(ControlMode.Velocity, wheelSpeeds[MotorType.kFrontRight.value] * m_maxOutput * Robot.driveTrain.MAX_TICKS_PER_100MS);
+//		m_rearLeftMotor.set(ControlMode.Velocity, wheelSpeeds[MotorType.kRearLeft.value] * m_maxOutput * Robot.driveTrain.MAX_TICKS_PER_100MS);
+//		m_rearRightMotor.set(ControlMode.Velocity, wheelSpeeds[MotorType.kRearRight.value] * m_maxOutput * Robot.driveTrain.MAX_TICKS_PER_100MS);
 
 		m_safetyHelper.feed();
 	}

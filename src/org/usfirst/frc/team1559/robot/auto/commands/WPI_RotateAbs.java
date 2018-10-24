@@ -8,9 +8,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WPI_RotateAbs extends Command {
 
-	private final double kP = .039;//0.037 //0.039
-	private final double kI = 0.0007;//0.0009
-	private final double kD = 0.15;//0.1
+	private final double kP = .02;//0.037 //0.039
+	private final double kI = 0;//0.0009
+	private final double kD = 0;//0.1
 
 	private final double TOLERANCE = 2;//1
 	private double angle;

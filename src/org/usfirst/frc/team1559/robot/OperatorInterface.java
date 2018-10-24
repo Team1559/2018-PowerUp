@@ -45,14 +45,18 @@ public class OperatorInterface {
 	public double getDriverY() {
 		return driverStick.getRawAxis(1);
 	}
+	
+	public static double squareAxis(double axisValue) {
+		return Math.signum(axisValue) * axisValue * axisValue;
+	}
 
 	//XBOX//
 	public double getDriverZ() {
-		return driverStick.getRawAxis(4);
+		return driverStick.getRawAxis(4)+Math.abs(driverStick.getRawAxis(4));
 	}
 	
 	public double getPS4Z() {
-		return driverStick.getRawAxis(2);
+		return driverStick.getRawAxis(2)*Math.abs(driverStick.getRawAxis(2));
 	}
 
 	public double getCopilotX() {

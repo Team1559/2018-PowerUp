@@ -10,10 +10,13 @@ package org.usfirst.frc.team1559.robot;
 import org.usfirst.frc.team1559.robot.auto.AutoPicker;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_Ingest;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_IngestNoSpin;
+import org.usfirst.frc.team1559.robot.auto.commands.WPI_LifterTo;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_MP;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_ManualDownOpen;
+import org.usfirst.frc.team1559.robot.auto.commands.WPI_RotateAbs;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_RotateShoulder;
 import org.usfirst.frc.team1559.robot.auto.commands.WPI_Spit;
+import org.usfirst.frc.team1559.robot.auto.commands.WPI_TractionMove;
 import org.usfirst.frc.team1559.robot.subsystems.Climber;
 import org.usfirst.frc.team1559.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team1559.robot.subsystems.Intake;
@@ -30,7 +33,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends IterativeRobot {
 
 	public static PowerDistributionPanel pdp;
-
 	public static OperatorInterface oi;
 	public static DriveTrain driveTrain;
 	public static BNO055 imu;
@@ -48,7 +50,7 @@ public class Robot extends IterativeRobot {
 	public static boolean fightStick = true;
 	public boolean scott = false; //for axis 4 manual toggle
 	
-	public final static boolean robotOne = false;
+	public final static boolean robotOne = true;
 
 	@Override
 	public void robotInit() {
@@ -91,7 +93,7 @@ public class Robot extends IterativeRobot {
 
 		SmartDashboard.putNumber("IMU", imu.getHeadingRelative());
 		SmartDashboard.putNumber("Shoulder", intake.getPot());
-
+		SmartDashboard.putNumber("Shoulder Current", intake.getMotor().getOutputCurrent());
 //		SmartDashboard.putNumber("Motor 0 CL Error", driveTrain.getMotors()[0].getClosedLoopError(0));
 //		SmartDashboard.putNumber("Motor 1 CL Error", driveTrain.getMotors()[1].getClosedLoopError(0));
 //		SmartDashboard.putNumber("Motor 2 CL Error", driveTrain.getMotors()[2].getClosedLoopError(0));
@@ -108,15 +110,22 @@ public class Robot extends IterativeRobot {
 		imu.zeroHeading();
 		setupData.updateData();
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
+		driveTrain.setAutoConfig();
 		System.out.println("POSITION IS " + setupData.getPosition());
 
 		// TODO Fix target
 		SmartDashboard.putString("target returned is:", setupData.getTarget());
-		routine = AutoPicker.pick(gameData, (int) setupData.getPosition(), "both");
+		routine = AutoPicker.pick(gameData, (int) setupData.getPosition(), "scale");
 		
+		
+		// TEMP
 		routine = new CommandGroup();
-		
-		routine.addSequential(new WPI_MP("leftguy.csv", "rightguy.csv"));
+		//routine.addSequential(new WPI_MP("/media/sda1/waitTest.csv", false));
+		//routine.addSequential(new WPI_MP("/media/sda1/test2/test2_left_detailed.csv", false));
+		routine.addSequential(new WPI_MP("/media/sda1/test.csv", false));
+		//routine.addSequential(new WPI_MP("/media/sda1/MP/LLSswitch.csv", false));
+		//routine.addSequential(new WPI_MP("/media/sda1/LLSS.csv", false));
+//		routine.addSequential(new WPI_MP("/media/sda1/fwd40ft_test.csv", false));
 		//routine.addSequential(new WPI_TractionMove(100, 0));
 		//routine.addSequential(new WPI_TractionMove(0, -90));
 		//routine.addSequential(new WPI_TractionSpinlate(250, 0));
@@ -127,8 +136,8 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-		lifter.update();
-		intake.updateShoulder();
+		//lifter.update();
+		//intake.updateShoulder();
 		
 		//udp.send("c");
 
@@ -143,6 +152,11 @@ public class Robot extends IterativeRobot {
 		// driveTrain.motors[3].getClosedLoopError(0));
 		// SmartDashboard.putNumber("Motor 0 value: ",
 		// driveTrain.motors[0].getMotorOutputVoltage());
+		//driveTrain.drive(0, 0, .5);
+		SmartDashboard.putNumber("motor zero position",Math.abs(driveTrain.motors[0].getSensorCollection().getQuadraturePosition()));
+		SmartDashboard.putNumber("motor one position",Math.abs(driveTrain.motors[1].getSensorCollection().getQuadraturePosition()));
+		SmartDashboard.putNumber("motor two position",Math.abs(driveTrain.motors[2].getSensorCollection().getQuadraturePosition()));
+		SmartDashboard.putNumber("motor three position",Math.abs(driveTrain.motors[3].getSensorCollection().getQuadraturePosition()));
 	}
 
 	@Override
@@ -151,20 +165,26 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopInit() {
+		driveTrain.setTeleConfig();
 		driveTrain.shift(true);
-		lifter.holdPosition();
+		lifter.holdPosition();		
 	}
-
+	
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
 		oi.update();
 		
+		//System.out.println(intake.getPot()); // delete this later, for testing
+		//System.out.println("test");
+		
+		//intake.rotateSpeed(oi.getDriverAxis(3)-oi.getDriverAxis(4));
+		
 		SmartDashboard.putNumber("Lifter Current", lifter.getMotor().getOutputCurrent());
 
 		// DRIVING
 		if (xbox) {
-			driveTrain.drive(-oi.getDriverY(), oi.getDriverX(), -oi.getDriverZ());
+			driveTrain.driveTele(-oi.getDriverY(), oi.getDriverX(), -oi.getDriverZ());
 
 			if (oi.getDriverButton(1).isPressed()) {
 				driveTrain.shift();
@@ -185,11 +205,15 @@ public class Robot extends IterativeRobot {
 				intake.setShoulderAngle(90);
 			}
 		} else { // ps4
+			double xIn = OperatorInterface.squareAxis(oi.getDriverX());
+			double yIn = OperatorInterface.squareAxis(oi.getDriverY());
+			double zIn = oi.getPS4Z();
+			
 			if (robotOne) { //robot 1
-				driveTrain.drive(-oi.getDriverY(), oi.getDriverX(), -oi.getPS4Z()); // y is positive for robot 2, negative for robot 1
+				driveTrain.driveTele(-yIn, xIn, -zIn); // y is positive for robot 2, negative for robot 1
 																					//x is neg for robot 2, pos for robot 1
 			} else { //robot 2
-				driveTrain.drive(oi.getDriverY(), -oi.getDriverX(), -oi.getPS4Z());
+				driveTrain.driveTele(yIn, -xIn, -zIn);
 			}
 			
 			if (oi.getDriverButton(11).isPressed()) {
@@ -198,7 +222,7 @@ public class Robot extends IterativeRobot {
 			}
 
 			if (oi.getDriverButton(4).isPressed()) {
-				intake.setShoulderAngle(45);
+				intake.setShoulderAngle(0);
 				intake.open();
 			}
 			if (oi.getDriverButton(4).isReleased()) {
@@ -213,9 +237,9 @@ public class Robot extends IterativeRobot {
 			}
 			if (oi.getDriverButton(5).isPressed()) {
 				if(lifter.isAtPosition(5)) {
-					new WPI_Spit().start();
+					new WPI_Spit(0.85).start(); //TODO change this to adjust spit speed
 				} else {
-					new WPI_Spit().start();
+					new WPI_Spit(0.85).start();
 				}
 			}
 			if (oi.getDriverButton(5).isReleased()) {
@@ -227,6 +251,7 @@ public class Robot extends IterativeRobot {
 			// MANUAL CONTROLS
 			if (oi.getDriverButton(2).isPressed()) {
 				intake.toggleRotate();
+				
 			}
 			if (oi.getDriverButton(0).isPressed()) {
 				intake.toggle();
@@ -278,16 +303,18 @@ public class Robot extends IterativeRobot {
 		} else { //yes fightstick!
 			if (Math.abs(oi.getCopilotAxis(1)) >= 0 && !oi.getCopilotButton(8).isDown()) { //LT/L2
 				lifter.driveManual(oi.getCopilotAxis(1));
+				System.out.println("reads (LT/L2)");
 			}
 			if (oi.getCopilotButton(0).isPressed()) { //A/X
 				lifter.setPosition(1);
-			} else if (oi.getCopilotButton(3).isPressed()) { //X/SQUARE
+				System.out.println("yeet");
+			} else if (oi.getCopilotButton(2).isPressed()) { //X/SQUARE
 				lifter.setPosition(2);
-			} else if (oi.getCopilotButton(4).isPressed()) { //Y/TRIANGLE
+			} else if (oi.getCopilotButton(3).isPressed()) { //Y/TRIANGLE
 				lifter.setPosition(3);
-			} else if (oi.getCopilotButton(7).isPressed()) { //RB/R1
+			} else if (oi.getCopilotButton(5).isPressed()) { //RB/R1
 				lifter.setPosition(4);
-			} else if (oi.getCopilotButton(6).isPressed()) { //LB/L1
+			} else if (oi.getCopilotButton(4).isPressed()) { //LB/L1
 				lifter.setPosition(5);
 			}
 	
@@ -297,15 +324,15 @@ public class Robot extends IterativeRobot {
 			}
 	
 			// CLIMBING
-			if (oi.getCocopilotButton(1).isDown()) { 
+			if (oi.getCopilotButton(8).isDown()) { 
+				System.out.println(oi.getCopilotAxis(1));
 				climber.stageOne(oi.getCopilotAxis(1));
 			} else {
 				climber.stopBelting();
 			}
-			//winch if easy button or if 1 and 4 are held
 			climber.stageTwo(oi.getCopilotButton(11).isDown()); //START/OPTIONS/MENU
 		}
-			
+		
 		driveTrain.autoShift();
 		intake.updateShoulder();
 		lifter.update();
@@ -324,15 +351,27 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void testPeriodic() {
 		
-		System.out.println(imu.getHeading()); //for testing
+		//System.out.println(imu.getHeading()); //for testing
+		System.out.println(intake.getPot());
 
 		oi.update();
 		if (!xbox) { // ps4
 			if (robotOne) { //robot 1
-				driveTrain.drive(-oi.getDriverY(), oi.getDriverX(), -oi.getPS4Z()); // y is positive for robot 2, negative for robot 1
+				//driveTrain.driveTele(-oi.getDriverY(), oi.getDriverX(), -oi.getPS4Z()); // y is positive for robot 2, negative for robot 1
 																					//x is neg for robot 2, pos for robot 1
 			} else { //robot 2
-				driveTrain.drive(oi.getDriverY(), -oi.getDriverX(), -oi.getPS4Z());
+				//driveTrain.driveTele(oi.getDriverY(), -oi.getDriverX(), -oi.getPS4Z());
+				
+				//driveTrain.setAutoConfig();
+				//driveTrain.driveTele(0.5,0,0);
+				
+//				driveTrain.getMotors()[0].set(ControlMode.Velocity, 2500);
+//				driveTrain.getMotors()[1].set(ControlMode.Velocity, 1);
+//				driveTrain.getMotors()[2].set(ControlMode.Velocity, 1);
+//				driveTrain.getMotors()[3].set(ControlMode.Velocity, 1);
+				//driveTrain.drive(0.5, 0, 0);
+				//System.out.println("ControlMode: " + driveTrain.getMotors()[3].getSelectedSensorVelocity(0));
+//				SmartDashboard.putNumber("Velocity", Robot.driveTrain.getMotors()[0].getSelectedSensorVelocity(0));
 			}
 
 			if (oi.getDriverButton(11).isPressed()) {
@@ -366,8 +405,8 @@ public class Robot extends IterativeRobot {
 			}
 		}
 
-		if (Math.abs(oi.getCopilotAxis(0)) >= 0.1) {
-			lifter.driveManual(oi.getCopilotAxis(0));
+		if (Math.abs(oi.getCopilotAxis(1)) >= 0.1 && !oi.getCopilotButton(8).isDown()) {
+			lifter.driveManual(oi.getCopilotAxis(1));
 		}
 		if (oi.getCopilotButton(1).isPressed()) {
 			lifter.setPosition(1);
@@ -381,16 +420,18 @@ public class Robot extends IterativeRobot {
 			lifter.setPosition(5);
 		}
 
-		if (oi.getCocopilotButton(1).isDown()) {
-			climber.stageOne(oi.getCopilotAxis(0));
+		if (oi.getCopilotButton(8).isDown()) {
+			climber.stageOne(oi.getCopilotAxis(1));
 		} else {
 			climber.stopBelting();
 		}
+		
+		//intake.rotateSpeed(-1);
 
-		climber.stageTwo(oi.getCocopilotButton(0).isDown());
-		climber.winchDown(oi.getCocopilotButton(0).isDown() && oi.getCocopilotButton(1).isDown());
+		climber.stageTwo(oi.getCopilotButton(0).isDown());
+		climber.winchDown(oi.getCopilotButton(0).isDown() && oi.getCopilotButton(1).isDown());
 
 		lifter.update();
-		intake.updateShoulder();
+		//intake.updateShoulder();
 	}
 }

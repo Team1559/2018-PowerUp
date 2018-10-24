@@ -19,7 +19,8 @@ public class WPI_RotateShoulder extends Command {
 
 	@Override
 	protected boolean isFinished() {
-		return Robot.intake.shoulderInTolerance(300);
+		//return Robot.intake.shoulderInTolerance(300);
+		return true;
 	}
 	
 	@Override
