@@ -36,9 +36,9 @@ public class SetupData {
 	}
 	
 	public void updateData() {
-		int pos = (int) SmartDashboard.getNumber("Position", 0);
+		//int pos = 0; /*(int) SmartDashboard.getNumber("Position", 0);*/
 		//positionEntry.setDouble(pos);
-		position = pos;
+		position = 2;
 		target = SmartDashboard.getString("Target", "switch");
 	}
 	

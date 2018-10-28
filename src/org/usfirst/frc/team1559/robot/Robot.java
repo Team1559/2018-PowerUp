@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 
+	//ok
 	public static PowerDistributionPanel pdp;
 	public static OperatorInterface oi;
 	public static DriveTrain driveTrain;
@@ -50,7 +51,7 @@ public class Robot extends IterativeRobot {
 	public static boolean fightStick = true;
 	public boolean scott = false; //for axis 4 manual toggle
 	
-	public final static boolean robotOne = true;
+	public final static boolean robotOne = false; //was true
 
 	@Override
 	public void robotInit() {
@@ -115,14 +116,16 @@ public class Robot extends IterativeRobot {
 
 		// TODO Fix target
 		SmartDashboard.putString("target returned is:", setupData.getTarget());
-		routine = AutoPicker.pick(gameData, (int) setupData.getPosition(), "scale");
+		//routine = AutoPicker.pick(gameData, (int) setupData.getPosition(), "scale");
 		
 		
 		// TEMP
 		routine = new CommandGroup();
+		routine.addSequential(new WPI_MP("/media/sda1/Crossline.csv", false));
+
 		//routine.addSequential(new WPI_MP("/media/sda1/waitTest.csv", false));
 		//routine.addSequential(new WPI_MP("/media/sda1/test2/test2_left_detailed.csv", false));
-		routine.addSequential(new WPI_MP("/media/sda1/test.csv", false));
+		//routine.addSequential(new WPI_MP("/media/sda1/test.csv", false));
 		//routine.addSequential(new WPI_MP("/media/sda1/MP/LLSswitch.csv", false));
 		//routine.addSequential(new WPI_MP("/media/sda1/LLSS.csv", false));
 //		routine.addSequential(new WPI_MP("/media/sda1/fwd40ft_test.csv", false));
@@ -136,6 +139,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
+		//lifter.setPosition(100); //delet this
 		//lifter.update();
 		//intake.updateShoulder();
 		

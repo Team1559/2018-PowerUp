@@ -17,14 +17,14 @@ public class Lifter {
 	private static final double POSITION_BOT_INCHES = 8.75;
 	private static final double POSITION_TOP_INCHES = 82;//80.5;//this should be 84 (jk not!), but it's not // 80.5 on robot 2 //82 for robot 1 //was 82 on robot 1
 
-	private static final int RANGE = 139;//535 //508 // difference between up and down in ticks //should be the same on both robots 540
-	public int lowerBound = 87; //147 FOR ROBOT 2 //139 for robot 1
+	private static final int RANGE = 545; //879-334 = 545 // 139 //535 //508 // difference between up and down in ticks //should be the same on both robots 540
+	public int lowerBound = 320; // 87; //147 FOR ROBOT 2 //139 for robot 1 
 	public int upperBound;
 	private double[] positionsTicks = new double[POSITIONS_INCHES.length];
 
 	private WPI_TalonSRX lifterMotor;
 	private static final int TIMEOUT = 0;
-	private double kP = 60;//15 with bands
+	private double kP = 12;//15 with bands
 	private double kI = 0;
 	private double kD = 10*kP;// 5
 	private double kF = 0;
@@ -34,31 +34,35 @@ public class Lifter {
 
 	public Lifter() {
 		//change this to adjust lower bound on robot 2
-		if (!Robot.robotOne) {
-			lowerBound = 160;
-		}
+		//if (!Robot.robotOne) {
+			//lowerBound = 160;
+		//}
 		calculatePositions();
 		
 		SmartDashboard.putNumber("lowerbound", lowerBound);
 		SmartDashboard.putNumber("upperbound", upperBound);
+		
+		
 
 		lifterMotor = new WPI_TalonSRX(Wiring.LIFT_TALON);
 		lifterMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, TIMEOUT);
+		
+		lifterMotor.overrideLimitSwitchesEnable(true); //disabling any limit switches
 
 		lifterMotor.configClosedloopRamp(0.1, TIMEOUT);
 		lifterMotor.configPeakCurrentLimit(70, TIMEOUT); //TODO raise this? 40A on 12:1
 		lifterMotor.configContinuousCurrentLimit(40, TIMEOUT); 
-		lifterMotor.enableCurrentLimit(true);
+		lifterMotor.enableCurrentLimit(true); //true
 		lifterMotor.configPeakCurrentDuration(1800, TIMEOUT);
 
-		lifterMotor.configNominalOutputForward(0, TIMEOUT); // +0.25 on robot 2 with band//0 on robot 1 (+.05)
+		lifterMotor.configNominalOutputForward(0.25, TIMEOUT); // +0.25 on robot 2 with band//0 on robot 1 (+.05)
 		lifterMotor.configNominalOutputReverse(-0.1, TIMEOUT); //0 on robot 1, -0.1 on robot 2 with band (-0.1)
-		lifterMotor.configPeakOutputForward(+1, TIMEOUT);
+		lifterMotor.configPeakOutputForward(+1.0, TIMEOUT);
 		lifterMotor.configPeakOutputReverse(-.55, TIMEOUT); //-.45 for robot 1 //-0.55 for robot 2 (-0.55)
 
 		lifterMotor.configReverseSoftLimitThreshold(lowerBound, TIMEOUT); //TODO possibly switch these
 		lifterMotor.configForwardSoftLimitThreshold(upperBound, TIMEOUT);
-		lifterMotor.configForwardSoftLimitEnable(true, TIMEOUT);
+		lifterMotor.configForwardSoftLimitEnable(true, TIMEOUT); //true
 		lifterMotor.configReverseSoftLimitEnable(true, TIMEOUT);
 
 		lifterMotor.config_kP(0, kP, TIMEOUT);
@@ -66,7 +70,7 @@ public class Lifter {
 		lifterMotor.config_kD(0, kD, TIMEOUT);
 		lifterMotor.config_kF(0, kF, TIMEOUT);
 
-		lifterMotor.setSensorPhase(true); //false on robot 2
+		lifterMotor.setSensorPhase(false); //false on robot 2 //true
 		lifterMotor.setNeutralMode(NeutralMode.Brake);
 		lifterMotor.enableVoltageCompensation(false);
 
@@ -88,7 +92,7 @@ public class Lifter {
 				setpoint -= 5*val;
 			}
 		} else { //TODO adjust this boyo
-			setpoint -= 5*val; //should add/subtract 1 tick each loop
+			//setpoint -= 5*val; //should add/subtract 1 tick each loop
 		}
 		SmartDashboard.putNumber("setpoint", setpoint);
 	}

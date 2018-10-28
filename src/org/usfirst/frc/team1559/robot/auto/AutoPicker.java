@@ -75,8 +75,8 @@ public class AutoPicker {
 //		RRs.addSequential(new WPI_TranslateTractionForTime(0.4, 2));
 //		RRs.addSequential(new WPI_Spit());
 
-		LLs.addSequential(new WPI_MP("/media/sda1/MP/LLswitch.csv", false));
-		RRs.addSequential(new WPI_MP("/media/sda1/MP/LLswitch.csv", true));
+		LLs.addSequential(new WPI_MP("/media/sda1/LLswitch.csv", false));
+		RRs.addSequential(new WPI_MP("/media/sda1/LLswitch.csv", true));
 		
 		RLs.addSequential(new WPI_TractionMove(228, 0));
 		RLs.addSequential(new WPI_RotateAbs(-90, false));

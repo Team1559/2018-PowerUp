@@ -1,12 +1,19 @@
 package org.usfirst.frc.team1559.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 public class OperatorInterface {
 
 	private Joystick driverStick, copilotStick, cocopilotStick;
 	private DTButton[] driverButtons, copilotButtons, cocopilotButtons;
 
+	// This stuff was experimental at Rah cha cha 
+	// private Joystick cp = new Joystick(Wiring.JOY_COPILOT);
+	// private Button up = new JoystickButton(cp, 5);
+	// private Button dwn = new JoystickButton(cp, 6);
+	
 	public OperatorInterface() {
 		driverStick = new Joystick(Wiring.JOY_DRIVER);
 		copilotStick = new Joystick(Wiring.JOY_COPILOT);
@@ -24,6 +31,8 @@ public class OperatorInterface {
 		for (int i = 0; i < cocopilotButtons.length; i++) {
 			cocopilotButtons[i] = new DTButton(cocopilotStick, i + 1);
 		}
+		
+		//up.whenPressed();
 	}
 
 	public DTButton getDriverButton(int i) {
@@ -43,7 +52,7 @@ public class OperatorInterface {
 	}
 
 	public double getDriverY() {
-		return driverStick.getRawAxis(1);
+		return -1*driverStick.getRawAxis(1);
 	}
 	
 	public static double squareAxis(double axisValue) {

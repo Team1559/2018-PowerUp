@@ -19,8 +19,8 @@ public interface Wiring {
 	public static final int NTK_SOLENOID = 7;
 
 	// Climber
-	public static final int CLM_BELT = 2; // Using TalonSRX speed controller.
-	public static final int CLM_WINCH = 11; // Using TalonSR speed controller.
+	public static final int CLM_BELT = 11; // Using Spark speed controller. 2
+	public static final int CLM_WINCH = 2; // Using TalonSR speed controller. 11
 
 	// Controllers
 	public static final int JOY_DRIVER = 0;
